@@ -37,7 +37,7 @@ class UploadItemImageFile: UploadItemImage {
             let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
             UIGraphicsEndImageContext()
 
-            completion(resizedImage)
+            completion(resizedImage!)
         }
     }
     

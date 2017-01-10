@@ -32,7 +32,7 @@ class UploadItemPost: UploadItem {
             let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
             UIGraphicsEndImageContext()
             
-            completion(resizedImage)
+            completion(resizedImage!)
         }
     }
     
