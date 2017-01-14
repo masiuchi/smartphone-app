@@ -36,7 +36,7 @@ class SettingTableViewController: BaseTableViewController {
         self.title = NSLocalizedString("Setting", comment: "Setting")
         self.tableView.backgroundColor = Color.tableBg
 
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: "closeButtonPushed:")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: #selector(SettingTableViewController.closeButtonPushed(_:)))
         
     }
 

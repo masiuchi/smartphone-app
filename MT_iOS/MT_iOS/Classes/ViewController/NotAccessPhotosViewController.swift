@@ -16,7 +16,7 @@ class NotAccessPhotosViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: "closeButtonPushed:")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: #selector(NotAccessPhotosViewController.closeButtonPushed(_:)))
         
         text1Label.text = NSLocalizedString("This app does not have access to your photos or videos.", comment: "This app does not have access to your photos or videos.")
         text2Label.text = NSLocalizedString("You can enable access in Privacy Settings.", comment: "You can enable access in Privacy Settings.")

@@ -38,8 +38,8 @@ class BlogSettingsTableViewController: BaseTableViewController, BlogImageSizeDel
         
         self.tableView.backgroundColor = Color.tableBg
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: "closeButtonPushed:")
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Save, target: self, action: "saveButtonPushed:")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: #selector(BlogSettingsTableViewController.closeButtonPushed(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Save, target: self, action: #selector(BlogSettingsTableViewController.saveButtonPushed(_:)))
 
         uploadDir = blog.uploadDir
         imageSize = blog.imageSize

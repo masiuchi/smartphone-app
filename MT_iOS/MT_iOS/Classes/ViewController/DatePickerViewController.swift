@@ -64,8 +64,8 @@ class DatePickerViewController: BaseViewController {
         
         self.segmentValueChanged(dateTimeSegmentedControl)
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonPushed:")
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: "backButtonPushed:")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(DatePickerViewController.doneButtonPushed(_:)))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: #selector(DatePickerViewController.backButtonPushed(_:)))
     }
 
     override func didReceiveMemoryWarning() {

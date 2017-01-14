@@ -86,8 +86,8 @@ class EntrySettingTableViewController: BaseTableViewController, DatePickerViewCo
         self.title = NSLocalizedString("Advanced Setting", comment: "Advanced Setting")
         self.tableView.backgroundColor = Color.tableBg
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: "closeButtonPushed:")
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonPushed:")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: #selector(EntrySettingTableViewController.closeButtonPushed(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(EntrySettingTableViewController.doneButtonPushed(_:)))
         
         let barButton:UIBarButtonItem = UIBarButtonItem(); barButton.title = "";
         self.navigationItem.backBarButtonItem = barButton;
@@ -164,7 +164,7 @@ class EntrySettingTableViewController: BaseTableViewController, DatePickerViewCo
             c.detailTextLabel?.text = ""
             let switchCtrl = UISwitch()
             switchCtrl.on = (unpublishDate != nil)
-            switchCtrl.addTarget(self, action: "unpublishEnabledChenged:", forControlEvents: UIControlEvents.ValueChanged)
+            switchCtrl.addTarget(self, action: #selector(EntrySettingTableViewController.unpublishEnabledChenged(_:)), forControlEvents: UIControlEvents.ValueChanged)
             c.accessoryView = switchCtrl
             c.contentView.addSubview(separatorLineView)
             c.backgroundColor = Color.bg
@@ -219,7 +219,7 @@ class EntrySettingTableViewController: BaseTableViewController, DatePickerViewCo
             c.button.setBackgroundImage(UIImage(named: "btn_signin"), forState: UIControlState.Normal)
             c.button.setBackgroundImage(UIImage(named: "btn_signin_highlight"), forState: UIControlState.Highlighted)
             c.button.setBackgroundImage(UIImage(named: "btn_signin_disable"), forState: UIControlState.Disabled)
-            c.button.addTarget(self, action: "deleteButtonPushed:", forControlEvents: UIControlEvents.TouchUpInside)
+            c.button.addTarget(self, action: #selector(EntrySettingTableViewController.deleteButtonPushed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
             c.backgroundColor = Color.clear
             
             let user = (UIApplication.sharedApplication().delegate as! AppDelegate).currentUser!

@@ -37,10 +37,10 @@ class EntryHTMLEditorViewController: BaseViewController, UITextViewDelegate, Add
         let toolBar = UIToolbar(frame: CGRectMake(0.0, 0.0, self.view.frame.size.width, 44.0))
         let modeImage = UIImageView(image: UIImage(named: "ico_html"))
         let modeButton = UIBarButtonItem(customView: modeImage)
-        let cameraButton = UIBarButtonItem(image: UIImage(named: "btn_camera"), left: true, target: self, action: "cameraButtonPushed:")
+        let cameraButton = UIBarButtonItem(image: UIImage(named: "btn_camera"), left: true, target: self, action: #selector(EntryHTMLEditorViewController.cameraButtonPushed(_:)))
         let flexibleButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        let previewButton = UIBarButtonItem(image: UIImage(named: "btn_preview"), style: UIBarButtonItemStyle.Plain, target: self, action: "previewButtonPushed:")
-        let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonPushed:")
+        let previewButton = UIBarButtonItem(image: UIImage(named: "btn_preview"), style: UIBarButtonItemStyle.Plain, target: self, action: #selector(EntryHTMLEditorViewController.previewButtonPushed(_:)))
+        let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(EntryHTMLEditorViewController.doneButtonPushed(_:)))
         
         if object is BlockTextItem || object.isCustomField {
             toolBar.items = [modeButton, flexibleButton, previewButton, doneButton]
@@ -49,17 +49,17 @@ class EntryHTMLEditorViewController: BaseViewController, UITextViewDelegate, Add
         }
         self.sourceView.inputAccessoryView = toolBar
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "saveButtonPushed:")
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: "backButtonPushed:")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(EntryHTMLEditorViewController.saveButtonPushed(_:)))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: #selector(EntryHTMLEditorViewController.backButtonPushed(_:)))
 
         self.sourceView.becomeFirstResponder()
     }
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillChangeFrameNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(EntryHTMLEditorViewController.keyboardWillShow(_:)), name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(EntryHTMLEditorViewController.keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(EntryHTMLEditorViewController.keyboardWillShow(_:)), name: UIKeyboardWillChangeFrameNotification, object: nil)
     }
     
     override func viewDidDisappear(animated: Bool) {

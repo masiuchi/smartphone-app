@@ -78,7 +78,7 @@ class ResetPasswordTableViewController: BaseTableViewController, UITextFieldDele
             c.textField.text = username
             c.textField.tag = indexPath.row
             c.textField.delegate = self
-            c.textField.addTarget(self, action: "textFieldChanged:", forControlEvents: UIControlEvents.EditingChanged)
+            c.textField.addTarget(self, action: #selector(ResetPasswordTableViewController.textFieldChanged(_:)), forControlEvents: UIControlEvents.EditingChanged)
             c.bgImageView.image = UIImage(named: "signin_table_1")
             cell = c
             
@@ -92,7 +92,7 @@ class ResetPasswordTableViewController: BaseTableViewController, UITextFieldDele
             c.textField.text = email
             c.textField.tag = indexPath.row
             c.textField.delegate = self
-            c.textField.addTarget(self, action: "textFieldChanged:", forControlEvents: UIControlEvents.EditingChanged)
+            c.textField.addTarget(self, action: #selector(ResetPasswordTableViewController.textFieldChanged(_:)), forControlEvents: UIControlEvents.EditingChanged)
             c.bgImageView.image = UIImage(named: "signin_table_2")
             cell = c
 
@@ -106,7 +106,7 @@ class ResetPasswordTableViewController: BaseTableViewController, UITextFieldDele
             c.textField.text = endpoint
             c.textField.tag = indexPath.row
             c.textField.delegate = self
-            c.textField.addTarget(self, action: "textFieldChanged:", forControlEvents: UIControlEvents.EditingChanged)
+            c.textField.addTarget(self, action: #selector(ResetPasswordTableViewController.textFieldChanged(_:)), forControlEvents: UIControlEvents.EditingChanged)
             c.bgImageView.image = UIImage(named: "signin_table_3")
             cell = c
             
@@ -120,7 +120,7 @@ class ResetPasswordTableViewController: BaseTableViewController, UITextFieldDele
             c.button.setBackgroundImage(UIImage(named: "btn_signin_highlight"), forState: UIControlState.Highlighted)
             c.button.setBackgroundImage(UIImage(named: "btn_signin_disable"), forState: UIControlState.Disabled)
             c.button.enabled = self.validate()
-            c.button.addTarget(self, action: "resetButtonPushed:", forControlEvents: UIControlEvents.TouchUpInside)
+            c.button.addTarget(self, action: #selector(ResetPasswordTableViewController.resetButtonPushed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
             cell = c
             
         default:

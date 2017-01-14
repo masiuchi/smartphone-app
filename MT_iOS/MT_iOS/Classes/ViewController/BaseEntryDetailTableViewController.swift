@@ -57,12 +57,12 @@ class BaseEntryDetailTableViewController: BaseTableViewController, EntrySettingD
         self.tableView.registerNib(UINib(nibName: "EntryImageTableViewCell", bundle: nil), forCellReuseIdentifier: "EntryImageTableViewCell")
         self.tableView.registerNib(UINib(nibName: "EntryHeaderTableViewCell", bundle: nil), forCellReuseIdentifier: "EntryHeaderTableViewCell")
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Save, target: self, action: "saveButtonPushed:")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Save, target: self, action: #selector(BaseEntryDetailTableViewController.saveButtonPushed(_:)))
         
         if object.id.isEmpty && list!.filename.isEmpty {
-            self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: "closeButtonPushed:")
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: #selector(BaseEntryDetailTableViewController.closeButtonPushed(_:)))
         } else {
-            self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: "backButtonPushed:")
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: #selector(BaseEntryDetailTableViewController.backButtonPushed(_:)))
         }
         
         self.getDetail()
@@ -70,13 +70,13 @@ class BaseEntryDetailTableViewController: BaseTableViewController, EntrySettingD
     
     private func makeToolbarItems() {
         var buttons = [UIBarButtonItem]()
-        let settingsButtonPushed = UIBarButtonItem(image: UIImage(named: "btn_entry_setting"), left: true, target: self, action: "settingsButtonPushed:")
+        let settingsButtonPushed = UIBarButtonItem(image: UIImage(named: "btn_entry_setting"), left: true, target: self, action: #selector(BaseEntryDetailTableViewController.settingsButtonPushed(_:)))
         
         let flexible = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
         
-        let previewButton = UIBarButtonItem(image: UIImage(named: "btn_preview"), style: UIBarButtonItemStyle.Plain, target: self, action: "previewButtonPushed:")
+        let previewButton = UIBarButtonItem(image: UIImage(named: "btn_preview"), style: UIBarButtonItemStyle.Plain, target: self, action: #selector(BaseEntryDetailTableViewController.previewButtonPushed(_:)))
         
-        let editButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Edit, target: self, action: "editButtonPushed:")
+        let editButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Edit, target: self, action: #selector(BaseEntryDetailTableViewController.editButtonPushed(_:)))
             
         buttons = [settingsButtonPushed, flexible, previewButton, editButton]
         
@@ -371,7 +371,7 @@ class BaseEntryDetailTableViewController: BaseTableViewController, EntrySettingD
                 let switchCtrl = UISwitch()
                 switchCtrl.tag = indexPath.section
                 switchCtrl.on = (item.dispValue() == "true")
-                switchCtrl.addTarget(self, action: "switchChanged:", forControlEvents: UIControlEvents.ValueChanged)
+                switchCtrl.addTarget(self, action: #selector(BaseEntryDetailTableViewController.switchChanged(_:)), forControlEvents: UIControlEvents.ValueChanged)
                 c.accessoryView = switchCtrl
                 c.selectionStyle = UITableViewCellSelectionStyle.None
                 c.require = item.required

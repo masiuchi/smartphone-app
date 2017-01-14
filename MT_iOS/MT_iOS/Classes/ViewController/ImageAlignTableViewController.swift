@@ -29,7 +29,7 @@ class ImageAlignTableViewController: BaseTableViewController {
         self.title = NSLocalizedString("Image Align", comment: "Image Align")
         self.tableView.backgroundColor = Color.tableBg
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonPushed:")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(ImageAlignTableViewController.doneButtonPushed(_:)))
     }
     
     override func didReceiveMemoryWarning() {

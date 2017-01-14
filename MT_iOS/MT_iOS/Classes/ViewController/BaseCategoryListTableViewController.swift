@@ -18,7 +18,7 @@ class CategoryList: ItemList {
     }
     
     private func levelLoop(object: Category, parent: Category) {
-        object.level++
+        object.level += 1
         object.path = parent.label + "/" + object.path
         let parent = self.objectWithID(parent.parent)
         if parent != nil {
@@ -99,7 +99,7 @@ class BaseCategoryListTableViewController: BaseTableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         self.refreshControl = MTRefreshControl()
-        self.refreshControl!.addTarget(self, action: "refresh:", forControlEvents: UIControlEvents.ValueChanged)
+        self.refreshControl!.addTarget(self, action: #selector(BaseCategoryListTableViewController.refresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
         
         self.tableView.registerNib(UINib(nibName: "CategoryTableViewCell", bundle: nil), forCellReuseIdentifier: "CategoryTableViewCell")
         
@@ -113,8 +113,8 @@ class BaseCategoryListTableViewController: BaseTableViewController {
             selected[item.id] = true
         }
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "saveButtonPushed:")
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: "backButtonPushed:")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(BaseCategoryListTableViewController.saveButtonPushed(_:)))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: #selector(BaseCategoryListTableViewController.backButtonPushed(_:)))
     }
 
     override func didReceiveMemoryWarning() {

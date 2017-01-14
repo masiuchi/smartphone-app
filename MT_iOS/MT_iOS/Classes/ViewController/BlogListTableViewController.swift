@@ -93,7 +93,7 @@ class BlogListTableViewController: BaseTableViewController, UISearchBarDelegate 
             textField!.enablesReturnKeyAutomatically = false
         }
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_setting"), left: true, target: self, action: "settingButtonPushed:")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_setting"), left: true, target: self, action: #selector(BlogListTableViewController.settingButtonPushed(_:)))
             
 //        self.tableView.estimatedRowHeight = 44.0
 //        self.tableView.rowHeight = UITableViewAutomaticDimension
