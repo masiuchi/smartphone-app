@@ -23,7 +23,7 @@ class EntryDraftTableViewController: BaseDraftTableViewController {
         
         let user = (UIApplication.sharedApplication().delegate as! AppDelegate).currentUser!
         if self.blog.canCreateEntry(user: user) {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_newentry"), left: false, target: self, action: "composeButtonPushed:")
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_newentry"), left: false, target: self, action: #selector(EntryDraftTableViewController.composeButtonPushed(_:)))
         } else {
             self.navigationItem.rightBarButtonItem = nil
         }

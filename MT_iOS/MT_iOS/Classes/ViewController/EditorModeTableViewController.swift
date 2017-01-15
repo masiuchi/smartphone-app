@@ -30,8 +30,8 @@ class EditorModeTableViewController: BaseTableViewController {
         
         selected = oldSelected
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "saveButtonPushed:")
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: "backButtonPushed:")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(EditorModeTableViewController.saveButtonPushed(_:)))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: #selector(EditorModeTableViewController.backButtonPushed(_:)))
         
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
     }

@@ -61,7 +61,7 @@ class AddAssetTableViewController: BaseTableViewController, BlogImageSizeDelegat
         
         self.tableView.backgroundColor = Color.tableBg
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: "closeButtonPushed:")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: #selector(AddAssetTableViewController.closeButtonPushed(_:)))
         
         uploadDir = blog.uploadDir
         imageSize = blog.imageSize
@@ -112,21 +112,21 @@ class AddAssetTableViewController: BaseTableViewController, BlogImageSizeDelegat
             cell.backgroundColor = Color.tableBg
             
             if let cameraButton = cell.viewWithTag(1) as? UIButton {
-                cameraButton.addTarget(self, action: "cameraButtonPushed:", forControlEvents: UIControlEvents.TouchUpInside)
+                cameraButton.addTarget(self, action: #selector(AddAssetTableViewController.cameraButtonPushed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
             }
             if let cameraLabel = cell.viewWithTag(11) as? UILabel {
                 cameraLabel.text = NSLocalizedString("Take a photo", comment: "Take a photo")
             }
             
             if let libraryButton = cell.viewWithTag(2) as? UIButton {
-                libraryButton.addTarget(self, action: "libraryButtonPushed:", forControlEvents: UIControlEvents.TouchUpInside)
+                libraryButton.addTarget(self, action: #selector(AddAssetTableViewController.libraryButtonPushed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
             }
             if let libraryLabel = cell.viewWithTag(22) as? UILabel {
                 libraryLabel.text = NSLocalizedString("Select from library", comment: "Select from library")
             }
             
             if let assetListButton = cell.viewWithTag(3) as? UIButton {
-                assetListButton.addTarget(self, action: "assetListButtonPushed:", forControlEvents: UIControlEvents.TouchUpInside)
+                assetListButton.addTarget(self, action: #selector(AddAssetTableViewController.assetListButtonPushed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
             }
             if let assetListLabel = cell.viewWithTag(33) as? UILabel {
                 assetListLabel.text = NSLocalizedString("Select from Items", comment: "Select from Items")

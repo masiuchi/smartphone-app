@@ -25,7 +25,7 @@ func LOG(info: String = "") {
     #endif
 }
 
-func LOG_METHOD(info: String = "", function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__) {
+func LOG_METHOD(info: String = "", function: String = #function, file: String = #file, line: Int = #line) {
     #if DEBUG
         let fileName = file.lastPathComponent.stringByDeletingPathExtension
         let sourceInfo = "\(fileName).\(function)-line\(line)"

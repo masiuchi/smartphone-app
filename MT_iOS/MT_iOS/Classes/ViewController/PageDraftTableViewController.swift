@@ -22,7 +22,7 @@ class PageDraftTableViewController: BaseDraftTableViewController {
         
         let user = (UIApplication.sharedApplication().delegate as! AppDelegate).currentUser!
         if self.blog.canCreatePage(user: user) {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_newentry"), left: false, target: self, action: "composeButtonPushed:")
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_newentry"), left: false, target: self, action: #selector(PageDraftTableViewController.composeButtonPushed(_:)))
         } else {
             self.navigationItem.rightBarButtonItem = nil
         }

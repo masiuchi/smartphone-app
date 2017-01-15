@@ -81,7 +81,7 @@ class AssetListTableViewController: BaseTableViewController, UISearchBarDelegate
         list.blog = self.blog
 
         self.refreshControl = MTRefreshControl()
-        self.refreshControl!.addTarget(self, action: "refresh:", forControlEvents: UIControlEvents.ValueChanged)
+        self.refreshControl!.addTarget(self, action: #selector(AssetListTableViewController.refresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
         
         searchBar = UISearchBar()
         searchBar.frame = CGRectMake(0.0, 0.0, self.tableView.frame.size.width, 44.0)
@@ -100,9 +100,9 @@ class AssetListTableViewController: BaseTableViewController, UISearchBarDelegate
         self.navigationController?.toolbar.tintColor = Color.navBarTint
         
         let defaultCenter = NSNotificationCenter.defaultCenter()
-        defaultCenter.addObserver(self, selector: "assetDeleted:", name: MTIAssetDeletedNotification, object: nil)
+        defaultCenter.addObserver(self, selector: #selector(AssetListTableViewController.assetDeleted(_:)), name: MTIAssetDeletedNotification, object: nil)
         
-        cameraButton = UIBarButtonItem(image: UIImage(named: "btn_camera"), left: true, target: self, action: "cameraButtonPushed:")
+        cameraButton = UIBarButtonItem(image: UIImage(named: "btn_camera"), left: true, target: self, action: #selector(AssetListTableViewController.cameraButtonPushed(_:)))
         self.toolbarItems = [cameraButton]
         let user = (UIApplication.sharedApplication().delegate as! AppDelegate).currentUser!
         cameraButton.enabled = blog.canUpload(user: user)

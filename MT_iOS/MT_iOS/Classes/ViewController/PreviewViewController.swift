@@ -109,7 +109,7 @@ class PreviewViewController: BaseViewController, WKUIDelegate, WKNavigationDeleg
         self.webView.UIDelegate = self
         self.webView.navigationDelegate = self
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: "closeButtonPushed:")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: #selector(PreviewViewController.closeButtonPushed(_:)))
     }
     
     override func viewDidLoad() {
@@ -122,7 +122,7 @@ class PreviewViewController: BaseViewController, WKUIDelegate, WKNavigationDeleg
         ]
         
         segmentedControl = UISegmentedControl(items: items)
-        segmentedControl .addTarget(self, action: "segmentedControlChanged:", forControlEvents: UIControlEvents.ValueChanged)
+        segmentedControl .addTarget(self, action: #selector(PreviewViewController.segmentedControlChanged(_:)), forControlEvents: UIControlEvents.ValueChanged)
         segmentedControl.selectedSegmentIndex = 0
         self.navigationItem.titleView = segmentedControl
     }
