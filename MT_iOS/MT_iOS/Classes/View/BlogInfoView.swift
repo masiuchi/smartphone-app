@@ -27,17 +27,17 @@ class BlogInfoView: UIView {
         // Initialization code
     }
     
-    private var _blog: Blog?
+    fileprivate var _blog: Blog?
     var blog: Blog? {
         set {
             self._blog = newValue
             
             if let blog = self._blog {
                 BlogNameLabel.text = blog.name
-                BlogURLButton.setTitle(blog.url, forState: UIControlState.Normal)
+                BlogURLButton.setTitle(blog.url, for: UIControlState())
             } else {
                 BlogNameLabel.text = ""
-                BlogURLButton.setTitle("", forState: UIControlState.Normal)
+                BlogURLButton.setTitle("", for: UIControlState())
             }
         }
         get {
@@ -45,9 +45,9 @@ class BlogInfoView: UIView {
         }
     }
     
-    @IBAction func BlogPrefsButtonPushed(sender: AnyObject) {
+    @IBAction func BlogPrefsButtonPushed(_ sender: AnyObject) {
     }
     
-    @IBAction func BlogURLButtonPushed(sender: AnyObject) {
+    @IBAction func BlogURLButtonPushed(_ sender: AnyObject) {
     }
 }

@@ -18,7 +18,7 @@ extension UIBarButtonItem {
     }
 
     convenience init(image: UIImage?, left: Bool, target: AnyObject?, action: Selector) {
-        self.init(image: image, style: UIBarButtonItemStyle.Plain, target: target, action: action)
+        self.init(image: image, style: UIBarButtonItemStyle.plain, target: target, action: action)
         left ? imageInsetsLeft() : imageInsetsRight()
     }
 }

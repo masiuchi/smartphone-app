@@ -38,8 +38,8 @@ class NotAccessPhotosViewController: UIViewController {
     }
     */
     
-    func closeButtonPushed(sender: UIBarButtonItem) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+    func closeButtonPushed(_ sender: UIBarButtonItem) {
+        self.dismiss(animated: true, completion: nil)
     }
 
 }

@@ -9,7 +9,7 @@
 import UIKit
 
 class EntryAssetItem: BaseEntryItem {
-    private var _asset: Asset?
+    fileprivate var _asset: Asset?
     var asset: Asset? {
         get {
             return _asset
@@ -37,20 +37,20 @@ class EntryAssetItem: BaseEntryItem {
         type = "asset"
     }
     
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
-        aCoder.encodeObject(self._asset, forKey: "_asset")
-        aCoder.encodeObject(self.url, forKey: "url")
-        aCoder.encodeObject(self.assetID, forKey: "assetID")
-        aCoder.encodeObject(self.filename, forKey: "filename")
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
+        aCoder.encode(self._asset, forKey: "_asset")
+        aCoder.encode(self.url, forKey: "url")
+        aCoder.encode(self.assetID, forKey: "assetID")
+        aCoder.encode(self.filename, forKey: "filename")
     }
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
-        self._asset = aDecoder.decodeObjectForKey("_asset") as? Asset
-        self.url = aDecoder.decodeObjectForKey("url") as! String
-        self.assetID = aDecoder.decodeObjectForKey("assetID") as! String
-        self.filename = aDecoder.decodeObjectForKey("filename") as! String
+        self._asset = aDecoder.decodeObject(forKey: "_asset") as? Asset
+        self.url = aDecoder.decodeObject(forKey: "url") as! String
+        self.assetID = aDecoder.decodeObject(forKey: "assetID") as! String
+        self.filename = aDecoder.decodeObject(forKey: "filename") as! String
     }
     
     func asHtml()-> String {
@@ -76,35 +76,35 @@ class EntryAssetItem: BaseEntryItem {
         self.asset = nil
     }
     
-    func extractInfoFromHTML(html: String) {
+    func extractInfoFromHTML(_ html: String) {
         self.url = self.extractURLFromHTML(html)
         self.assetID = self.extractAsssetIDFromHTML(html)
     }
 
-    private func extractFromHTML(html: String, pattern: String)-> String {
-        let content: NSString = html
-        let regex = try? NSRegularExpression(pattern: pattern, options: NSRegularExpressionOptions.CaseInsensitive)
-        if let result = regex?.firstMatchInString(content as String, options: NSMatchingOptions(), range: NSMakeRange(0, content.length)) {
+    fileprivate func extractFromHTML(_ html: String, pattern: String)-> String {
+        let content: NSString = html as NSString
+        let regex = try? NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options.caseInsensitive)
+        if let result = regex?.firstMatch(in: content as String, options: NSRegularExpression.MatchingOptions(), range: NSMakeRange(0, content.length)) {
             if result.numberOfRanges < 1 {
                 return ""
             }
-            let range = result.rangeAtIndex(1)
-            let text = content.substringWithRange(range)
+            let range = result.rangeAt(1)
+            let text = content.substring(with: range)
             return text
         } else {
             return ""
         }
     }
     
-    private func extractURLFromHTML(html: String)-> String {
+    fileprivate func extractURLFromHTML(_ html: String)-> String {
         return self.extractFromHTML(html, pattern: "<a href=\"([^\"]*)\">")
     }
     
-    private func extractAsssetIDFromHTML(html: String)-> String {
+    fileprivate func extractAsssetIDFromHTML(_ html: String)-> String {
         return self.extractFromHTML(html, pattern: "<form mt:asset-id=\"([^\"]*)\" ")
     }
     
     override func makeParams()-> [String : AnyObject] {
-        return [self.id:self.value()]
+        return [self.id:self.value() as AnyObject]
     }
 }

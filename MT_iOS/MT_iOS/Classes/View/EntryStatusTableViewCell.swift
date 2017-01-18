@@ -16,14 +16,14 @@ class EntryStatusTableViewCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
         
-        segmentedControl.setTitle(NSLocalizedString("Published", comment: "Published"), forSegmentAtIndex: 0)
-        segmentedControl.setTitle(NSLocalizedString("Draft", comment: "Draft"), forSegmentAtIndex: 1)
-        segmentedControl.setTitle(NSLocalizedString("Scheduled", comment: "Scheduled"), forSegmentAtIndex: 2)
+        segmentedControl.setTitle(NSLocalizedString("Published", comment: "Published"), forSegmentAt: 0)
+        segmentedControl.setTitle(NSLocalizedString("Draft", comment: "Draft"), forSegmentAt: 1)
+        segmentedControl.setTitle(NSLocalizedString("Scheduled", comment: "Scheduled"), forSegmentAt: 2)
         
         segmentedControl.selectedSegmentIndex = 1
     }
 
-    override func setSelected(selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state

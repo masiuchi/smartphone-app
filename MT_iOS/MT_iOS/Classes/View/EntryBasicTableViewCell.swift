@@ -23,14 +23,14 @@ class EntryBasicTableViewCell: UITableViewCell {
     var require: Bool {
         set {
             _require = newValue
-            requireIcon.hidden = !_require
+            requireIcon.isHidden = !_require
         }
         get {
             return _require
         }
     }
     
-    override func setSelected(selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state

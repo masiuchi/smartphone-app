@@ -23,23 +23,23 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
         scrollView.delegate = self
         scrollView.minimumZoomScale = 1
         scrollView.maximumZoomScale = 4
-        scrollView.scrollEnabled = true
+        scrollView.isScrollEnabled = true
         scrollView.showsHorizontalScrollIndicator = true
         scrollView.showsVerticalScrollIndicator = true
-        scrollView.autoresizingMask = [UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleWidth]
+        scrollView.autoresizingMask = [UIViewAutoresizing.flexibleHeight, UIViewAutoresizing.flexibleWidth]
         view.addSubview(scrollView)
         
         imageView = UIImageView(frame: scrollView.bounds)
-        imageView.contentMode = UIViewContentMode.ScaleAspectFit
-        imageView.autoresizingMask = [UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleWidth]
+        imageView.contentMode = UIViewContentMode.scaleAspectFit
+        imageView.autoresizingMask = [UIViewAutoresizing.flexibleHeight, UIViewAutoresizing.flexibleWidth]
         scrollView.addSubview(imageView)
         
         self.title = asset.dispName()
-        self.imageView.sd_setImageWithURL(NSURL(string: asset.url))
+        self.imageView.sd_setImage(with: URL(string: asset.url))
         
         let doubleTapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action:#selector(ImageViewController.doubleTap(_:)))
         doubleTapGesture.numberOfTapsRequired = 2
-        imageView.userInteractionEnabled = true
+        imageView.isUserInteractionEnabled = true
         imageView.addGestureRecognizer(doubleTapGesture)
     }
 
@@ -49,11 +49,11 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
     }
     
 
-    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
     }
 
-    func doubleTap(gesture: UITapGestureRecognizer) -> Void {
+    func doubleTap(_ gesture: UITapGestureRecognizer) -> Void {
         if scrollView.zoomScale < scrollView.maximumZoomScale {
             let scale = scrollView.maximumZoomScale
             scrollView.setZoomScale(scale, animated: true)

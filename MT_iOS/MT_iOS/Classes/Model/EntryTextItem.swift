@@ -17,14 +17,14 @@ class EntryTextItem: BaseEntryItem {
         type = "text"
     }
     
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
-        aCoder.encodeObject(self.text, forKey: "text")
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
+        aCoder.encode(self.text, forKey: "text")
     }
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
-        self.text = aDecoder.decodeObjectForKey("text") as! String
+        self.text = aDecoder.decodeObject(forKey: "text") as! String
     }
     
     override func value()-> String {

@@ -25,28 +25,28 @@ class BaseEntryItem: NSObject, NSCoding {
         super.init()
     }
     
-    func encodeWithCoder(aCoder: NSCoder) {
-        aCoder.encodeObject(self.id, forKey: "id")
-        aCoder.encodeObject(self.type, forKey: "type")
-        aCoder.encodeObject(self.label, forKey: "label")
-        aCoder.encodeObject(self.descriptionText, forKey: "descriptionText")
-        aCoder.encodeBool(self.isCustomField, forKey: "isCustomField")
-        aCoder.encodeBool(self.visibled, forKey: "visibled")
-        aCoder.encodeBool(self.disabled, forKey: "disabled")
-        aCoder.encodeBool(self.required, forKey: "required")
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(self.id, forKey: "id")
+        aCoder.encode(self.type, forKey: "type")
+        aCoder.encode(self.label, forKey: "label")
+        aCoder.encode(self.descriptionText, forKey: "descriptionText")
+        aCoder.encode(self.isCustomField, forKey: "isCustomField")
+        aCoder.encode(self.visibled, forKey: "visibled")
+        aCoder.encode(self.disabled, forKey: "disabled")
+        aCoder.encode(self.required, forKey: "required")
     }
     
     required init?(coder aDecoder: NSCoder) {
-        self.id = aDecoder.decodeObjectForKey("id") as! String
-        self.type = aDecoder.decodeObjectForKey("type") as! String
-        self.label = aDecoder.decodeObjectForKey("label") as! String
-        if let object = aDecoder.decodeObjectForKey("descriptionText") as? String {
+        self.id = aDecoder.decodeObject(forKey: "id") as! String
+        self.type = aDecoder.decodeObject(forKey: "type") as! String
+        self.label = aDecoder.decodeObject(forKey: "label") as! String
+        if let object = aDecoder.decodeObject(forKey: "descriptionText") as? String {
             self.descriptionText = object
         }
-        self.isCustomField = aDecoder.decodeBoolForKey("isCustomField")
-        self.visibled = aDecoder.decodeBoolForKey("visibled")
-        self.disabled = aDecoder.decodeBoolForKey("disabled")
-        self.required = aDecoder.decodeBoolForKey("required")
+        self.isCustomField = aDecoder.decodeBool(forKey: "isCustomField")
+        self.visibled = aDecoder.decodeBool(forKey: "visibled")
+        self.disabled = aDecoder.decodeBool(forKey: "disabled")
+        self.required = aDecoder.decodeBool(forKey: "required")
     }
 
     func value()-> String {
@@ -58,7 +58,7 @@ class BaseEntryItem: NSObject, NSCoding {
     }
     
     func makeParams()-> [String:AnyObject] {
-        return [self.id:self.value()]
+        return [self.id:self.value() as AnyObject]
     }
     
     func clear() {

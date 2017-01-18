@@ -9,21 +9,21 @@
 import UIKit
 
 protocol EntrySettingDelegate {
-    func entrySettingCancel(controller: EntrySettingTableViewController)
-    func entrySettingDone(controller: EntrySettingTableViewController, object: BaseEntry)
-    func entrySettingDelete(controller: EntrySettingTableViewController, object: BaseEntry)
+    func entrySettingCancel(_ controller: EntrySettingTableViewController)
+    func entrySettingDone(_ controller: EntrySettingTableViewController, object: BaseEntry)
+    func entrySettingDelete(_ controller: EntrySettingTableViewController, object: BaseEntry)
 }
 
 class EntrySettingTableViewController: BaseTableViewController, DatePickerViewControllerDelegate, EditorModeDelegate {
     enum Item: Int {
-        case Tags = 0,
-        PublishDate,
-        UnpublishDateEnabled,
-        UnpublishDate,
-        Spacer1,
-        EditorMode,
-        Spacer2,
-        DeleteButton,
+        case tags = 0,
+        publishDate,
+        unpublishDateEnabled,
+        unpublishDate,
+        spacer1,
+        editorMode,
+        spacer2,
+        deleteButton,
         _Num
     }
     
@@ -34,11 +34,11 @@ class EntrySettingTableViewController: BaseTableViewController, DatePickerViewCo
     var delegate: EntrySettingDelegate?
     
     var tagObject = EntryTagItem()
-    var publishDate: NSDate?
-    var unpublishDate: NSDate?
-    var editorMode = Entry.EditMode.RichText
+    var publishDate: Date?
+    var unpublishDate: Date?
+    var editorMode = Entry.EditMode.richText
     
-    var selectedIndexPath: NSIndexPath?
+    var selectedIndexPath: IndexPath?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,34 +51,34 @@ class EntrySettingTableViewController: BaseTableViewController, DatePickerViewCo
         
         if list!.filename.isEmpty && object.id.isEmpty {
             self.items = [
-                .Tags,
-                .PublishDate,
-                .UnpublishDateEnabled,
-                .UnpublishDate,
-                .Spacer1,
-                .EditorMode,
-                .Spacer2,
+                .tags,
+                .publishDate,
+                .unpublishDateEnabled,
+                .unpublishDate,
+                .spacer1,
+                .editorMode,
+                .spacer2,
             ]
         } else if !object.id.isEmpty {
             self.items = [
-                .Tags,
-                .PublishDate,
-                .UnpublishDateEnabled,
-                .UnpublishDate,
-                .Spacer1,
-                .DeleteButton,
+                .tags,
+                .publishDate,
+                .unpublishDateEnabled,
+                .unpublishDate,
+                .spacer1,
+                .deleteButton,
             ]
 
         } else {
             self.items = [
-                .Tags,
-                .PublishDate,
-                .UnpublishDateEnabled,
-                .UnpublishDate,
-                .Spacer1,
-                .EditorMode,
-                .Spacer2,
-                .DeleteButton,
+                .tags,
+                .publishDate,
+                .unpublishDateEnabled,
+                .unpublishDate,
+                .spacer1,
+                .editorMode,
+                .spacer2,
+                .deleteButton,
             ]
         }
 
@@ -87,15 +87,15 @@ class EntrySettingTableViewController: BaseTableViewController, DatePickerViewCo
         self.tableView.backgroundColor = Color.tableBg
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: #selector(EntrySettingTableViewController.closeButtonPushed(_:)))
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(EntrySettingTableViewController.doneButtonPushed(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: #selector(EntrySettingTableViewController.doneButtonPushed(_:)))
         
         let barButton:UIBarButtonItem = UIBarButtonItem(); barButton.title = "";
         self.navigationItem.backBarButtonItem = barButton;
         
-        self.tableView.registerNib(UINib(nibName: "ButtonTableViewCell", bundle: nil), forCellReuseIdentifier: "ButtonTableViewCell")
+        self.tableView.register(UINib(nibName: "ButtonTableViewCell", bundle: nil), forCellReuseIdentifier: "ButtonTableViewCell")
         
-        publishDate = object.date
-        unpublishDate = object.unpublishedDate
+        publishDate = object.date as Date?
+        unpublishDate = object.unpublishedDate as Date?
         
         tagObject.id = "tag"
         tagObject.label = NSLocalizedString("Tag", comment: "Tag")
@@ -104,7 +104,7 @@ class EntrySettingTableViewController: BaseTableViewController, DatePickerViewCo
         self.editorMode = object.editMode
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         self.tableView.reloadData()
@@ -117,37 +117,37 @@ class EntrySettingTableViewController: BaseTableViewController, DatePickerViewCo
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         return self.items.count
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell = UITableViewCell()
         
-        let separatorLineView = UIView(frame: CGRectMake(0.0, 0.0, tableView.frame.size.width, 1.0))
+        let separatorLineView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: tableView.frame.size.width, height: 1.0))
         separatorLineView.backgroundColor = Color.separatorLine
         
         // Configure the cell...
         let item = items[indexPath.row]
         switch item {
-        case Item.Tags:
-            let c = tableView.dequeueReusableCellWithIdentifier("BasicCell", forIndexPath: indexPath) 
+        case Item.tags:
+            let c = tableView.dequeueReusableCell(withIdentifier: "BasicCell", for: indexPath) 
             c.textLabel?.text = NSLocalizedString("Tags", comment: "Tags")
             c.detailTextLabel?.text = tagObject.text
             c.contentView.addSubview(separatorLineView)
             c.backgroundColor = Color.bg
             cell = c
             
-        case Item.PublishDate:
-            let c = tableView.dequeueReusableCellWithIdentifier("BasicCell", forIndexPath: indexPath) 
+        case Item.publishDate:
+            let c = tableView.dequeueReusableCell(withIdentifier: "BasicCell", for: indexPath) 
             c.textLabel?.text = NSLocalizedString("Publish at", comment: "Publishat ")
             if let date = publishDate {
                 c.detailTextLabel?.text = Utils.mediumDateTimeFromDate(date)
@@ -158,20 +158,20 @@ class EntrySettingTableViewController: BaseTableViewController, DatePickerViewCo
             c.backgroundColor = Color.bg
             cell = c
             
-        case Item.UnpublishDateEnabled:
-            let c = tableView.dequeueReusableCellWithIdentifier("BasicCell", forIndexPath: indexPath) 
+        case Item.unpublishDateEnabled:
+            let c = tableView.dequeueReusableCell(withIdentifier: "BasicCell", for: indexPath) 
             c.textLabel?.text = NSLocalizedString("Unpublish at", comment: "Unpublish at")
             c.detailTextLabel?.text = ""
             let switchCtrl = UISwitch()
-            switchCtrl.on = (unpublishDate != nil)
-            switchCtrl.addTarget(self, action: #selector(EntrySettingTableViewController.unpublishEnabledChenged(_:)), forControlEvents: UIControlEvents.ValueChanged)
+            switchCtrl.isOn = (unpublishDate != nil)
+            switchCtrl.addTarget(self, action: #selector(EntrySettingTableViewController.unpublishEnabledChenged(_:)), for: UIControlEvents.valueChanged)
             c.accessoryView = switchCtrl
             c.contentView.addSubview(separatorLineView)
             c.backgroundColor = Color.bg
             cell = c
             
-        case Item.UnpublishDate:
-            let c = tableView.dequeueReusableCellWithIdentifier("BasicCell", forIndexPath: indexPath) 
+        case Item.unpublishDate:
+            let c = tableView.dequeueReusableCell(withIdentifier: "BasicCell", for: indexPath) 
             c.textLabel?.text = ""
             if let date = unpublishDate {
                 c.detailTextLabel?.text = Utils.mediumDateTimeFromDate(date)
@@ -182,22 +182,22 @@ class EntrySettingTableViewController: BaseTableViewController, DatePickerViewCo
             c.backgroundColor = Color.bg
             cell = c
             
-        case Item.EditorMode:
-            let c = tableView.dequeueReusableCellWithIdentifier("BasicCell", forIndexPath: indexPath) 
+        case Item.editorMode:
+            let c = tableView.dequeueReusableCell(withIdentifier: "BasicCell", for: indexPath) 
             c.textLabel?.text = NSLocalizedString("Editor Mode", comment: "Editor Mode")
-            if self.editorMode == Entry.EditMode.RichText {
-                c.detailTextLabel?.text = Entry.EditMode.RichText.label()
-            } else if editorMode == Entry.EditMode.PlainText {
-                c.detailTextLabel?.text = Entry.EditMode.PlainText.label()
-            } else if editorMode == Entry.EditMode.Markdown {
-                c.detailTextLabel?.text = Entry.EditMode.Markdown.label()
+            if self.editorMode == Entry.EditMode.richText {
+                c.detailTextLabel?.text = Entry.EditMode.richText.label()
+            } else if editorMode == Entry.EditMode.plainText {
+                c.detailTextLabel?.text = Entry.EditMode.plainText.label()
+            } else if editorMode == Entry.EditMode.markdown {
+                c.detailTextLabel?.text = Entry.EditMode.markdown.label()
             }
             c.contentView.addSubview(separatorLineView)
             c.backgroundColor = Color.bg
             cell = c
             
-        case Item.DeleteButton:
-            let c = tableView.dequeueReusableCellWithIdentifier("ButtonTableViewCell", forIndexPath: indexPath) as! ButtonTableViewCell
+        case Item.deleteButton:
+            let c = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as! ButtonTableViewCell
             var titleText: String
             if object is Entry {
                 if list!.filename.isEmpty {
@@ -212,35 +212,35 @@ class EntrySettingTableViewController: BaseTableViewController, DatePickerViewCo
                     titleText = NSLocalizedString("Delete this local saved page", comment: "Delete this local saved page")
                 }
             }
-            c.button.setTitle(titleText, forState: UIControlState.Normal)
-            c.button.titleLabel?.font = UIFont.systemFontOfSize(17.0)
-            c.button.setTitleColor(Color.buttonText, forState: UIControlState.Normal)
-            c.button.setTitleColor(Color.buttonDisableText, forState: UIControlState.Disabled)
-            c.button.setBackgroundImage(UIImage(named: "btn_signin"), forState: UIControlState.Normal)
-            c.button.setBackgroundImage(UIImage(named: "btn_signin_highlight"), forState: UIControlState.Highlighted)
-            c.button.setBackgroundImage(UIImage(named: "btn_signin_disable"), forState: UIControlState.Disabled)
-            c.button.addTarget(self, action: #selector(EntrySettingTableViewController.deleteButtonPushed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+            c.button.setTitle(titleText, for: UIControlState())
+            c.button.titleLabel?.font = UIFont.systemFont(ofSize: 17.0)
+            c.button.setTitleColor(Color.buttonText, for: UIControlState())
+            c.button.setTitleColor(Color.buttonDisableText, for: UIControlState.disabled)
+            c.button.setBackgroundImage(UIImage(named: "btn_signin"), for: UIControlState())
+            c.button.setBackgroundImage(UIImage(named: "btn_signin_highlight"), for: UIControlState.highlighted)
+            c.button.setBackgroundImage(UIImage(named: "btn_signin_disable"), for: UIControlState.disabled)
+            c.button.addTarget(self, action: #selector(EntrySettingTableViewController.deleteButtonPushed(_:)), for: UIControlEvents.touchUpInside)
             c.backgroundColor = Color.clear
             
-            let user = (UIApplication.sharedApplication().delegate as! AppDelegate).currentUser!
+            let user = (UIApplication.shared.delegate as! AppDelegate).currentUser!
             if object is Entry {
-                c.button.enabled = blog.canDeleteEntry(user: user, entry: object as! Entry)
+                c.button.isEnabled = blog.canDeleteEntry(user: user, entry: object as! Entry)
             } else {
-                c.button.enabled = blog.canDeletePage(user: user)
+                c.button.isEnabled = blog.canDeletePage(user: user)
             }
             
             cell = c
-            cell.selectionStyle = UITableViewCellSelectionStyle.None
+            cell.selectionStyle = UITableViewCellSelectionStyle.none
             
-        case Item.Spacer1:
+        case Item.spacer1:
             cell.contentView.addSubview(separatorLineView)
             cell.backgroundColor = Color.clear
-            cell.selectionStyle = UITableViewCellSelectionStyle.None
+            cell.selectionStyle = UITableViewCellSelectionStyle.none
             
-        case Item.Spacer2:
+        case Item.spacer2:
             cell.contentView.addSubview(separatorLineView)
             cell.backgroundColor = Color.clear
-            cell.selectionStyle = UITableViewCellSelectionStyle.None
+            cell.selectionStyle = UITableViewCellSelectionStyle.none
             
         default:
             break
@@ -250,59 +250,59 @@ class EntrySettingTableViewController: BaseTableViewController, DatePickerViewCo
     }
     
     //MARK: - Table view delegate
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let item = items[indexPath.row]
         switch item {
-        case Item.Tags:
+        case Item.tags:
             return 48.0
-        case Item.PublishDate:
+        case Item.publishDate:
             return 48.0
-        case Item.UnpublishDateEnabled:
+        case Item.unpublishDateEnabled:
             return 48.0
-        case Item.UnpublishDate:
+        case Item.unpublishDate:
             return 48.0
-        case Item.EditorMode:
+        case Item.editorMode:
             return 48.0
-        case Item.DeleteButton:
+        case Item.deleteButton:
             return 40.0
-        case Item.Spacer1:
+        case Item.spacer1:
             return 20.0
         default:
             return 12.0
         }
     }
 
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         
         selectedIndexPath = indexPath
         let item = items[indexPath.row]
         switch item {
-        case Item.Tags:
+        case Item.tags:
             let vc = EntrySingleLineTextEditorViewController()
             vc.object = tagObject
             self.navigationController?.pushViewController(vc, animated: true)
-        case Item.PublishDate:
+        case Item.publishDate:
             let storyboard: UIStoryboard = UIStoryboard(name: "DatePicker", bundle: nil)
             let vc = storyboard.instantiateInitialViewController() as! DatePickerViewController
             if let date = publishDate {
                 vc.date = date
             } else {
-                vc.date = NSDate()
+                vc.date = Date()
             }
             vc.delegate = self
             self.navigationController?.pushViewController(vc, animated: true)
-        case Item.UnpublishDate:
+        case Item.unpublishDate:
             let storyboard: UIStoryboard = UIStoryboard(name: "DatePicker", bundle: nil)
             let vc = storyboard.instantiateInitialViewController() as! DatePickerViewController
             if let date = unpublishDate {
                 vc.date = date
             } else {
-                vc.date = NSDate()
+                vc.date = Date()
             }
             vc.delegate = self
             self.navigationController?.pushViewController(vc, animated: true)
-        case Item.EditorMode:
+        case Item.editorMode:
             let vc = EditorModeTableViewController()
             vc.oldSelected = self.editorMode
             vc.delegate = self
@@ -312,22 +312,22 @@ class EntrySettingTableViewController: BaseTableViewController, DatePickerViewCo
         }
     }
     
-    @IBAction func closeButtonPushed(sender: AnyObject) {
+    @IBAction func closeButtonPushed(_ sender: AnyObject) {
         self.delegate?.entrySettingCancel(self)
     }
     
-    @IBAction func doneButtonPushed(sender: AnyObject) {
+    @IBAction func doneButtonPushed(_ sender: AnyObject) {
         if let date = unpublishDate {
-            if date.isInPast() {
+            if (date as NSDate).isInPast() {
                 let alertController = UIAlertController(
                     title: NSLocalizedString("Error", comment: "Error"),
                     message: NSLocalizedString("'Unpublished on' dates should be dates in the future.", comment: "'Unpublished on' dates should be dates in the future."),
-                    preferredStyle: .Alert)
-                let okAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .Default) {
+                    preferredStyle: .alert)
+                let okAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default) {
                     action in
                 }
                 alertController.addAction(okAction)
-                presentViewController(alertController, animated: true, completion: nil)
+                present(alertController, animated: true, completion: nil)
                 
                 return
             }
@@ -341,7 +341,7 @@ class EntrySettingTableViewController: BaseTableViewController, DatePickerViewCo
         self.delegate?.entrySettingDone(self, object: self.object)
     }
     
-    @IBAction func deleteButtonPushed(sender: AnyObject) {
+    @IBAction func deleteButtonPushed(_ sender: AnyObject) {
         var titleText: String
         var messageText: String
         if object is Entry {
@@ -355,31 +355,31 @@ class EntrySettingTableViewController: BaseTableViewController, DatePickerViewCo
         let alertController = UIAlertController(
             title: titleText,
             message: messageText,
-            preferredStyle: .Alert)
+            preferredStyle: .alert)
         
-        let okAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .Destructive) {
+        let okAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .destructive) {
             action in
             self.delegate?.entrySettingDelete(self, object: self.object)
         }
-        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel"), style: .Cancel) {
+        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel"), style: .cancel) {
             action in
         }
         
         alertController.addAction(okAction)
         alertController.addAction(cancelAction)
-        presentViewController(alertController, animated: true, completion: nil)
+        present(alertController, animated: true, completion: nil)
     }
     
-    func datePickerDone(controller: DatePickerViewController, date: NSDate) {
+    func datePickerDone(_ controller: DatePickerViewController, date: Date) {
         if selectedIndexPath == nil {
             return
         }
         
         let item = items[selectedIndexPath!.row]
         switch item {
-        case Item.PublishDate:
+        case Item.publishDate:
             self.publishDate = date
-        case Item.UnpublishDate:
+        case Item.unpublishDate:
             self.unpublishDate = date
         default:
             break
@@ -388,9 +388,9 @@ class EntrySettingTableViewController: BaseTableViewController, DatePickerViewCo
         self.tableView.reloadData()
     }
     
-    @IBAction func unpublishEnabledChenged(sender: UISwitch) {
-        if sender.on {
-            unpublishDate = NSDate()
+    @IBAction func unpublishEnabledChenged(_ sender: UISwitch) {
+        if sender.isOn {
+            unpublishDate = Date()
         } else {
             unpublishDate = nil
         }
@@ -398,7 +398,7 @@ class EntrySettingTableViewController: BaseTableViewController, DatePickerViewCo
     }
     
     
-    func editorModeDone(controller: EditorModeTableViewController, selected: Entry.EditMode) {
+    func editorModeDone(_ controller: EditorModeTableViewController, selected: Entry.EditMode) {
         self.editorMode = selected
     }
 }

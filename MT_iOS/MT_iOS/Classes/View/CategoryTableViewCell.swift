@@ -10,7 +10,7 @@ import UIKit
 
 class CategoryTableViewCell: UITableViewCell {
 
-    private var _object: Category?
+    fileprivate var _object: Category?
     var object: Category? {
         set {
             self._object = newValue
@@ -31,7 +31,7 @@ class CategoryTableViewCell: UITableViewCell {
         // Initialization code
     }
 
-    override func setSelected(selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
@@ -43,10 +43,10 @@ class CategoryTableViewCell: UITableViewCell {
         if object != nil {
             let indentPoints = CGFloat(object!.level) * 20.0;
         
-            self.contentView.frame = CGRectMake(indentPoints,
-                self.contentView.frame.origin.y,
-                self.contentView.frame.size.width - indentPoints,
-                self.contentView.frame.size.height);
+            self.contentView.frame = CGRect(x: indentPoints,
+                y: self.contentView.frame.origin.y,
+                width: self.contentView.frame.size.width - indentPoints,
+                height: self.contentView.frame.size.height);
         }
     }
     

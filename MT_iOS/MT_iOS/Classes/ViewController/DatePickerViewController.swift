@@ -9,19 +9,19 @@
 import UIKit
 
 protocol DatePickerViewControllerDelegate {
-    func datePickerDone(controller: DatePickerViewController, date: NSDate)
+    func datePickerDone(_ controller: DatePickerViewController, date: Date)
 }
 
 class DatePickerViewController: BaseViewController {
     enum DateTimeMode: Int {
-        case Date = 0,
-        Time,
-        DateTime
+        case date = 0,
+        time,
+        dateTime
     }
     
-    var date: NSDate = NSDate()
+    var date: Date = Date()
     var delegate: DatePickerViewControllerDelegate?
-    var initialMode: DateTimeMode = DateTimeMode.DateTime
+    var initialMode: DateTimeMode = DateTimeMode.dateTime
     var navTitle = NSLocalizedString("Date", comment: "Date")
     
     @IBOutlet weak var dateTimeLabel: UILabel!
@@ -38,33 +38,33 @@ class DatePickerViewController: BaseViewController {
         
         self.title = navTitle
         
-        dateTimeSegmentedControl.setTitle(NSLocalizedString("Date", comment: "Date"), forSegmentAtIndex: 0)
-        dateTimeSegmentedControl.setTitle(NSLocalizedString("Time", comment: "Time"), forSegmentAtIndex: 1)
+        dateTimeSegmentedControl.setTitle(NSLocalizedString("Date", comment: "Date"), forSegmentAt: 0)
+        dateTimeSegmentedControl.setTitle(NSLocalizedString("Time", comment: "Time"), forSegmentAt: 1)
         
-        setNowButton.setTitle(NSLocalizedString("Set now", comment: "Set now"), forState: UIControlState.Normal)
+        setNowButton.setTitle(NSLocalizedString("Set now", comment: "Set now"), for: UIControlState())
         
         datePicker.date = date
         
         self.dateChanged()
 
         switch initialMode {
-        case .Date:
-            dateTimeSegmentedControl.setEnabled(true, forSegmentAtIndex: DateTimeMode.Date.rawValue)
-            dateTimeSegmentedControl.setEnabled(false, forSegmentAtIndex: DateTimeMode.Time.rawValue)
-            dateTimeSegmentedControl.selectedSegmentIndex = DateTimeMode.Date.rawValue
-        case .Time:
-            dateTimeSegmentedControl.setEnabled(false, forSegmentAtIndex: DateTimeMode.Date.rawValue)
-            dateTimeSegmentedControl.setEnabled(true, forSegmentAtIndex: DateTimeMode.Time.rawValue)
-            dateTimeSegmentedControl.selectedSegmentIndex = DateTimeMode.Time.rawValue
-        case .DateTime:
-            dateTimeSegmentedControl.setEnabled(true, forSegmentAtIndex: DateTimeMode.Date.rawValue)
-            dateTimeSegmentedControl.setEnabled(true, forSegmentAtIndex: DateTimeMode.Time.rawValue)
-            dateTimeSegmentedControl.selectedSegmentIndex = DateTimeMode.Date.rawValue
+        case .date:
+            dateTimeSegmentedControl.setEnabled(true, forSegmentAt: DateTimeMode.date.rawValue)
+            dateTimeSegmentedControl.setEnabled(false, forSegmentAt: DateTimeMode.time.rawValue)
+            dateTimeSegmentedControl.selectedSegmentIndex = DateTimeMode.date.rawValue
+        case .time:
+            dateTimeSegmentedControl.setEnabled(false, forSegmentAt: DateTimeMode.date.rawValue)
+            dateTimeSegmentedControl.setEnabled(true, forSegmentAt: DateTimeMode.time.rawValue)
+            dateTimeSegmentedControl.selectedSegmentIndex = DateTimeMode.time.rawValue
+        case .dateTime:
+            dateTimeSegmentedControl.setEnabled(true, forSegmentAt: DateTimeMode.date.rawValue)
+            dateTimeSegmentedControl.setEnabled(true, forSegmentAt: DateTimeMode.time.rawValue)
+            dateTimeSegmentedControl.selectedSegmentIndex = DateTimeMode.date.rawValue
         }
         
         self.segmentValueChanged(dateTimeSegmentedControl)
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(DatePickerViewController.doneButtonPushed(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: #selector(DatePickerViewController.doneButtonPushed(_:)))
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: #selector(DatePickerViewController.backButtonPushed(_:)))
     }
 
@@ -84,45 +84,45 @@ class DatePickerViewController: BaseViewController {
     }
     */
     
-    private func dateChanged() {
+    fileprivate func dateChanged() {
         switch initialMode {
-        case .Date:
+        case .date:
             dateTimeLabel.text = Utils.mediumDateStringFromDate(datePicker.date)
-        case .Time:
+        case .time:
             dateTimeLabel.text = Utils.timeStringFromDate(datePicker.date)
-        case .DateTime:
+        case .dateTime:
             dateTimeLabel.text = Utils.mediumDateTimeFromDate(datePicker.date)
         }
     }
 
-    @IBAction func segmentValueChanged(sender: UISegmentedControl) {
+    @IBAction func segmentValueChanged(_ sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {
-        case DateTimeMode.Date.rawValue:
-            datePicker.datePickerMode = UIDatePickerMode.Date
-        case DateTimeMode.Time.rawValue:
-            datePicker.datePickerMode = UIDatePickerMode.Time
+        case DateTimeMode.date.rawValue:
+            datePicker.datePickerMode = UIDatePickerMode.date
+        case DateTimeMode.time.rawValue:
+            datePicker.datePickerMode = UIDatePickerMode.time
         default:
             break
         }
     }
     
-    @IBAction func setNowButtonPushed(sender: AnyObject) {
-        datePicker.date = NSDate()
+    @IBAction func setNowButtonPushed(_ sender: AnyObject) {
+        datePicker.date = Date()
         self.dateChanged()
     }
     
-    @IBAction func datePickerValueChanged(sender: UIDatePicker) {
+    @IBAction func datePickerValueChanged(_ sender: UIDatePicker) {
         self.dateChanged()
     }
     
-    @IBAction func doneButtonPushed(sender: AnyObject) {
+    @IBAction func doneButtonPushed(_ sender: AnyObject) {
         self.delegate?.datePickerDone(self, date: datePicker.date)
-        self.navigationController?.popViewControllerAnimated(true)
+        _ = self.navigationController?.popViewController(animated: true)
     }
     
-    @IBAction func backButtonPushed(sender: UIBarButtonItem) {
-        if date.isEqualToDate(datePicker.date) {
-            self.navigationController?.popViewControllerAnimated(true)
+    @IBAction func backButtonPushed(_ sender: UIBarButtonItem) {
+        if date == datePicker.date {
+            _ = self.navigationController?.popViewController(animated: true)
             return
         }
         

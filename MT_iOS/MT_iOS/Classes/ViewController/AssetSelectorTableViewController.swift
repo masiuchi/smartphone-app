@@ -9,7 +9,7 @@
 import UIKit
 
 protocol AssetSelectorDelegate {
-    func AssetSelectorDone(controller: AssetSelectorTableViewController, asset: Asset)
+    func AssetSelectorDone(_ controller: AssetSelectorTableViewController, asset: Asset)
 }
 
 class AssetSelectorTableViewController: AssetListTableViewController {
@@ -27,12 +27,12 @@ class AssetSelectorTableViewController: AssetListTableViewController {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: #selector(AssetSelectorTableViewController.closeButtonPushed(_:)))
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setToolbarHidden(true, animated: false)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setToolbarHidden(true, animated: false)
     }
@@ -44,11 +44,11 @@ class AssetSelectorTableViewController: AssetListTableViewController {
 
     // MARK: - Table view data source
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         // Configure the cell...
-        cell.accessoryType = UITableViewCellAccessoryType.None
+        cell.accessoryType = UITableViewCellAccessoryType.none
 
         return cell
     }
@@ -88,7 +88,7 @@ class AssetSelectorTableViewController: AssetListTableViewController {
     }
     */
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let asset = list[indexPath.row] as! Asset
 
         self.delegate?.AssetSelectorDone(self, asset: asset)
@@ -105,8 +105,8 @@ class AssetSelectorTableViewController: AssetListTableViewController {
     }
     */
 
-    @IBAction func closeButtonPushed(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+    @IBAction func closeButtonPushed(_ sender: AnyObject) {
+        self.dismiss(animated: true, completion: nil)
     }
 
 }

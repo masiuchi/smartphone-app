@@ -16,12 +16,12 @@ class EntryRichTextViewController: MTRichTextEditor {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
         
         self.title = object.label
         self.setHTML(object.text)
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(EntryRichTextViewController.saveButtonPushed(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: #selector(EntryRichTextViewController.saveButtonPushed(_:)))
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: #selector(EntryRichTextViewController.backButtonPushed(_:)))
     }
 
@@ -41,7 +41,7 @@ class EntryRichTextViewController: MTRichTextEditor {
     }
     */
     
-    private func sourceView()-> ZSSTextView? {
+    fileprivate func sourceView()-> ZSSTextView? {
         for view in self.view.subviews {
             if view is ZSSTextView {
                 return view as? ZSSTextView
@@ -50,25 +50,25 @@ class EntryRichTextViewController: MTRichTextEditor {
         return nil
     }
     
-    @IBAction func saveButtonPushed(sender: UIBarButtonItem) {
+    @IBAction func saveButtonPushed(_ sender: UIBarButtonItem) {
         if let sourceView = self.sourceView() {
-            if !sourceView.hidden {
+            if !sourceView.isHidden {
                 self.setHTML(sourceView.text)
             }
         }
         object.text = self.getHTML()
         object.isDirty = true
-        self.navigationController?.popViewControllerAnimated(true)
+        _ = self.navigationController?.popViewController(animated: true)
     }
 
-    @IBAction func backButtonPushed(sender: UIBarButtonItem) {
+    @IBAction func backButtonPushed(_ sender: UIBarButtonItem) {
         if let sourceView = self.sourceView() {
-            if !sourceView.hidden {
+            if !sourceView.isHidden {
                 self.setHTML(sourceView.text)
             }
         }
         if self.getHTML() == object.text {
-            self.navigationController?.popViewControllerAnimated(true)
+            _ = self.navigationController?.popViewController(animated: true)
             return
         }
         

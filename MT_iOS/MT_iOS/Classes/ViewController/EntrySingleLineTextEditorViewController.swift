@@ -14,7 +14,7 @@ class EntrySingleLineTextEditorViewController: EntryTextEditorViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        textView.returnKeyType = .Done
+        textView.returnKeyType = .done
     }
 
     override func didReceiveMemoryWarning() {
@@ -33,7 +33,7 @@ class EntrySingleLineTextEditorViewController: EntryTextEditorViewController {
     }
     */
     
-    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+    func textView(_ textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         if text == "\n" {
             textView.resignFirstResponder()
             return false

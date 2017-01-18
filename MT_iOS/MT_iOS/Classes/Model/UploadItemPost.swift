@@ -10,25 +10,25 @@ import UIKit
 import SwiftyJSON
 
 class UploadItemPost: UploadItem {
-    private(set) var itemList: EntryItemList!
+    fileprivate(set) var itemList: EntryItemList!
     
     init(itemList: EntryItemList) {
         super.init()
         self.itemList = itemList
     }
     
-    override func setup(completion: (() -> Void)) {
+    override func setup(_ completion: @escaping (() -> Void)) {
         completion()
     }
     
-    override func thumbnail(size: CGSize, completion: (UIImage->Void)) {
+    override func thumbnail(_ size: CGSize, completion: @escaping ((UIImage)->Void)) {
         if let image = UIImage(named: "upload_entry") {
             let widthRatio = size.width / image.size.width
             let heightRatio = size.height / image.size.height
             let ratio = (widthRatio < heightRatio) ? widthRatio : heightRatio
             let resizedSize = CGSize(width: (image.size.width * ratio), height: (image.size.height * ratio))
             UIGraphicsBeginImageContext(resizedSize)
-            image.drawInRect(CGRect(x: 0, y: 0, width: resizedSize.width, height: resizedSize.height))
+            image.draw(in: CGRect(x: 0, y: 0, width: resizedSize.width, height: resizedSize.height))
             let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
             UIGraphicsEndImageContext()
             
@@ -52,7 +52,7 @@ class UploadItemPost: UploadItem {
         return self._filename
     }
     
-    override func upload(progress progress: ((Int64!, Int64!, Int64!) -> Void)? = nil, success: (JSON! -> Void)!, failure: (JSON! -> Void)!) {
+    override func upload(progress: ((Double) -> Void)? = nil, success: ((JSON?) -> Void)!, failure: ((JSON?) -> Void)!) {
         let json = itemList.makeParams(false)
 
         let create = itemList.object.id.isEmpty
@@ -62,12 +62,12 @@ class UploadItemPost: UploadItem {
         let id = itemList.object.id
         
         let api = DataAPI.sharedInstance
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        let app = UIApplication.shared.delegate as! AppDelegate
         let authInfo = app.authInfo
         
         api.authenticationV2(authInfo.username, password: authInfo.password, remember: true,
             success:{_ in
-                progress?(5, 5, 10)
+                progress?(0.5)
                 let params = ["no_text_filter":"1"]
                 if create {
                     if isEntry {
@@ -83,7 +83,7 @@ class UploadItemPost: UploadItem {
                     }
                 }
             },
-            failure: failure
+            failure: failure 
         )
     }
 }

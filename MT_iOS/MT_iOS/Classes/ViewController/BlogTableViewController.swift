@@ -12,21 +12,21 @@ import SwiftyJSON
 
 class BlogTableViewController: BaseTableViewController {
     enum Section:Int {
-        case Blog = 0,
-        Asset,
+        case blog = 0,
+        asset,
         _Num
     }
     
     enum BlogItem:Int {
-        case Entries = 0,
-        DraftEntries,
-        Pages,
-        DraftPages,
+        case entries = 0,
+        draftEntries,
+        pages,
+        draftPages,
         _Num
     }
 
     enum AssetItem:Int {
-        case Assets = 0,
+        case assets = 0,
         _Num
     }
 
@@ -44,11 +44,11 @@ class BlogTableViewController: BaseTableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        SVProgressHUD.showWithStatus(NSLocalizedString("Get blog settings...", comment: "Get blog settings..."))
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        SVProgressHUD.show(withStatus: NSLocalizedString("Get blog settings...", comment: "Get blog settings..."))
         self.getPermissions(
             {(failure: Bool)-> Void in
-                let user = (UIApplication.sharedApplication().delegate as! AppDelegate).currentUser!
+                let user = (UIApplication.shared.delegate as! AppDelegate).currentUser!
                 if self.blog.canCreateEntry(user: user) || self.blog.canCreatePage(user: user) {
                     self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_newentry"), left: false, target: self, action: #selector(BlogTableViewController.composeButtonPushed(_:)))
                 } else {
@@ -59,7 +59,7 @@ class BlogTableViewController: BaseTableViewController {
 
                 self.getCustomFields(
                     {(failure: Bool)-> Void in
-                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
                         if !failure {
                             SVProgressHUD.dismiss()
                         }
@@ -69,21 +69,21 @@ class BlogTableViewController: BaseTableViewController {
         )
         
         //V1.0.xとの互換性のため
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        let app = UIApplication.shared.delegate as! AppDelegate
         if let user = app.currentUser {
             self.blog.renameOldDataDir(user)
         }
     }
     
-    private func getCustomFields(completion: (Bool)-> Void) {
+    fileprivate func getCustomFields(_ completion: @escaping (Bool)-> Void) {
         let api = DataAPI.sharedInstance
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        let app = UIApplication.shared.delegate as! AppDelegate
         let authInfo = app.authInfo
         
-        let failure: (JSON!-> Void) = {
-            (error: JSON!)-> Void in
-            LOG("failure:\(error.description)")
-            SVProgressHUD.showErrorWithStatus(error["message"].stringValue)
+        let failure: ((JSON?)-> Void) = {
+            (error: JSON?)-> Void in
+            LOG("failure:\(error!.description)")
+            SVProgressHUD.showError(withStatus: error!["message"].stringValue)
             completion(true)
         }
         
@@ -91,20 +91,20 @@ class BlogTableViewController: BaseTableViewController {
             success:{_ in
                 let params = ["includeShared":"system", "systemObject":"entry"]
                 api.listFields(siteID: self.blog.id, options: params, success:
-                    {(result: [JSON]!, total: Int!)-> Void in
-                        LOG("\(result)")
-                        self.blog.customfieldsForEntry.removeAll(keepCapacity: false)
-                        for item in result {
+                    {(result: [JSON]?, total: Int?)-> Void in
+                        LOG("\(result!)")
+                        self.blog.customfieldsForEntry.removeAll(keepingCapacity: false)
+                        for item in result! {
                             let field = CustomField(json: item)
                             self.blog.customfieldsForEntry.append(field)
                         }
                         
                         let params = ["includeShared":"system", "systemObject":"page"]
                         api.listFields(siteID: self.blog.id, options: params, success:
-                            {(result: [JSON]!, total: Int!)-> Void in
-                                LOG("\(result)")
-                                self.blog.customfieldsForPage.removeAll(keepCapacity: false)
-                                for item in result {
+                            {(result: [JSON]?, total: Int?)-> Void in
+                                LOG("\(result!)")
+                                self.blog.customfieldsForPage.removeAll(keepingCapacity: false)
+                                for item in result! {
                                     let field = CustomField(json: item)
                                     self.blog.customfieldsForPage.append(field)
                                 }
@@ -121,15 +121,15 @@ class BlogTableViewController: BaseTableViewController {
         )
     }
     
-    private func getPermissions(completion: (Bool)-> Void) {
+    fileprivate func getPermissions(_ completion: @escaping (Bool)-> Void) {
         let api = DataAPI.sharedInstance
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        let app = UIApplication.shared.delegate as! AppDelegate
         let authInfo = app.authInfo
         
-        let failure: (JSON!-> Void) = {
-            (error: JSON!)-> Void in
-            LOG("failure:\(error.description)")
-            SVProgressHUD.showErrorWithStatus(error["message"].stringValue)
+        let failure: ((JSON?)-> Void) = {
+            (error: JSON?)-> Void in
+            LOG("failure:\(error!.description)")
+            SVProgressHUD.showError(withStatus: error!["message"].stringValue)
             completion(true)
         }
         
@@ -137,9 +137,9 @@ class BlogTableViewController: BaseTableViewController {
             success:{_ in
                 let params = ["fields":"permissions"]
                 api.listPermissionsForSite(self.blog.id, options: params, success: {
-                    (result: [JSON]!, total: Int!)-> Void in
-                        LOG("\(result)")
-                        for item in result {
+                    (result: [JSON]?, total: Int?)-> Void in
+                        LOG("\(result!)")
+                        for item in result! {
                             let permissions = item["permissions"].arrayValue
                             for item in permissions {
                                 let permission = item.stringValue
@@ -164,10 +164,10 @@ class BlogTableViewController: BaseTableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
-        let user = (UIApplication.sharedApplication().delegate as! AppDelegate).currentUser!
+        let user = (UIApplication.shared.delegate as! AppDelegate).currentUser!
         if self.blog.canListAsset(user: user) {
             return Section._Num.rawValue
         } else {
@@ -175,49 +175,49 @@ class BlogTableViewController: BaseTableViewController {
         }
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         switch section {
-        case Section.Blog.rawValue:
+        case Section.blog.rawValue:
             return BlogItem._Num.rawValue
-        case Section.Asset.rawValue:
+        case Section.asset.rawValue:
             return AssetItem._Num.rawValue
         default:
             return 0
         }
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("ItemCell", forIndexPath: indexPath) 
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell", for: indexPath) 
         
         self.adjustCellLayoutMargins(cell)
 
-        cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
+        cell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
         cell.textLabel?.textColor = Color.cellText
-        cell.textLabel?.font = UIFont.systemFontOfSize(17.0)
+        cell.textLabel?.font = UIFont.systemFont(ofSize: 17.0)
         
         switch indexPath.section {
-        case Section.Blog.rawValue:
+        case Section.blog.rawValue:
             switch indexPath.row {
-            case BlogItem.Entries.rawValue:
+            case BlogItem.entries.rawValue:
                 cell.textLabel?.text = NSLocalizedString("Entries", comment: "Entries")
                 cell.imageView?.image = UIImage(named: "ico_listfolder")
-            case BlogItem.DraftEntries.rawValue:
+            case BlogItem.draftEntries.rawValue:
                 cell.textLabel?.text = NSLocalizedString("Local saved entries", comment: "Local saved entries")
                 cell.imageView?.image = UIImage(named: "ico_listfolder copy")
-            case BlogItem.Pages.rawValue:
+            case BlogItem.pages.rawValue:
                 cell.textLabel?.text = NSLocalizedString("Pages", comment: "Pages")
                 cell.imageView?.image = UIImage(named: "ico_listfolder")
-            case BlogItem.DraftPages.rawValue:
+            case BlogItem.draftPages.rawValue:
                 cell.textLabel?.text = NSLocalizedString("Local saved pages", comment: "Local saved pages")
                 cell.imageView?.image = UIImage(named: "ico_webpage")
             default:
                 cell.textLabel?.text = ""
             }
-        case Section.Asset.rawValue:
+        case Section.asset.rawValue:
             switch indexPath.row {
-            case AssetItem.Assets.rawValue:
+            case AssetItem.assets.rawValue:
                 cell.textLabel?.text = NSLocalizedString("Assets", comment: "Assets")
                 cell.imageView?.image = UIImage(named: "ico_item")
             default:
@@ -268,32 +268,32 @@ class BlogTableViewController: BaseTableViewController {
     */
 
     // MARK: - Table view delegte
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         switch section {
-        case Section.Blog.rawValue:
+        case Section.blog.rawValue:
             return 110.0
-        case Section.Asset.rawValue:
+        case Section.asset.rawValue:
             return 15.0
         default:
             return 0.0
         }
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60.0
     }
     
-    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         switch section {
-        case Section.Blog.rawValue:
+        case Section.blog.rawValue:
             let blogInfoView: BlogInfoView = BlogInfoView.instanceFromNib() as! BlogInfoView
             blogInfoView.blog = self.blog
             
-            blogInfoView.BlogURLButton.addTarget(self, action: #selector(BlogTableViewController.blogURLButtonPushed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
-            blogInfoView.BlogPrefsButton.addTarget(self, action: #selector(BlogTableViewController.blogPrefsButtonPushed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+            blogInfoView.BlogURLButton.addTarget(self, action: #selector(BlogTableViewController.blogURLButtonPushed(_:)), for: UIControlEvents.touchUpInside)
+            blogInfoView.BlogPrefsButton.addTarget(self, action: #selector(BlogTableViewController.blogPrefsButtonPushed(_:)), for: UIControlEvents.touchUpInside)
             
             return blogInfoView
-        case Section.Asset.rawValue:
+        case Section.asset.rawValue:
             return UIView()
         default:
             return UIView()
@@ -301,29 +301,29 @@ class BlogTableViewController: BaseTableViewController {
     }
     
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.section {
-        case Section.Blog.rawValue:
+        case Section.blog.rawValue:
             switch indexPath.row {
-            case BlogItem.Entries.rawValue:
+            case BlogItem.entries.rawValue:
                 let vc = EntryListTableViewController()
                 let blog = self.blog
                 vc.blog = blog
                 self.navigationController?.pushViewController(vc, animated: true)
 
-            case BlogItem.DraftEntries.rawValue:
+            case BlogItem.draftEntries.rawValue:
                 let vc = EntryDraftTableViewController()
                 let blog = self.blog
                 vc.blog = blog
                 self.navigationController?.pushViewController(vc, animated: true)
 
-            case BlogItem.Pages.rawValue:
+            case BlogItem.pages.rawValue:
                 let vc = PageListTableViewController()
                 let blog = self.blog
                 vc.blog = blog
                 self.navigationController?.pushViewController(vc, animated: true)
 
-            case BlogItem.DraftPages.rawValue:
+            case BlogItem.draftPages.rawValue:
                 let vc = PageDraftTableViewController()
                 let blog = self.blog
                 vc.blog = blog
@@ -332,9 +332,9 @@ class BlogTableViewController: BaseTableViewController {
             default:
                 break
             }
-        case Section.Asset.rawValue:
+        case Section.asset.rawValue:
             switch indexPath.row {
-            case AssetItem.Assets.rawValue:
+            case AssetItem.assets.rawValue:
                 let vc = AssetListTableViewController()
                 let blog = self.blog
                 vc.blog = blog
@@ -363,28 +363,28 @@ class BlogTableViewController: BaseTableViewController {
     }
     */
 
-    func blogURLButtonPushed(sender: UIButton) {
+    func blogURLButtonPushed(_ sender: UIButton) {
         let vc = PreviewViewController()
         let nav = UINavigationController(rootViewController: vc)
         vc.url = blog.url
-        self.presentViewController(nav, animated: true, completion: nil)
+        self.present(nav, animated: true, completion: nil)
     }
     
-    func blogPrefsButtonPushed(sender: UIButton) {
+    func blogPrefsButtonPushed(_ sender: UIButton) {
         let storyboard: UIStoryboard = UIStoryboard(name: "BlogSettings", bundle: nil)
         let nav = storyboard.instantiateInitialViewController() as! UINavigationController
         let vc = nav.topViewController as! BlogSettingsTableViewController
         vc.blog = blog
-        self.presentViewController(nav, animated: true, completion: nil)
+        self.present(nav, animated: true, completion: nil)
     }
     
-    func composeButtonPushed(sender: UIBarButtonItem) {
+    func composeButtonPushed(_ sender: UIBarButtonItem) {
         let actionSheet: UIAlertController = UIAlertController(title:NSLocalizedString("Create", comment: "Create"),
             message: nil,
-            preferredStyle: UIAlertControllerStyle.ActionSheet)
+            preferredStyle: UIAlertControllerStyle.actionSheet)
         
         let cancelAction: UIAlertAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel"),
-            style: UIAlertActionStyle.Cancel,
+            style: UIAlertActionStyle.cancel,
             handler:{
                 (action:UIAlertAction) -> Void in
                 LOG("cancelAction")
@@ -392,26 +392,26 @@ class BlogTableViewController: BaseTableViewController {
         )
         
         let createEntryAction: UIAlertAction = UIAlertAction(title: NSLocalizedString("Create Entry", comment: "Create Entry"),
-            style: UIAlertActionStyle.Default,
+            style: UIAlertActionStyle.default,
             handler:{
                 (action:UIAlertAction) -> Void in
                 
-                let app = UIApplication.sharedApplication().delegate as! AppDelegate
+                let app = UIApplication.shared.delegate as! AppDelegate
                 app.createEntry(self.blog, controller: self)
             }
         )
         
         let createPageAction: UIAlertAction = UIAlertAction(title: NSLocalizedString("Create Page", comment: "Create Page"),
-            style: UIAlertActionStyle.Default,
+            style: UIAlertActionStyle.default,
             handler:{
                 (action:UIAlertAction) -> Void in
                 
-                let app = UIApplication.sharedApplication().delegate as! AppDelegate
+                let app = UIApplication.shared.delegate as! AppDelegate
                 app.createPage(self.blog, controller: self)
             }
         )
         
-        let user = (UIApplication.sharedApplication().delegate as! AppDelegate).currentUser!
+        let user = (UIApplication.shared.delegate as! AppDelegate).currentUser!
         if self.blog.canCreateEntry(user: user) {
             actionSheet.addAction(createEntryAction)
         }
@@ -421,6 +421,6 @@ class BlogTableViewController: BaseTableViewController {
         
         actionSheet.addAction(cancelAction)
         
-        self.presentViewController(actionSheet, animated: true, completion: nil)
+        self.present(actionSheet, animated: true, completion: nil)
     }
 }

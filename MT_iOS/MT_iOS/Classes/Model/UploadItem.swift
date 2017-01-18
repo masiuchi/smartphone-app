@@ -10,7 +10,7 @@ import UIKit
 import SwiftyJSON
 
 class UploadItem: NSObject {
-    internal(set) var data: NSData! = nil
+    internal(set) var data: Data! = nil
     var blogID = ""
     var uploadPath = ""
     var uploaded = false
@@ -26,7 +26,7 @@ class UploadItem: NSObject {
         }
     }
     
-    func setup(completion: (() -> Void)) {
+    func setup(_ completion: @escaping (() -> Void)) {
         completion()
     }
     
@@ -38,9 +38,9 @@ class UploadItem: NSObject {
         return self._filename
     }
     
-    func upload(progress progress: ((Int64!, Int64!, Int64!) -> Void)? = nil, success: (JSON! -> Void)!, failure: (JSON! -> Void)!) {
+    func upload(progress: ((Double) -> Void)? = nil, success: ((JSON?) -> Void)!, failure: ((JSON?) -> Void)!) {
         let api = DataAPI.sharedInstance
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        let app = UIApplication.shared.delegate as! AppDelegate
         let authInfo = app.authInfo
         
         api.authenticationV2(authInfo.username, password: authInfo.password, remember: true,
@@ -48,11 +48,11 @@ class UploadItem: NSObject {
                 let filename = self.makeFilename()
                 api.uploadAssetForSite(self.blogID, assetData:  self.data, fileName: filename, options: ["path":self.uploadPath, "autoRenameIfExists":"true"], progress: progress, success: success, failure: failure)
             },
-            failure: failure
+            failure: failure 
         )
     }
     
-    func thumbnail(size: CGSize, completion: (UIImage->Void)) {
+    func thumbnail(_ size: CGSize, completion: @escaping ((UIImage)->Void)) {
         completion(UIImage())
     }
 }

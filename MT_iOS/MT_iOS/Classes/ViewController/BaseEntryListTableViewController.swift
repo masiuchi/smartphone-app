@@ -21,10 +21,10 @@ class BaseEntryListTableViewController: BaseTableViewController, UISearchBarDele
         super.viewDidLoad()
         
         self.refreshControl = MTRefreshControl()
-        self.refreshControl!.addTarget(self, action: #selector(BaseEntryListTableViewController.refresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
+        self.refreshControl!.addTarget(self, action: #selector(BaseEntryListTableViewController.refresh(_:)), for: UIControlEvents.valueChanged)
         
         searchBar = UISearchBar()
-        searchBar.frame = CGRectMake(0.0, 0.0, self.tableView.frame.size.width, 44.0)
+        searchBar.frame = CGRect(x: 0.0, y: 0.0, width: self.tableView.frame.size.width, height: 44.0)
         searchBar.barTintColor = Color.tableBg
         searchBar.placeholder = NSLocalizedString("Search", comment: "Search")
         searchBar.delegate = self
@@ -34,10 +34,10 @@ class BaseEntryListTableViewController: BaseTableViewController, UISearchBarDele
             textField!.enablesReturnKeyAutomatically = false
         }
         
-        self.tableView.registerNib(UINib(nibName: "EntryTableViewCell", bundle: nil), forCellReuseIdentifier: "EntryTableViewCell")
+        self.tableView.register(UINib(nibName: "EntryTableViewCell", bundle: nil), forCellReuseIdentifier: "EntryTableViewCell")
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.fetch()
     }
@@ -48,35 +48,35 @@ class BaseEntryListTableViewController: BaseTableViewController, UISearchBarDele
     }
     
     // MARK: - Refresh
-    @IBAction func refresh(sender:UIRefreshControl) {
+    @IBAction func refresh(_ sender:UIRefreshControl) {
         self.fetch()
     }
     
     // MARK: - fetch
     func fetch() {
-        SVProgressHUD.showWithStatus(actionMessage + "...")
-        let success: (([JSON]!, Int!)-> Void) = {
-            (result: [JSON]!, total: Int!)-> Void in
+        SVProgressHUD.show(withStatus: actionMessage + "...")
+        let success: (([JSON]?, Int?)-> Void) = {
+            (result: [JSON]?, total: Int?)-> Void in
             SVProgressHUD.dismiss()
             self.tableView.reloadData()
             self.refreshControl!.endRefreshing()
         }
-        let failure: (JSON!-> Void) = {
-            (error: JSON!)-> Void in
-            SVProgressHUD.showErrorWithStatus(String(format: NSLocalizedString("%@ failured.", comment: "%@ failured."), arguments: [self.actionMessage]))
+        let failure: ((JSON?)-> Void) = {
+            (error: JSON?)-> Void in
+            SVProgressHUD.showError(withStatus: String(format: NSLocalizedString("%@ failured.", comment: "%@ failured."), arguments: [self.actionMessage]))
             self.refreshControl!.endRefreshing()
         }
         list.refresh(success, failure: failure)
     }
     
     func more() {
-        let success: (([JSON]!, Int!)-> Void) = {
-            (result: [JSON]!, total: Int!)-> Void in
+        let success: (([JSON]?, Int?)-> Void) = {
+            (result: [JSON]?, total: Int?)-> Void in
             self.tableView.reloadData()
             self.refreshControl!.endRefreshing()
         }
-        let failure: (JSON!-> Void) = {
-            (error: JSON!)-> Void in
+        let failure: ((JSON?)-> Void) = {
+            (error: JSON?)-> Void in
             self.refreshControl!.endRefreshing()
         }
         list.more(success, failure: failure)
@@ -84,20 +84,20 @@ class BaseEntryListTableViewController: BaseTableViewController, UISearchBarDele
     
     // MARK: - Table view data source
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
         return 1
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         return list.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("EntryTableViewCell", forIndexPath: indexPath) as! EntryTableViewCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "EntryTableViewCell", for: indexPath) as! EntryTableViewCell
     
         self.adjustCellLayoutMargins(cell)
         
@@ -109,20 +109,20 @@ class BaseEntryListTableViewController: BaseTableViewController, UISearchBarDele
     }
     
     // MARK: - Table view delegate
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 130.0
     }
     
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 44.0
     }
     
-    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return searchBar
     }
     
     //MARK: -
-    override func scrollViewDidScroll(scrollView: UIScrollView) {
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if (self.tableView.contentOffset.y >= (self.tableView.contentSize.height - self.tableView.bounds.size.height)) {
             
             if self.list.working {return}
@@ -133,16 +133,16 @@ class BaseEntryListTableViewController: BaseTableViewController, UISearchBarDele
     }
     
     //MARK: -
-    func composeButtonPushed(sender: UIBarButtonItem) {
+    func composeButtonPushed(_ sender: UIBarButtonItem) {
 
     }
     
     // MARK: --
-    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
         self.list.searchText = searchBar.text!
         if self.list.count > 0 {
-            self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0), atScrollPosition: UITableViewScrollPosition.Top, animated: false)
+            self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: UITableViewScrollPosition.top, animated: false)
         }
         self.fetch()
     }

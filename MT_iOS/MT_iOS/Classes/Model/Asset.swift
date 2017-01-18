@@ -17,7 +17,7 @@ class Asset: BaseObject {
     var width: Int = 0
     var height: Int = 0
     var createdByName: String = ""
-    var createdDate: NSDate?
+    var createdDate: Date?
     var blogID: String = ""
     
     override init(json: JSON) {
@@ -49,30 +49,30 @@ class Asset: BaseObject {
         blogID = json["blog"]["id"].stringValue
     }
     
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
-        aCoder.encodeObject(self.label, forKey: "label")
-        aCoder.encodeObject(self.url, forKey: "url")
-        aCoder.encodeObject(self.filename, forKey: "filename")
-        aCoder.encodeInteger(self.fileSize, forKey: "fileSize")
-        aCoder.encodeInteger(self.width, forKey: "width")
-        aCoder.encodeInteger(self.height, forKey: "height")
-        aCoder.encodeObject(self.createdByName, forKey: "createdByName")
-        aCoder.encodeObject(self.createdDate, forKey: "createdDate")
-        aCoder.encodeObject(self.blogID, forKey: "blogID")
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
+        aCoder.encode(self.label, forKey: "label")
+        aCoder.encode(self.url, forKey: "url")
+        aCoder.encode(self.filename, forKey: "filename")
+        aCoder.encode(self.fileSize, forKey: "fileSize")
+        aCoder.encode(self.width, forKey: "width")
+        aCoder.encode(self.height, forKey: "height")
+        aCoder.encode(self.createdByName, forKey: "createdByName")
+        aCoder.encode(self.createdDate, forKey: "createdDate")
+        aCoder.encode(self.blogID, forKey: "blogID")
     }
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
-        self.label = aDecoder.decodeObjectForKey("label") as! String
-        self.url = aDecoder.decodeObjectForKey("url") as! String
-        self.filename = aDecoder.decodeObjectForKey("filename") as! String
-        self.fileSize = aDecoder.decodeIntegerForKey("fileSize")
-        self.width = aDecoder.decodeIntegerForKey("width")
-        self.height = aDecoder.decodeIntegerForKey("height")
-        self.createdByName = aDecoder.decodeObjectForKey("createdByName") as! String
-        self.createdDate = aDecoder.decodeObjectForKey("createdDate") as? NSDate
-        self.blogID = aDecoder.decodeObjectForKey("blogID") as! String
+        self.label = aDecoder.decodeObject(forKey: "label") as! String
+        self.url = aDecoder.decodeObject(forKey: "url") as! String
+        self.filename = aDecoder.decodeObject(forKey: "filename") as! String
+        self.fileSize = aDecoder.decodeInteger(forKey: "fileSize")
+        self.width = aDecoder.decodeInteger(forKey: "width")
+        self.height = aDecoder.decodeInteger(forKey: "height")
+        self.createdByName = aDecoder.decodeObject(forKey: "createdByName") as! String
+        self.createdDate = aDecoder.decodeObject(forKey: "createdDate") as? Date
+        self.blogID = aDecoder.decodeObject(forKey: "blogID") as! String
     }
     
     func dispName()-> String {
@@ -83,16 +83,16 @@ class Asset: BaseObject {
         return self.filename
     }
     
-    func imageHTML(align: Blog.ImageAlign)-> String {
+    func imageHTML(_ align: Blog.ImageAlign)-> String {
         let dimmensions = "width=\(self.width) height=\(self.height)"
         
-        var wrapStyle = "class=\"mt-image-\(align.value().lowercaseString)\" "
+        var wrapStyle = "class=\"mt-image-\(align.value().lowercased())\" "
         switch align {
-        case .Left:
+        case .left:
             wrapStyle += "style=\"float: left; margin: 0 20px 20px 0;\""
-        case .Right:
+        case .right:
             wrapStyle += "style=\"float: right; margin: 0 0 20px 20px;\""
-        case .Center:
+        case .center:
             wrapStyle += "style=\"text-align: center; display: block; margin: 0 auto 20px;\""
         default:
             wrapStyle += "style=\"\""

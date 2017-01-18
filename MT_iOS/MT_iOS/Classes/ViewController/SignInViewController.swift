@@ -22,7 +22,7 @@ class SignInViewController: BaseViewController {
         rotationAnimation.toValue = (M_PI / 180) * 360
         rotationAnimation.duration = 1.0
         rotationAnimation.repeatCount = Float.infinity
-        self.gearImage.layer.addAnimation(rotationAnimation, forKey: "rotateAnimation")
+        self.gearImage.layer.add(rotationAnimation, forKey: "rotateAnimation")
     }
 
     override func didReceiveMemoryWarning() {

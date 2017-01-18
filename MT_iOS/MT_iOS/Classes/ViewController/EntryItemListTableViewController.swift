@@ -24,12 +24,12 @@ class EntryItemListTableViewController: BaseTableViewController {
         
         self.title = NSLocalizedString("Sorting", comment: "Sorting")
         
-        self.tableView.registerNib(UINib(nibName: "EntryItemTableViewCell", bundle: nil), forCellReuseIdentifier: "EntryItemTableViewCell")
+        self.tableView.register(UINib(nibName: "EntryItemTableViewCell", bundle: nil), forCellReuseIdentifier: "EntryItemTableViewCell")
 
         self.tableView.setEditing(true, animated: true)
     
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: #selector(EntryItemListTableViewController.closeButtonPushed(_:)))
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(EntryItemListTableViewController.doneButtonPushed(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: #selector(EntryItemListTableViewController.doneButtonPushed(_:)))
     }
 
     override func didReceiveMemoryWarning() {
@@ -39,7 +39,7 @@ class EntryItemListTableViewController: BaseTableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
         if sortedList == nil {
@@ -48,7 +48,7 @@ class EntryItemListTableViewController: BaseTableViewController {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         if sortedList == nil {
@@ -57,8 +57,8 @@ class EntryItemListTableViewController: BaseTableViewController {
         return sortedList.count
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("EntryItemTableViewCell", forIndexPath: indexPath) as! EntryItemTableViewCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "EntryItemTableViewCell", for: indexPath) as! EntryItemTableViewCell
         
         self.adjustCellLayoutMargins(cell)
 
@@ -69,15 +69,15 @@ class EntryItemListTableViewController: BaseTableViewController {
         return cell
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 58.0
     }
 
-    override func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
-        return UITableViewCellEditingStyle.None
+    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+        return UITableViewCellEditingStyle.none
     }
     
-    override func tableView(tableView: UITableView, shouldIndentWhileEditingRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    override func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
         return false
     }
     
@@ -109,15 +109,15 @@ class EntryItemListTableViewController: BaseTableViewController {
     */
 
     // Override to support conditional rearranging of the table view.
-    override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
         // Return NO if you do not want the item to be re-orderable.
         return true
     }
 
-    override func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         let item = sortedList[sourceIndexPath.row];
-        sortedList.removeAtIndex(sourceIndexPath.row);
-        sortedList.insert(item, atIndex: destinationIndexPath.row)
+        sortedList.remove(at: sourceIndexPath.row);
+        sortedList.insert(item, at: destinationIndexPath.row)
     }
     
     /*
@@ -130,15 +130,15 @@ class EntryItemListTableViewController: BaseTableViewController {
     }
     */
     
-    @IBAction func closeButtonPushed(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+    @IBAction func closeButtonPushed(_ sender: AnyObject) {
+        self.dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func doneButtonPushed(sender: AnyObject) {
+    @IBAction func doneButtonPushed(_ sender: AnyObject) {
         list.items = sortedList
         list.makeVisibledItems()
         
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
 
 }

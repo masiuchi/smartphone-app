@@ -17,14 +17,14 @@ class PageFolderItem: BaseEntryItem {
         type = "folder"
     }
     
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
-        aCoder.encodeObject(self.selected, forKey: "selected")
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
+        aCoder.encode(self.selected, forKey: "selected")
     }
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
-        self.selected = aDecoder.decodeObjectForKey("selected") as! [Folder]
+        self.selected = aDecoder.decodeObject(forKey: "selected") as! [Folder]
     }
 
     
@@ -33,7 +33,7 @@ class PageFolderItem: BaseEntryItem {
         for item in selected {
             array.append(item.label)
         }
-        return array.joinWithSeparator(",")
+        return array.joined(separator: ",")
     }
     
     override func dispValue()-> String {
@@ -45,10 +45,10 @@ class PageFolderItem: BaseEntryItem {
         if let item = selected.first {
             folder["id"] = item.id
         }
-        return ["folder":folder]
+        return ["folder":folder as AnyObject]
     }
     
     override func clear() {
-        selected.removeAll(keepCapacity: false)
+        selected.removeAll(keepingCapacity: false)
     }
 }

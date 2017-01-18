@@ -15,19 +15,19 @@ class Page: BaseEntry {
     override init(json: JSON) {
         super.init(json: json)
         
-        folders.removeAll(keepCapacity: false)
+        folders.removeAll(keepingCapacity: false)
         let folder = Folder(json: json["folder"])
         folders.append(folder)
     }
     
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
-        aCoder.encodeObject(self.folders, forKey: "folders")
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
+        aCoder.encode(self.folders, forKey: "folders")
     }
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.folders = aDecoder.decodeObjectForKey("folders") as! [Folder]
+        self.folders = aDecoder.decodeObject(forKey: "folders") as! [Folder]
     }
 
 }

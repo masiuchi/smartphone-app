@@ -15,8 +15,8 @@ class EntryURLItem: EntryTextItem {
         type = "url"
     }
 
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
     }
     
     required init(coder aDecoder: NSCoder) {

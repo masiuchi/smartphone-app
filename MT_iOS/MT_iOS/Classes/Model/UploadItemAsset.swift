@@ -9,17 +9,17 @@
 import UIKit
 
 class UploadItemAsset: UploadItemImage {
-    private(set) var asset: PHAsset!
+    fileprivate(set) var asset: PHAsset!
     
     init(asset: PHAsset) {
         super.init()
         self.asset = asset
     }
     
-    override func setup(completion: (() -> Void)) {
-        let manager = PHImageManager.defaultManager()
-        manager.requestImageDataForAsset(self.asset, options: nil,
-            resultHandler: {(imageData: NSData?, dataUTI: String?, orientation: UIImageOrientation, info: [NSObject : AnyObject]?) in
+    override func setup(_ completion: @escaping (() -> Void)) {
+        let manager = PHImageManager.default()
+        manager.requestImageData(for: self.asset, options: nil,
+            resultHandler: {(imageData: Data?, dataUTI: String?, orientation: UIImageOrientation, info: [AnyHashable: Any]?) in
                 if let data = imageData {
                     if let image = UIImage(data: data) {
                         let jpeg = Utils.convertJpegData(image, width: self.width, quality: self.quality)
@@ -33,9 +33,9 @@ class UploadItemAsset: UploadItemImage {
         )
     }
     
-    override func thumbnail(size: CGSize, completion: (UIImage->Void)) {
-        let manager = PHImageManager.defaultManager()
-        manager.requestImageForAsset(self.asset, targetSize: size, contentMode: .Default, options: nil,
+    override func thumbnail(_ size: CGSize, completion: @escaping ((UIImage)->Void)) {
+        let manager = PHImageManager.default()
+        manager.requestImage(for: self.asset, targetSize: size, contentMode: PHImageContentMode(rawValue: 0)!, options: nil,
             resultHandler: {image, Info in
                 if let image = image {
                     completion(image)
@@ -48,7 +48,7 @@ class UploadItemAsset: UploadItemImage {
         if let date = asset.creationDate {
             self._filename =  Utils.makeJPEGFilename(date)
         } else {
-            self._filename = Utils.makeJPEGFilename(NSDate())
+            self._filename = Utils.makeJPEGFilename(Date())
         }
         
         return self._filename

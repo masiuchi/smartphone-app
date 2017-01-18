@@ -13,38 +13,38 @@ import SVProgressHUD
 class AssetList: ItemList {
     var blog: Blog!
     
-    override func toModel(json: JSON)->BaseObject {
+    override func toModel(_ json: JSON)->BaseObject {
         return Asset(json: json)
     }
     
-    override func fetch(offset: Int, success: ((items:[JSON]!, total:Int!) -> Void)!, failure: (JSON! -> Void)!) {
+    override func fetch(_ offset: Int, success: ((_ items:[JSON]?, _ total:Int?) -> Void)!, failure: ((JSON?) -> Void)!) {
         if working {return}
         
         self.working = true
         
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         let api = DataAPI.sharedInstance
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        let app = UIApplication.shared.delegate as! AppDelegate
         let authInfo = app.authInfo
         
-        let success: (([JSON]!, Int!)-> Void) = {
-            (result: [JSON]!, total: Int!)-> Void in
-            LOG("\(result)")
+        let success: (([JSON]?, Int?)-> Void) = {
+            (result: [JSON]?, total: Int?)-> Void in
+            LOG("\(result!)")
             if self.refresh {
                 self.items = []
             }
-            self.totalCount = total
-            self.parseItems(result)
-            success(items: result, total: total)
+            self.totalCount = total!
+            self.parseItems(result!)
+            success(result, total)
             self.postProcess()
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
         }
-        let failure: (JSON!-> Void) = {
-            (error: JSON!)-> Void in
-            LOG("failure:\(error.description)")
-            failure(error)
+        let failure: ((JSON?)-> Void) = {
+            (error: JSON?)-> Void in
+            LOG("failure:\(error!.description)")
+            failure(error!)
             self.postProcess()
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
         }
         
         api.authenticationV2(authInfo.username, password: authInfo.password, remember: true,
@@ -81,10 +81,10 @@ class AssetListTableViewController: BaseTableViewController, UISearchBarDelegate
         list.blog = self.blog
 
         self.refreshControl = MTRefreshControl()
-        self.refreshControl!.addTarget(self, action: #selector(AssetListTableViewController.refresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
+        self.refreshControl!.addTarget(self, action: #selector(AssetListTableViewController.refresh(_:)), for: UIControlEvents.valueChanged)
         
         searchBar = UISearchBar()
-        searchBar.frame = CGRectMake(0.0, 0.0, self.tableView.frame.size.width, 44.0)
+        searchBar.frame = CGRect(x: 0.0, y: 0.0, width: self.tableView.frame.size.width, height: 44.0)
         searchBar.barTintColor = Color.tableBg
         searchBar.placeholder = NSLocalizedString("Search", comment: "Search")
         searchBar.delegate = self
@@ -94,40 +94,40 @@ class AssetListTableViewController: BaseTableViewController, UISearchBarDelegate
             textField!.enablesReturnKeyAutomatically = false
         }
         
-        self.tableView.registerNib(UINib(nibName: "AssetTableViewCell", bundle: nil), forCellReuseIdentifier: "AssetTableViewCell")
+        self.tableView.register(UINib(nibName: "AssetTableViewCell", bundle: nil), forCellReuseIdentifier: "AssetTableViewCell")
         
         self.navigationController?.toolbar.barTintColor = Color.navBar
         self.navigationController?.toolbar.tintColor = Color.navBarTint
         
-        let defaultCenter = NSNotificationCenter.defaultCenter()
-        defaultCenter.addObserver(self, selector: #selector(AssetListTableViewController.assetDeleted(_:)), name: MTIAssetDeletedNotification, object: nil)
+        let defaultCenter = NotificationCenter.default
+        defaultCenter.addObserver(self, selector: #selector(AssetListTableViewController.assetDeleted(_:)), name: NSNotification.Name(rawValue: MTIAssetDeletedNotification), object: nil)
         
         cameraButton = UIBarButtonItem(image: UIImage(named: "btn_camera"), left: true, target: self, action: #selector(AssetListTableViewController.cameraButtonPushed(_:)))
         self.toolbarItems = [cameraButton]
-        let user = (UIApplication.sharedApplication().delegate as! AppDelegate).currentUser!
-        cameraButton.enabled = blog.canUpload(user: user)
+        let user = (UIApplication.shared.delegate as! AppDelegate).currentUser!
+        cameraButton.isEnabled = blog.canUpload(user: user)
 
     }
     
     deinit {
-        let notificationCenter = NSNotificationCenter.defaultCenter()
+        let notificationCenter = NotificationCenter.default
         notificationCenter.removeObserver(self)
     }
     
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setToolbarHidden(false, animated: false)
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if list.count == 0 {
             self.fetch()
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setToolbarHidden(true, animated: false)
     }
@@ -138,35 +138,35 @@ class AssetListTableViewController: BaseTableViewController, UISearchBarDelegate
     }
     
     // MARK: - Refresh
-    @IBAction func refresh(sender:UIRefreshControl) {
+    @IBAction func refresh(_ sender:UIRefreshControl) {
         self.fetch()
     }
     
     // MARK: - fetch
     func fetch() {
-        SVProgressHUD.showWithStatus(NSLocalizedString("Fetch items...", comment: "Fetch items..."))
-        let success: (([JSON]!, Int!)-> Void) = {
-            (result: [JSON]!, total: Int!)-> Void in
+        SVProgressHUD.show(withStatus: NSLocalizedString("Fetch items...", comment: "Fetch items..."))
+        let success: (([JSON]?, Int?)-> Void) = {
+            (result: [JSON]?, total: Int?)-> Void in
             SVProgressHUD.dismiss()
             self.tableView.reloadData()
             self.refreshControl!.endRefreshing()
         }
-        let failure: (JSON!-> Void) = {
-            (error: JSON!)-> Void in
-            SVProgressHUD.showErrorWithStatus(NSLocalizedString("Fetch items failured.", comment: "Fetch items failured."))
+        let failure: ((JSON?)-> Void) = {
+            (error: JSON?)-> Void in
+            SVProgressHUD.showError(withStatus: NSLocalizedString("Fetch items failured.", comment: "Fetch items failured."))
             self.refreshControl!.endRefreshing()
         }
         list.refresh(success, failure: failure)
     }
     
     func more() {
-        let success: (([JSON]!, Int!)-> Void) = {
-            (result: [JSON]!, total: Int!)-> Void in
+        let success: (([JSON]?, Int?)-> Void) = {
+            (result: [JSON]?, total: Int?)-> Void in
             self.tableView.reloadData()
             self.refreshControl!.endRefreshing()
         }
-        let failure: (JSON!-> Void) = {
-            (error: JSON!)-> Void in
+        let failure: ((JSON?)-> Void) = {
+            (error: JSON?)-> Void in
             self.refreshControl!.endRefreshing()
         }
         list.more(success, failure: failure)
@@ -174,20 +174,20 @@ class AssetListTableViewController: BaseTableViewController, UISearchBarDelegate
     
     // MARK: - Table view data source
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
         return 1
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         return list.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("AssetTableViewCell", forIndexPath: indexPath) as! AssetTableViewCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "AssetTableViewCell", for: indexPath) as! AssetTableViewCell
         
         self.adjustCellLayoutMargins(cell)
         
@@ -199,30 +199,30 @@ class AssetListTableViewController: BaseTableViewController, UISearchBarDelegate
     }
     
     // MARK: - Table view delegate
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 92.0
     }
     
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 44.0
     }
     
-    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return searchBar
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let asset = list[indexPath.row] as! Asset
         let storyboard: UIStoryboard = UIStoryboard(name: "AssetDetail", bundle: nil)
         let vc = storyboard.instantiateInitialViewController() as! AssetDetailViewController
         vc.asset = asset
         vc.blog = blog
         self.navigationController?.pushViewController(vc, animated: true)
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     //MARK: -
-    override func scrollViewDidScroll(scrollView: UIScrollView) {
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if (self.tableView.contentOffset.y >= (self.tableView.contentSize.height - self.tableView.bounds.size.height)) {
             
             if self.list.working {return}
@@ -233,31 +233,31 @@ class AssetListTableViewController: BaseTableViewController, UISearchBarDelegate
     }
     
     //MARK: -
-    func composeButtonPushed(sender: UIBarButtonItem) {
+    func composeButtonPushed(_ sender: UIBarButtonItem) {
         
     }
     
     // MARK: --
-    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
         self.list.searchText = searchBar.text!
         if self.list.count > 0 {
-            self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0), atScrollPosition: UITableViewScrollPosition.Top, animated: false)
+            self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: UITableViewScrollPosition.top, animated: false)
         }
         self.fetch()
     }
     
-    @IBAction func cameraButtonPushed(sender: AnyObject) {
+    @IBAction func cameraButtonPushed(_ sender: AnyObject) {
         let storyboard: UIStoryboard = UIStoryboard(name: "AddAsset", bundle: nil)
         let nav = storyboard.instantiateInitialViewController() as! UINavigationController
         let vc = nav.topViewController as! AddAssetTableViewController
         vc.blog = blog
         vc.delegate = self
         vc.showAlign = false
-        self.presentViewController(nav, animated: true, completion: nil)
+        self.present(nav, animated: true, completion: nil)
     }
     
-    func assetDeleted(note: NSNotification) {
+    func assetDeleted(_ note: Notification) {
         if let userInfo = note.userInfo {
             let asset = userInfo["asset"]! as! Asset
             if self.list.deleteObject(asset) {
@@ -266,27 +266,27 @@ class AssetListTableViewController: BaseTableViewController, UISearchBarDelegate
         }
     }
 
-    func AddAssetDone(controller: AddAssetTableViewController, asset: Asset) {
-        self.dismissViewControllerAnimated(false, completion:
+    func AddAssetDone(_ controller: AddAssetTableViewController, asset: Asset) {
+        self.dismiss(animated: false, completion:
             {_ in
                 self.fetch()
             }
         )
     }
 
-    func AddAssetsDone(controller: AddAssetTableViewController) {
-        self.dismissViewControllerAnimated(false, completion:
+    func AddAssetsDone(_ controller: AddAssetTableViewController) {
+        self.dismiss(animated: false, completion:
             {_ in
                 self.fetch()
             }
         )
     }
     
-    func AddOfflineImageDone(controller: AddAssetTableViewController, item: EntryImageItem) {
+    func AddOfflineImageDone(_ controller: AddAssetTableViewController, item: EntryImageItem) {
 
     }
     
-    func AddOfflineImageStorageError(controller: AddAssetTableViewController, item: EntryImageItem) {
+    func AddOfflineImageStorageError(_ controller: AddAssetTableViewController, item: EntryImageItem) {
         
     }
 }

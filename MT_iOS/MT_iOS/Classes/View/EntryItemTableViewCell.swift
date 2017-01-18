@@ -25,20 +25,20 @@ class EntryItemTableViewCell: UITableViewCell {
     var require: Bool {
         set {
             _require = newValue
-            requireIcon.hidden = !_require
+            requireIcon.isHidden = !_require
         }
         get {
             return _require
         }
     }
 
-    override func setSelected(selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
     }
     
-    private var _item: BaseEntryItem?
+    fileprivate var _item: BaseEntryItem?
     var item: BaseEntryItem? {
         set {
             self._item = newValue
@@ -57,15 +57,15 @@ class EntryItemTableViewCell: UITableViewCell {
         }
     }
     
-    func buttonImage(visibled: Bool) {
+    func buttonImage(_ visibled: Bool) {
         if visibled {
-            self.visibleButton.setImage(UIImage(named: "btn_checked"), forState: UIControlState.Normal)
+            self.visibleButton.setImage(UIImage(named: "btn_checked"), for: UIControlState())
         } else {
-            self.visibleButton.setImage(UIImage(named: "btn_unchecked"), forState: UIControlState.Normal)
+            self.visibleButton.setImage(UIImage(named: "btn_unchecked"), for: UIControlState())
         }
     }
     
-    @IBAction func visibleButtonPushed(sender: AnyObject) {
+    @IBAction func visibleButtonPushed(_ sender: AnyObject) {
         if let entryItem = self._item {
             entryItem.visibled = !entryItem.visibled
             if !entryItem.isCustomField {

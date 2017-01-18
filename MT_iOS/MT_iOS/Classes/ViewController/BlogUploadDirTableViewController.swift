@@ -9,7 +9,7 @@
 import UIKit
 
 protocol BlogUploadDirDelegate {
-    func blogUploadDirDone(controller: BlogUploadDirTableViewController, directory: String)
+    func blogUploadDirDone(_ controller: BlogUploadDirTableViewController, directory: String)
 }
 
 
@@ -32,11 +32,11 @@ class BlogUploadDirTableViewController: BaseTableViewController {
         self.tableView.backgroundColor = Color.tableBg
         
         if directory.hasPrefix("/") {
-            directory = (directory as NSString).substringFromIndex(1)
+            directory = (directory as NSString).substring(from: 1)
         }
         
         if self.editable {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(BlogUploadDirTableViewController.doneButtonPushed(_:)))
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: #selector(BlogUploadDirTableViewController.doneButtonPushed(_:)))
         }
     }
 
@@ -47,44 +47,44 @@ class BlogUploadDirTableViewController: BaseTableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         return 1
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("TextFieldCell", forIndexPath: indexPath) 
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldCell", for: indexPath) 
 
         self.adjustCellLayoutMargins(cell)
         
         // Configure the cell...
         field = cell.viewWithTag(99) as? UITextField
         field?.keyboardType = UIKeyboardType.URL
-        field?.autocorrectionType = UITextAutocorrectionType.No
+        field?.autocorrectionType = UITextAutocorrectionType.no
         field?.text = directory
-        field?.enabled = self.editable
+        field?.isEnabled = self.editable
         field?.becomeFirstResponder()
 
         return cell
     }
     
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 35.0
     }
     
-    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = UIView(frame: CGRectMake(0.0, 0.0, self.tableView.frame.size.width, self.tableView(tableView, heightForHeaderInSection: 0)))
-        let label = UILabel(frame: CGRectMake(10.0, 0.0, header.frame.size.width - 10.0 * 2, header.frame.size.height))
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let header = UIView(frame: CGRect(x: 0.0, y: 0.0, width: self.tableView.frame.size.width, height: self.tableView(tableView, heightForHeaderInSection: 0)))
+        let label = UILabel(frame: CGRect(x: 10.0, y: 0.0, width: header.frame.size.width - 10.0 * 2, height: header.frame.size.height))
         label.text = NSLocalizedString("Upload Directory", comment: "Upload Directory")
         label.textColor = Color.placeholderText
-        label.font = UIFont.systemFontOfSize(15.0)
+        label.font = UIFont.systemFont(ofSize: 15.0)
         header.addSubview(label)
         
         return header
@@ -135,7 +135,7 @@ class BlogUploadDirTableViewController: BaseTableViewController {
     }
     */
     
-    @IBAction func doneButtonPushed(sender: AnyObject) {
+    @IBAction func doneButtonPushed(_ sender: AnyObject) {
         if field != nil {
             var dir = field!.text
             if Utils.validatePath(dir!) {
@@ -143,17 +143,17 @@ class BlogUploadDirTableViewController: BaseTableViewController {
                     dir = "/" + dir!
                 }
                 delegate?.blogUploadDirDone(self, directory: dir!)
-                self.navigationController?.popViewControllerAnimated(true)
+                _ = self.navigationController?.popViewController(animated: true)
             } else {
                 let alertController = UIAlertController(
                     title: NSLocalizedString("Error", comment: "Error"),
                     message: NSLocalizedString("You must set a valid path.", comment: "You must set a valid path."),
-                    preferredStyle: .Alert)
-                let okAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .Default) {
+                    preferredStyle: .alert)
+                let okAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default) {
                     action in
                 }
                 alertController.addAction(okAction)
-                presentViewController(alertController, animated: true, completion: nil)
+                present(alertController, animated: true, completion: nil)
             }
         }
     }

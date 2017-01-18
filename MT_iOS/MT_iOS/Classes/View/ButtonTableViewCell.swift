@@ -15,11 +15,11 @@ class ButtonTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        self.contentView.userInteractionEnabled = true
-        self.button.userInteractionEnabled = true
+        self.contentView.isUserInteractionEnabled = true
+        self.button.isUserInteractionEnabled = true
     }
 
-    override func setSelected(selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state

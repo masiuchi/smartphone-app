@@ -21,18 +21,18 @@ class EntryItemList: NSObject, NSCoding {
         super.init()
     }
     
-    func encodeWithCoder(aCoder: NSCoder) {
-        aCoder.encodeObject(self.items, forKey: "items")
-        aCoder.encodeObject(self.visibledItems, forKey: "visibledItems")
-        aCoder.encodeObject(self.blog, forKey: "blog")
-        aCoder.encodeObject(self.object, forKey: "object")
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(self.items, forKey: "items")
+        aCoder.encode(self.visibledItems, forKey: "visibledItems")
+        aCoder.encode(self.blog, forKey: "blog")
+        aCoder.encode(self.object, forKey: "object")
     }
     
     required init?(coder aDecoder: NSCoder) {
-        self.items = aDecoder.decodeObjectForKey("items") as! [BaseEntryItem]
-        self.visibledItems = aDecoder.decodeObjectForKey("visibledItems") as! [BaseEntryItem]
-        self.blog = aDecoder.decodeObjectForKey("blog") as! Blog
-        self.object = aDecoder.decodeObjectForKey("object") as! BaseEntry
+        self.items = aDecoder.decodeObject(forKey: "items") as! [BaseEntryItem]
+        self.visibledItems = aDecoder.decodeObject(forKey: "visibledItems") as! [BaseEntryItem]
+        self.blog = aDecoder.decodeObject(forKey: "blog") as! Blog
+        self.object = aDecoder.decodeObject(forKey: "object") as! BaseEntry
         
         for item in items {
             if item is EntryBlocksItem {
@@ -70,14 +70,14 @@ class EntryItemList: NSObject, NSCoding {
         let statusItem = EntryStatusItem()
         statusItem.id = "status"
         statusItem.unpublished = false
-        if object.status == Entry.Status.Publish.text() {
-            statusItem.selected = Entry.Status.Publish.rawValue
-        } else if object.status == Entry.Status.Draft.text() {
-            statusItem.selected = Entry.Status.Draft.rawValue
-        } else if object.status == Entry.Status.Future.text() {
-            statusItem.selected = Entry.Status.Future.rawValue
-        } else if object.status == Entry.Status.Unpublish.text() {
-            statusItem.selected = Entry.Status.Unpublish.rawValue
+        if object.status == Entry.Status.publish.text() {
+            statusItem.selected = Entry.Status.publish.rawValue
+        } else if object.status == Entry.Status.draft.text() {
+            statusItem.selected = Entry.Status.draft.rawValue
+        } else if object.status == Entry.Status.future.text() {
+            statusItem.selected = Entry.Status.future.rawValue
+        } else if object.status == Entry.Status.unpublish.text() {
+            statusItem.selected = Entry.Status.unpublish.rawValue
             statusItem.unpublished = true
         }
         
@@ -168,7 +168,7 @@ class EntryItemList: NSObject, NSCoding {
             } else if field.type == "datetime" {
                 if field.options == "datetime" {
                     let item = EntryDateTimeItem()
-                    let oldAPI = !customFieldObject!.value.containsString("T")
+                    let oldAPI = !customFieldObject!.value.contains("T")
                     if oldAPI {
                         item.datetime = Utils.dateTimeFromString(customFieldObject!.value)
                     } else {
@@ -177,7 +177,7 @@ class EntryItemList: NSObject, NSCoding {
                     entryItem = item
                 } else if field.options == "date" {
                     let item = EntryDateItem()
-                    let oldAPI = !customFieldObject!.value.containsString("-")
+                    let oldAPI = !customFieldObject!.value.contains("-")
                     if oldAPI {
                         item.date = Utils.dateTimeFromString(customFieldObject!.value)
                     } else {
@@ -186,7 +186,7 @@ class EntryItemList: NSObject, NSCoding {
                     entryItem = item
                 } else if field.options == "time" {
                     let item = EntryTimeItem()
-                    let oldAPI = !customFieldObject!.value.containsString(":")
+                    let oldAPI = !customFieldObject!.value.contains(":")
                     if oldAPI {
                         item.time = Utils.dateTimeFromString(customFieldObject!.value)
                     } else {
@@ -202,7 +202,7 @@ class EntryItemList: NSObject, NSCoding {
                     item.selected = customFieldObject!.defaultValue
                 }
                 let options = field.options.characters.split { $0 == "," }.map { String($0) }
-                item.list.removeAll(keepCapacity: false)
+                item.list.removeAll(keepingCapacity: false)
                 for option in options {
                     item.list.append(Utils.trimSpace(option))
                 }
@@ -215,7 +215,7 @@ class EntryItemList: NSObject, NSCoding {
                     item.selected = customFieldObject!.defaultValue
                 }
                 let options = field.options.characters.split { $0 == "," }.map { String($0) }
-                item.list.removeAll(keepCapacity: false)
+                item.list.removeAll(keepingCapacity: false)
                 for option in options {
                     item.list.append(Utils.trimSpace(option))
                 }
@@ -278,7 +278,7 @@ class EntryItemList: NSObject, NSCoding {
     }
     
     func makeVisibledItems() {
-        visibledItems.removeAll(keepCapacity: false)
+        visibledItems.removeAll(keepingCapacity: false)
         for item in items {
             if item.visibled {
                 visibledItems.append(item)
@@ -297,7 +297,7 @@ class EntryItemList: NSObject, NSCoding {
     }
     
     func orderSettingKey()-> String {
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        let app = UIApplication.shared.delegate as! AppDelegate
         if let user = app.currentUser {
             if object is Entry {
                 return blog.settingKey("entryitem_order_entry", user: user)
@@ -310,17 +310,17 @@ class EntryItemList: NSObject, NSCoding {
     }
     
     func loadOrderSettings()-> [[String:AnyObject]]? {
-        let defaults = NSUserDefaults.standardUserDefaults()
+        let defaults = UserDefaults.standard
         
-        if let value: AnyObject = defaults.objectForKey(self.orderSettingKey()) {
+        if let value: AnyObject = defaults.object(forKey: self.orderSettingKey()) as AnyObject? {
             return value as? [Dictionary]
         }
         
         //V1.0.xとの互換性のため
-        if let value: AnyObject = defaults.objectForKey(self.orderSettingKeyOld()) {
-            defaults.removeObjectForKey(self.orderSettingKeyOld())
+        if let value: AnyObject = defaults.object(forKey: self.orderSettingKeyOld()) as AnyObject? {
+            defaults.removeObject(forKey: self.orderSettingKeyOld())
             
-            defaults.setObject(value, forKey:self.orderSettingKey())
+            defaults.set(value, forKey:self.orderSettingKey())
             defaults.synchronize()
             
             return value as? [Dictionary]
@@ -335,17 +335,17 @@ class EntryItemList: NSObject, NSCoding {
                 "id": item.id,
                 "isCustomField": item.isCustomField,
                 "visibled": item.visibled
-            ]
-            array.append(i as! [String : AnyObject])
+            ] as [String : Any]
+            array.append(i as [String : AnyObject])
         }
 
-        let defaults = NSUserDefaults.standardUserDefaults()
+        let defaults = UserDefaults.standard
         let key = self.orderSettingKey()
-        defaults.setObject(array, forKey:key)
+        defaults.set(array, forKey:key)
         defaults.synchronize()
     }
     
-    func makeParams(preview: Bool)->[String: AnyObject] {
+    func makeParams(_ preview: Bool)->[String: AnyObject] {
         var params = [String: AnyObject]()
         var fields = [AnyObject]()
         for item in items {
@@ -360,11 +360,11 @@ class EntryItemList: NSObject, NSCoding {
                             }
                         }
                         
-                        param["basename"] = key
+                        param["basename"] = key as AnyObject?
                         param["value"] = itemParams[key]
                     }
                 }
-                fields.append(param)
+                fields.append(param as AnyObject)
             } else {
                 item.isPreview = preview
                 let itemParams = item.makeParams()
@@ -375,30 +375,30 @@ class EntryItemList: NSObject, NSCoding {
                 }
             }
         }
-        params["customFields"] = fields
+        params["customFields"] = fields as AnyObject?
         
         if object.id.isEmpty {
             //新規作成時にカテゴリ未選択なら送信しない
             if let categories = params["categories"] as? [[String: String]] {
                 if categories.count == 0 {
-                    params.removeValueForKey("categories")
+                    params.removeValue(forKey: "categories")
                 }
             }
             //新規作成時にフォルダ未選択なら送信しない
             if let folder = params["folder"] as? [String: String] {
                 if let id = folder["id"] {
                     if id.isEmpty {
-                        params.removeValueForKey("folder")
+                        params.removeValue(forKey: "folder")
                     }
                 } else {
-                    params.removeValueForKey("folder")
+                    params.removeValue(forKey: "folder")
                 }
             }
         }
         
         //id
         if !object.id.isEmpty {
-            params["id"] = object.id
+            params["id"] = object.id as AnyObject?
         }
         
         //Tags
@@ -406,11 +406,11 @@ class EntryItemList: NSObject, NSCoding {
         for tag in object.tags {
             tags.append(tag.name)
         }
-        params["tags"] = tags
+        params["tags"] = tags as AnyObject?
         
         //Assets
         var assetIDs = [String]()
-        func appendID(id: String) {
+        func appendID(_ id: String) {
             if !id.isEmpty && !assetIDs.contains(id) {
                 assetIDs.append(id)
             }
@@ -445,21 +445,21 @@ class EntryItemList: NSObject, NSCoding {
             assets.append(["id":id])
         }
         if assets.count > 0 {
-            params["assets"] = assets
+            params["assets"] = assets as AnyObject?
         }
         
         //PublishDate
         if object.date != nil {
-            params["date"] = Utils.ISO8601StringFromDate(object.date!)
+            params["date"] = Utils.ISO8601StringFromDate(object.date!) as AnyObject?
         }
         
         //UnpublishDate
         if object.unpublishedDate != nil {
-            params["unpublishedDate"] = Utils.ISO8601StringFromDate(object.unpublishedDate!)
+            params["unpublishedDate"] = Utils.ISO8601StringFromDate(object.unpublishedDate!) as AnyObject?
         }
         
         if object.id.isEmpty {
-            params["format"] = object.editMode.format()
+            params["format"] = object.editMode.format() as AnyObject?
         }
         
         LOG("params:\(params)")
@@ -467,7 +467,7 @@ class EntryItemList: NSObject, NSCoding {
         return params
     }
     
-    func itemWithID(id: String, isCustomField: Bool)-> BaseEntryItem? {
+    func itemWithID(_ id: String, isCustomField: Bool)-> BaseEntryItem? {
         for item in items {
             if item.id == id && item.isCustomField == isCustomField {
                 return item
@@ -478,7 +478,7 @@ class EntryItemList: NSObject, NSCoding {
     
     func dataDir()-> String {
         var path = blog.draftDirPath(object)
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        let app = UIApplication.shared.delegate as! AppDelegate
         if let user = app.currentUser {
             path = blog.draftDirPath(object, user: user)
         }
@@ -486,15 +486,15 @@ class EntryItemList: NSObject, NSCoding {
     }
     
     func makeFilename()-> String {
-        let dateFormatter = NSDateFormatter()
+        let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyyMMddHHmmssSSS"
-        let filename = dateFormatter.stringFromDate(NSDate())
+        let filename = dateFormatter.string(from: Date())
         
         return filename
     }
     
-    class func loadFromFile(path: String, filename: String)-> EntryItemList {
-        let list = NSKeyedUnarchiver.unarchiveObjectWithFile(path) as! EntryItemList
+    class func loadFromFile(_ path: String, filename: String)-> EntryItemList {
+        let list = NSKeyedUnarchiver.unarchiveObject(withFile: path) as! EntryItemList
         list.filename = filename
         
         return list
@@ -507,15 +507,15 @@ class EntryItemList: NSObject, NSCoding {
         
         //self.removeDraftData()
         
-        let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         var path = paths[0].stringByAppendingPathComponent(self.dataDir())
         
-        let fileManager = NSFileManager.defaultManager()
-        let err: NSErrorPointer = nil
+        let fileManager = FileManager.default
+        let err: NSErrorPointer? = nil
         do {
-            try fileManager.createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil)
+            try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
         } catch let error as NSError {
-            err.memory = error
+            err??.pointee = error
         } catch {
         }
         if err == nil {
@@ -529,24 +529,24 @@ class EntryItemList: NSObject, NSCoding {
     func removeDraftData()-> Bool {
         let paths = self.ImageFiles()
         for path in paths {
-            let fileManager = NSFileManager.defaultManager()
+            let fileManager = FileManager.default
             do {
-                try fileManager.removeItemAtPath(path)
+                try fileManager.removeItem(atPath: path)
             } catch {
             }
         }
         
         if !self.filename.isEmpty {
-            let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+            let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
             var path = paths[0].stringByAppendingPathComponent(self.dataDir())
             path = path.stringByAppendingPathComponent(self.filename)
             
-            let fileManager = NSFileManager.defaultManager()
-            let err: NSErrorPointer = nil
+            let fileManager = FileManager.default
+            let err: NSErrorPointer? = nil
             do {
-                try fileManager.removeItemAtPath(path)
+                try fileManager.removeItem(atPath: path)
             } catch let error as NSError {
-                err.memory = error
+                err??.pointee = error
             } catch {
             }
             

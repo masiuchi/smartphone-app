@@ -12,37 +12,37 @@ import SVProgressHUD
 
 class LoginTableViewController: BaseTableViewController, UITextFieldDelegate {
     enum Section: Int {
-        case Logo = 0,
-        AuthInfo,
-        Spacer1,
-        BasicAuth,
-        Spacer2,
-        LoginButton,
-        Spacer3,
+        case logo = 0,
+        authInfo,
+        spacer1,
+        basicAuth,
+        spacer2,
+        loginButton,
+        spacer3,
         _Num
     }
     
     enum AuthInfoItem: Int {
-        case Username = 0,
-        Password,
-        Endpoint,
+        case username = 0,
+        password,
+        endpoint,
         _Num
     }
 
     enum BasicAuthItem: Int {
-        case Button = 0,
-        Spacer1,
-        Username,
-        Password,
+        case button = 0,
+        spacer1,
+        username,
+        password,
         _Num
     }
     
     enum FieldType: Int {
-        case Username = 1,
-        Password,
-        Endpoint,
-        BasicAuthUsername,
-        BasicAuthPassword
+        case username = 1,
+        password,
+        endpoint,
+        basicAuthUsername,
+        basicAuthPassword
     }
     
     var auth = AuthInfo()
@@ -55,27 +55,27 @@ class LoginTableViewController: BaseTableViewController, UITextFieldDelegate {
         super.viewDidLoad()
 
         gradientLayer.frame = self.view.bounds
-        let startColor = Color.loginBgStart.CGColor
-        let endColor = Color.loginBgEnd.CGColor
+        let startColor = Color.loginBgStart.cgColor
+        let endColor = Color.loginBgEnd.cgColor
         gradientLayer.colors = [startColor, endColor]
         gradientLayer.locations = [0.0, 1.0]
-        self.view.layer.insertSublayer(gradientLayer, atIndex: 0)
+        self.view.layer.insertSublayer(gradientLayer, at: 0)
         
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-        self.navigationController?.navigationBarHidden = true
+        self.navigationController?.isNavigationBarHidden = true
         
-        self.tableView.registerNib(UINib(nibName: "LogoTableViewCell", bundle: nil), forCellReuseIdentifier: "LogoTableViewCell")
-        self.tableView.registerNib(UINib(nibName: "TextFieldTableViewCell", bundle: nil), forCellReuseIdentifier: "TextFieldTableViewCell")
-        self.tableView.registerNib(UINib(nibName: "ButtonTableViewCell", bundle: nil), forCellReuseIdentifier: "ButtonTableViewCell")
+        self.tableView.register(UINib(nibName: "LogoTableViewCell", bundle: nil), forCellReuseIdentifier: "LogoTableViewCell")
+        self.tableView.register(UINib(nibName: "TextFieldTableViewCell", bundle: nil), forCellReuseIdentifier: "TextFieldTableViewCell")
+        self.tableView.register(UINib(nibName: "ButtonTableViewCell", bundle: nil), forCellReuseIdentifier: "ButtonTableViewCell")
         
-        self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        self.tableView.separatorStyle = UITableViewCellSeparatorStyle.none
         self.tableView.backgroundColor = Color.clear
         
-        let app: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let app: AppDelegate = UIApplication.shared.delegate as! AppDelegate
         let authInfo = app.authInfo
         if authInfo.username.isEmpty && authInfo.endpoint.isEmpty {
             authInfo.clear()
@@ -92,10 +92,10 @@ class LoginTableViewController: BaseTableViewController, UITextFieldDelegate {
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.navigationController?.navigationBarHidden = true
+        self.navigationController?.isNavigationBarHidden = true
     }
     
     override func didReceiveMemoryWarning() {
@@ -105,144 +105,144 @@ class LoginTableViewController: BaseTableViewController, UITextFieldDelegate {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
         return Section._Num.rawValue
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         switch section {
-        case Section.Logo.rawValue:
+        case Section.logo.rawValue:
             return 1
-        case Section.AuthInfo.rawValue:
+        case Section.authInfo.rawValue:
             return AuthInfoItem._Num.rawValue
-        case Section.BasicAuth.rawValue:
+        case Section.basicAuth.rawValue:
             if basicAuthVisibled {
                 return BasicAuthItem._Num.rawValue
             } else {
                 return 1
             }
-        case Section.LoginButton.rawValue:
+        case Section.loginButton.rawValue:
             return 1
         default:
             return 1
         }
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell = UITableViewCell()
 
         
         //tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath) as! UITableViewCell
         
         switch indexPath.section {
-        case Section.Logo.rawValue:
-            let c = tableView.dequeueReusableCellWithIdentifier("LogoTableViewCell", forIndexPath: indexPath) as! LogoTableViewCell
+        case Section.logo.rawValue:
+            let c = tableView.dequeueReusableCell(withIdentifier: "LogoTableViewCell", for: indexPath) as! LogoTableViewCell
             cell = c
             
-        case Section.AuthInfo.rawValue:
+        case Section.authInfo.rawValue:
             switch indexPath.row {
-            case AuthInfoItem.Username.rawValue:
-                let c = tableView.dequeueReusableCellWithIdentifier("TextFieldTableViewCell", forIndexPath: indexPath) as! TextFieldTableViewCell
+            case AuthInfoItem.username.rawValue:
+                let c = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as! TextFieldTableViewCell
                 c.textField.placeholder = NSLocalizedString("username", comment: "username")
-                c.textField.keyboardType = UIKeyboardType.Default
-                c.textField.returnKeyType = UIReturnKeyType.Done
-                c.textField.secureTextEntry = false
-                c.textField.autocorrectionType = UITextAutocorrectionType.No
+                c.textField.keyboardType = UIKeyboardType.default
+                c.textField.returnKeyType = UIReturnKeyType.done
+                c.textField.isSecureTextEntry = false
+                c.textField.autocorrectionType = UITextAutocorrectionType.no
                 c.textField.text = auth.username
-                c.textField.tag = FieldType.Username.rawValue
+                c.textField.tag = FieldType.username.rawValue
                 c.textField.delegate = self
-                c.textField.addTarget(self, action: #selector(LoginTableViewController.textFieldChanged(_:)), forControlEvents: UIControlEvents.EditingChanged)
+                c.textField.addTarget(self, action: #selector(LoginTableViewController.textFieldChanged(_:)), for: UIControlEvents.editingChanged)
                 c.bgImageView.image = UIImage(named: "signin_table_1")
                 cell = c
-            case AuthInfoItem.Password.rawValue:
-                let c = tableView.dequeueReusableCellWithIdentifier("TextFieldTableViewCell", forIndexPath: indexPath) as! TextFieldTableViewCell
+            case AuthInfoItem.password.rawValue:
+                let c = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as! TextFieldTableViewCell
                 c.textField.placeholder = NSLocalizedString("password", comment: "password")
-                c.textField.keyboardType = UIKeyboardType.Default
-                c.textField.returnKeyType = UIReturnKeyType.Done
-                c.textField.secureTextEntry = true
-                c.textField.autocorrectionType = UITextAutocorrectionType.No
+                c.textField.keyboardType = UIKeyboardType.default
+                c.textField.returnKeyType = UIReturnKeyType.done
+                c.textField.isSecureTextEntry = true
+                c.textField.autocorrectionType = UITextAutocorrectionType.no
                 c.textField.text = auth.password
-                c.textField.tag = FieldType.Password.rawValue
+                c.textField.tag = FieldType.password.rawValue
                 c.textField.delegate = self
-                c.textField.addTarget(self, action: #selector(LoginTableViewController.textFieldChanged(_:)), forControlEvents: UIControlEvents.EditingChanged)
+                c.textField.addTarget(self, action: #selector(LoginTableViewController.textFieldChanged(_:)), for: UIControlEvents.editingChanged)
                 c.bgImageView.image = UIImage(named: "signin_table_2")
                 cell = c
-            case AuthInfoItem.Endpoint.rawValue:
-                let c = tableView.dequeueReusableCellWithIdentifier("TextFieldTableViewCell", forIndexPath: indexPath) as! TextFieldTableViewCell
+            case AuthInfoItem.endpoint.rawValue:
+                let c = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as! TextFieldTableViewCell
                 c.textField.placeholder = NSLocalizedString("endpoint", comment: "endpoint")
                 c.textField.keyboardType = UIKeyboardType.URL
-                c.textField.returnKeyType = UIReturnKeyType.Done
-                c.textField.secureTextEntry = false
-                c.textField.autocorrectionType = UITextAutocorrectionType.No
+                c.textField.returnKeyType = UIReturnKeyType.done
+                c.textField.isSecureTextEntry = false
+                c.textField.autocorrectionType = UITextAutocorrectionType.no
                 c.textField.text = auth.endpoint
-                c.textField.tag = FieldType.Endpoint.rawValue
+                c.textField.tag = FieldType.endpoint.rawValue
                 c.textField.delegate = self
-                c.textField.addTarget(self, action: #selector(LoginTableViewController.textFieldChanged(_:)), forControlEvents: UIControlEvents.EditingChanged)
+                c.textField.addTarget(self, action: #selector(LoginTableViewController.textFieldChanged(_:)), for: UIControlEvents.editingChanged)
                 c.bgImageView.image = UIImage(named: "signin_table_3")
                 cell = c
             default:
                 break
             }
 
-        case Section.BasicAuth.rawValue:
+        case Section.basicAuth.rawValue:
             switch indexPath.row {
-            case BasicAuthItem.Button.rawValue:
-                let c = tableView.dequeueReusableCellWithIdentifier("ButtonTableViewCell", forIndexPath: indexPath) as! ButtonTableViewCell
-                c.button.setTitle(NSLocalizedString("Basic Auth", comment: "Basic Auth"), forState: UIControlState.Normal)
-                c.button.titleLabel?.font = UIFont.systemFontOfSize(16.0)
-                c.button.setTitleColor(Color.buttonText, forState: UIControlState.Normal)
+            case BasicAuthItem.button.rawValue:
+                let c = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as! ButtonTableViewCell
+                c.button.setTitle(NSLocalizedString("Basic Auth", comment: "Basic Auth"), for: UIControlState())
+                c.button.titleLabel?.font = UIFont.systemFont(ofSize: 16.0)
+                c.button.setTitleColor(Color.buttonText, for: UIControlState())
                 if self.basicAuthVisibled {
-                    c.button.setBackgroundImage(UIImage(named: "btn_basic_open"), forState: UIControlState.Normal)
+                    c.button.setBackgroundImage(UIImage(named: "btn_basic_open"), for: UIControlState())
                 } else {
-                    c.button.setBackgroundImage(UIImage(named: "btn_basic_close"), forState: UIControlState.Normal)
+                    c.button.setBackgroundImage(UIImage(named: "btn_basic_close"), for: UIControlState())
                 }
-                c.button.addTarget(self, action: #selector(LoginTableViewController.basicAuthButtonPushed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+                c.button.addTarget(self, action: #selector(LoginTableViewController.basicAuthButtonPushed(_:)), for: UIControlEvents.touchUpInside)
                 cell = c
-            case BasicAuthItem.Username.rawValue:
-                let c = tableView.dequeueReusableCellWithIdentifier("TextFieldTableViewCell", forIndexPath: indexPath) as! TextFieldTableViewCell
+            case BasicAuthItem.username.rawValue:
+                let c = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as! TextFieldTableViewCell
                 c.textField.placeholder = NSLocalizedString("username", comment: "username")
-                c.textField.keyboardType = UIKeyboardType.Default
-                c.textField.returnKeyType = UIReturnKeyType.Done
-                c.textField.secureTextEntry = false
-                c.textField.autocorrectionType = UITextAutocorrectionType.No
+                c.textField.keyboardType = UIKeyboardType.default
+                c.textField.returnKeyType = UIReturnKeyType.done
+                c.textField.isSecureTextEntry = false
+                c.textField.autocorrectionType = UITextAutocorrectionType.no
                 c.textField.text = auth.basicAuthUsername
-                c.textField.tag = FieldType.BasicAuthUsername.rawValue
+                c.textField.tag = FieldType.basicAuthUsername.rawValue
                 c.textField.delegate = self
-                c.textField.addTarget(self, action: #selector(LoginTableViewController.textFieldChanged(_:)), forControlEvents: UIControlEvents.EditingChanged)
+                c.textField.addTarget(self, action: #selector(LoginTableViewController.textFieldChanged(_:)), for: UIControlEvents.editingChanged)
                 c.bgImageView.image = UIImage(named: "signin_table_1")
                 cell = c
-            case BasicAuthItem.Password.rawValue:
-                let c = tableView.dequeueReusableCellWithIdentifier("TextFieldTableViewCell", forIndexPath: indexPath) as! TextFieldTableViewCell
+            case BasicAuthItem.password.rawValue:
+                let c = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as! TextFieldTableViewCell
                 c.textField.placeholder = NSLocalizedString("password", comment: "password")
-                c.textField.keyboardType = UIKeyboardType.Default
-                c.textField.returnKeyType = UIReturnKeyType.Done
-                c.textField.secureTextEntry = true
-                c.textField.autocorrectionType = UITextAutocorrectionType.No
+                c.textField.keyboardType = UIKeyboardType.default
+                c.textField.returnKeyType = UIReturnKeyType.done
+                c.textField.isSecureTextEntry = true
+                c.textField.autocorrectionType = UITextAutocorrectionType.no
                 c.textField.text = auth.basicAuthPassword
-                c.textField.tag = FieldType.BasicAuthPassword.rawValue
+                c.textField.tag = FieldType.basicAuthPassword.rawValue
                 c.textField.delegate = self
-                c.textField.addTarget(self, action: #selector(LoginTableViewController.textFieldChanged(_:)), forControlEvents: UIControlEvents.EditingChanged)
+                c.textField.addTarget(self, action: #selector(LoginTableViewController.textFieldChanged(_:)), for: UIControlEvents.editingChanged)
                 c.bgImageView.image = UIImage(named: "signin_table_3")
                 cell = c
             default:
                 break
             }
 
-        case Section.LoginButton.rawValue:
-            let c = tableView.dequeueReusableCellWithIdentifier("ButtonTableViewCell", forIndexPath: indexPath) as! ButtonTableViewCell
-            c.button.setTitle(NSLocalizedString("Sign In", comment: "Sign In"), forState: UIControlState.Normal)
-            c.button.titleLabel?.font = UIFont.systemFontOfSize(17.0)
-            c.button.setTitleColor(Color.buttonText, forState: UIControlState.Normal)
-            c.button.setTitleColor(Color.buttonDisableText, forState: UIControlState.Disabled)
-            c.button.setBackgroundImage(UIImage(named: "btn_signin"), forState: UIControlState.Normal)
-            c.button.setBackgroundImage(UIImage(named: "btn_signin_highlight"), forState: UIControlState.Highlighted)
-            c.button.setBackgroundImage(UIImage(named: "btn_signin_disable"), forState: UIControlState.Disabled)
-            c.button.enabled = self.validate()
-            c.button.addTarget(self, action: #selector(LoginTableViewController.signInButtonPushed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+        case Section.loginButton.rawValue:
+            let c = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as! ButtonTableViewCell
+            c.button.setTitle(NSLocalizedString("Sign In", comment: "Sign In"), for: UIControlState())
+            c.button.titleLabel?.font = UIFont.systemFont(ofSize: 17.0)
+            c.button.setTitleColor(Color.buttonText, for: UIControlState())
+            c.button.setTitleColor(Color.buttonDisableText, for: UIControlState.disabled)
+            c.button.setBackgroundImage(UIImage(named: "btn_signin"), for: UIControlState())
+            c.button.setBackgroundImage(UIImage(named: "btn_signin_highlight"), for: UIControlState.highlighted)
+            c.button.setBackgroundImage(UIImage(named: "btn_signin_disable"), for: UIControlState.disabled)
+            c.button.isEnabled = self.validate()
+            c.button.addTarget(self, action: #selector(LoginTableViewController.signInButtonPushed(_:)), for: UIControlEvents.touchUpInside)
             cell = c
 
         default:
@@ -253,45 +253,45 @@ class LoginTableViewController: BaseTableViewController, UITextFieldDelegate {
 
         // Configure the cell...
         cell.backgroundColor = Color.clear
-        cell.selectionStyle = UITableViewCellSelectionStyle.None
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
 
         return cell
     }
 
     //MARK: - Table view delegate
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.section {
-        case Section.Logo.rawValue:
+        case Section.logo.rawValue:
             return 175.0
             
-        case Section.AuthInfo.rawValue:
+        case Section.authInfo.rawValue:
             switch indexPath.row {
-            case AuthInfoItem.Username.rawValue:
+            case AuthInfoItem.username.rawValue:
                 return 48.0
-            case AuthInfoItem.Password.rawValue:
+            case AuthInfoItem.password.rawValue:
                 return 48.0
-            case AuthInfoItem.Endpoint.rawValue:
+            case AuthInfoItem.endpoint.rawValue:
                 return 48.0
             default:
                 return 0.0
             }
             
-        case Section.BasicAuth.rawValue:
+        case Section.basicAuth.rawValue:
             switch indexPath.row {
-            case BasicAuthItem.Button.rawValue:
+            case BasicAuthItem.button.rawValue:
                 return 40.0
-            case BasicAuthItem.Username.rawValue:
+            case BasicAuthItem.username.rawValue:
                 return 48.0
-            case BasicAuthItem.Password.rawValue:
+            case BasicAuthItem.password.rawValue:
                 return 48.0
             default:
                 return 12.0
             }
             
-        case Section.LoginButton.rawValue:
+        case Section.loginButton.rawValue:
             return 40.0
             
-        case Section.Spacer3.rawValue:
+        case Section.spacer3.rawValue:
             return 17.0
             
         default:
@@ -344,36 +344,36 @@ class LoginTableViewController: BaseTableViewController, UITextFieldDelegate {
     }
     */
 
-    @IBAction func signInButtonPushed(sender: AnyObject) {
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+    @IBAction func signInButtonPushed(_ sender: AnyObject) {
+        let app = UIApplication.shared.delegate as! AppDelegate
         app.signIn(self.auth, showHud: true)
     }
     
-    @IBAction func forgetPasswordButtonPushed(sender: AnyObject) {
+    @IBAction func forgetPasswordButtonPushed(_ sender: AnyObject) {
         let vc = ResetPasswordTableViewController()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
-    @IBAction func basicAuthButtonPushed(sender: AnyObject) {
+    @IBAction func basicAuthButtonPushed(_ sender: AnyObject) {
         basicAuthVisibled = !basicAuthVisibled
         
         let indexPaths = [
-            NSIndexPath(forRow: BasicAuthItem.Spacer1.rawValue, inSection: Section.BasicAuth.rawValue),
-            NSIndexPath(forRow: BasicAuthItem.Username.rawValue, inSection: Section.BasicAuth.rawValue),
-            NSIndexPath(forRow: BasicAuthItem.Password.rawValue, inSection: Section.BasicAuth.rawValue)
+            IndexPath(row: BasicAuthItem.spacer1.rawValue, section: Section.basicAuth.rawValue),
+            IndexPath(row: BasicAuthItem.username.rawValue, section: Section.basicAuth.rawValue),
+            IndexPath(row: BasicAuthItem.password.rawValue, section: Section.basicAuth.rawValue)
         ]
         self.tableView.beginUpdates()
         if basicAuthVisibled {
-            self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Top)
+            self.tableView.insertRows(at: indexPaths, with: UITableViewRowAnimation.top)
         } else {
-            self.tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: UITableViewRowAnimation.Top)
+            self.tableView.deleteRows(at: indexPaths, with: UITableViewRowAnimation.top)
         }
         
-        self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: BasicAuthItem.Button.rawValue, inSection: Section.BasicAuth.rawValue)], withRowAnimation: UITableViewRowAnimation.None)
+        self.tableView.reloadRows(at: [IndexPath(row: BasicAuthItem.button.rawValue, section: Section.basicAuth.rawValue)], with: UITableViewRowAnimation.none)
         self.tableView.endUpdates()
     }
 
-    private func validate()-> Bool {
+    fileprivate func validate()-> Bool {
         if auth.username.isEmpty || auth.password.isEmpty || auth.endpoint.isEmpty {
             return false
         }
@@ -381,28 +381,28 @@ class LoginTableViewController: BaseTableViewController, UITextFieldDelegate {
         return true
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
     
-    @IBAction func textFieldChanged(field: UITextField) {
+    @IBAction func textFieldChanged(_ field: UITextField) {
         switch field.tag {
-        case FieldType.Username.rawValue:
+        case FieldType.username.rawValue:
             auth.username = field.text!
-        case FieldType.Password.rawValue:
+        case FieldType.password.rawValue:
             auth.password = field.text!
-        case FieldType.Endpoint.rawValue:
+        case FieldType.endpoint.rawValue:
             auth.endpoint = field.text!
-        case FieldType.BasicAuthUsername.rawValue:
+        case FieldType.basicAuthUsername.rawValue:
             auth.basicAuthUsername = field.text!
-        case FieldType.BasicAuthPassword.rawValue:
+        case FieldType.basicAuthPassword.rawValue:
             auth.basicAuthPassword = field.text!
         default:
             break
         }
         
-        let cell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow:0 , inSection: Section.LoginButton.rawValue)) as! ButtonTableViewCell
-        cell.button.enabled = self.validate()
+        let cell = tableView.cellForRow(at: IndexPath(row:0 , section: Section.loginButton.rawValue)) as! ButtonTableViewCell
+        cell.button.isEnabled = self.validate()
     }
 }

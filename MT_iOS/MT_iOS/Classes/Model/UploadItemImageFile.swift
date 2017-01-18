@@ -9,14 +9,14 @@
 import UIKit
 
 class UploadItemImageFile: UploadItemImage {
-    private(set) var path: String!
+    fileprivate(set) var path: String!
 
     init(path: String) {
         super.init()
         self.path = path
     }
 
-    override func setup(completion: (() -> Void)) {
+    override func setup(_ completion: @escaping (() -> Void)) {
         if let image = UIImage(contentsOfFile: self.path) {
             let jpeg = Utils.convertJpegData(image, width: self.width, quality: self.quality)
             self.data = jpeg
@@ -26,14 +26,14 @@ class UploadItemImageFile: UploadItemImage {
         }
     }
     
-    override func thumbnail(size: CGSize, completion: (UIImage->Void)) {
+    override func thumbnail(_ size: CGSize, completion: @escaping ((UIImage)->Void)) {
         if let image = UIImage(contentsOfFile: path) {
             let widthRatio = size.width / image.size.width
             let heightRatio = size.height / image.size.height
             let ratio = (widthRatio < heightRatio) ? widthRatio : heightRatio
             let resizedSize = CGSize(width: (image.size.width * ratio), height: (image.size.height * ratio))
             UIGraphicsBeginImageContext(resizedSize)
-            image.drawInRect(CGRect(x: 0, y: 0, width: resizedSize.width, height: resizedSize.height))
+            image.draw(in: CGRect(x: 0, y: 0, width: resizedSize.width, height: resizedSize.height))
             let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
             UIGraphicsEndImageContext()
 
@@ -42,16 +42,16 @@ class UploadItemImageFile: UploadItemImage {
     }
     
     override func makeFilename()->String {
-        let fileManager = NSFileManager.defaultManager()
+        let fileManager = FileManager.default
         do {
-            let attributes = try fileManager.attributesOfFileSystemForPath(path)
-            if let date = attributes[NSFileCreationDate] as? NSDate {
+            let attributes = try fileManager.attributesOfFileSystem(forPath: path)
+            if let date = attributes[FileAttributeKey.creationDate] as? Date {
                 self._filename = Utils.makeJPEGFilename(date)
             } else {
-                self._filename = Utils.makeJPEGFilename(NSDate())
+                self._filename = Utils.makeJPEGFilename(Date())
             }
         } catch _ {
-            self._filename = Utils.makeJPEGFilename(NSDate())
+            self._filename = Utils.makeJPEGFilename(Date())
         }
         
         return self._filename

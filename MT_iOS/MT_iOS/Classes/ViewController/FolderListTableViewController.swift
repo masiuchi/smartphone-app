@@ -10,39 +10,39 @@ import UIKit
 import SwiftyJSON
 
 class FolderList: CategoryList {
-    override func toModel(json: JSON)->BaseObject {
+    override func toModel(_ json: JSON)->BaseObject {
         return Folder(json: json)
     }
     
-    override func fetch(offset: Int, success: ((items:[JSON]!, total:Int!) -> Void)!, failure: (JSON! -> Void)!) {
+    override func fetch(_ offset: Int, success: ((_ items:[JSON]?, _ total:Int?) -> Void)!, failure: ((JSON?) -> Void)!) {
         if working {return}
         
         self.working = true
         
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         let api = DataAPI.sharedInstance
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        let app = UIApplication.shared.delegate as! AppDelegate
         let authInfo = app.authInfo
         
-        let success: (([JSON]!, Int!)-> Void) = {
-            (result: [JSON]!, total: Int!)-> Void in
-            LOG("\(result)")
+        let success: (([JSON]?, Int?)-> Void) = {
+            (result: [JSON]?, total: Int?)-> Void in
+            LOG("\(result!)")
             if self.refresh {
                 self.items = []
             }
-            self.totalCount = total
-            self.parseItems(result)
+            self.totalCount = total!
+            self.parseItems(result!)
             self.makeLevel()
-            success(items: result, total: total)
+            success(result, total)
             self.postProcess()
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
         }
-        let failure: (JSON!-> Void) = {
-            (error: JSON!)-> Void in
-            LOG("failure:\(error.description)")
-            failure(error)
+        let failure: ((JSON?)-> Void) = {
+            (error: JSON?)-> Void in
+            LOG("failure:\(error!.description)")
+            failure(error!)
             self.postProcess()
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
         }
         
         api.authenticationV2(authInfo.username, password: authInfo.password, remember: true,
@@ -140,7 +140,7 @@ class FolderListTableViewController: BaseCategoryListTableViewController {
     }
     */
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedItem = self.list[indexPath.row] as! Folder
         
         object.isDirty = true
@@ -158,7 +158,7 @@ class FolderListTableViewController: BaseCategoryListTableViewController {
         self.tableView.reloadData()
     }
     
-    @IBAction override func saveButtonPushed(sender: UIBarButtonItem) {
+    @IBAction override func saveButtonPushed(_ sender: UIBarButtonItem) {
         var selectedObjects = [BaseObject]()
         for (id, value) in selected {
             if value {
@@ -169,7 +169,7 @@ class FolderListTableViewController: BaseCategoryListTableViewController {
         }
         
         (object as! PageFolderItem).selected = selectedObjects as! [Folder]
-        self.navigationController?.popViewControllerAnimated(true)
+        _ = self.navigationController?.popViewController(animated: true)
     }
 
 }
