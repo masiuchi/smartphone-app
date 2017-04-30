@@ -19,7 +19,7 @@ class SignInViewController: BaseViewController {
         signInLabel.text = NSLocalizedString("Sign In...", comment: "Sign In...")
         
         let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
-        rotationAnimation.toValue = (M_PI / 180) * 360
+        rotationAnimation.toValue = (Double.pi / 180) * 360
         rotationAnimation.duration = 1.0
         rotationAnimation.repeatCount = Float.infinity
         self.gearImage.layer.add(rotationAnimation, forKey: "rotateAnimation")
