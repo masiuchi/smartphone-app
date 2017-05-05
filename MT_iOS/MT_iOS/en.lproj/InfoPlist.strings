@@ -1,0 +1,10 @@
+/* 
+  InfoPlist.strings
+  MT_iOS
+
+  Created by Masahiro Iuchi on 2017/05/05.
+  Copyright © 2017年 Six Apart, Ltd. All rights reserved.
+*/
+
+"NSCameraUsageDescription" = "Upload image as asset to MT server.";
+"NSPhotoLibraryUsageDescription" = "Upload image as asset to MT server.";
