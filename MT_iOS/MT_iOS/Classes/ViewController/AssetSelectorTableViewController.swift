@@ -24,7 +24,7 @@ class AssetSelectorTableViewController: AssetListTableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: "closeButtonPushed:")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: #selector(AssetSelectorTableViewController.closeButtonPushed(_:)))
     }
 
     override func viewWillAppear(animated: Bool) {

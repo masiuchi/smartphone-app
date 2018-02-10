@@ -135,7 +135,7 @@ public enum ServerTrustPolicy {
         for path in paths {
             if let
                 certificateData = NSData(contentsOfFile: path),
-                certificate = SecCertificateCreateWithData(nil, certificateData)
+                let certificate = SecCertificateCreateWithData(nil, certificateData)
             {
                 certificates.append(certificate)
             }
@@ -238,6 +238,20 @@ public enum ServerTrustPolicy {
     private func trustIsValid(trust: SecTrust) -> Bool {
         var isValid = false
 
+        var result = SecTrustResultType.Invalid
+        let status = SecTrustEvaluate(trust, &result)
+        
+        if status == errSecSuccess {
+            let unspecified = SecTrustResultType.Unspecified
+            let proceed = SecTrustResultType.Proceed
+            
+            
+            isValid = result == unspecified || result == proceed
+        }
+        
+        return isValid
+
+        /*
         var result = SecTrustResultType(kSecTrustResultInvalid)
         let status = SecTrustEvaluate(trust, &result)
 
@@ -249,6 +263,7 @@ public enum ServerTrustPolicy {
         }
 
         return isValid
+        */
     }
 
     // MARK: - Private - Certificate Data
@@ -277,7 +292,7 @@ public enum ServerTrustPolicy {
         for index in 0..<SecTrustGetCertificateCount(trust) {
             if let
                 certificate = SecTrustGetCertificateAtIndex(trust, index),
-                publicKey = publicKeyForCertificate(certificate)
+                let publicKey = publicKeyForCertificate(certificate)
             {
                 publicKeys.append(publicKey)
             }

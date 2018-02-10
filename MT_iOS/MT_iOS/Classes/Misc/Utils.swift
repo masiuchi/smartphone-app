@@ -143,7 +143,7 @@ class Utils {
         let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
 
-        return resizedImage
+        return resizedImage!
     }
     
     class func convertImageToJPEG(image: UIImage, quality: CGFloat)-> NSData {

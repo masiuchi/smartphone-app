@@ -36,7 +36,7 @@ class BlogUploadDirTableViewController: BaseTableViewController {
         }
         
         if self.editable {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonPushed:")
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(BlogUploadDirTableViewController.doneButtonPushed(_:)))
         }
     }
 

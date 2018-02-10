@@ -49,7 +49,7 @@ class ItemList: NSObject {
             if (item as BaseObject).id == model.id {
                 return i
             }
-            i++
+            i += 1
         }
         return NOTFOUND
     }

@@ -23,7 +23,7 @@ class MTRefreshControl: UIRefreshControl {
         super.init()
         
         var images = [UIImage]()
-        for (var i=1;i<5;i++) {
+        for i in 1 ..< 5 {
             let image = UIImage(named: "animation_\(i)")
             images.append(image!)
         }

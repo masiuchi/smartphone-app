@@ -54,8 +54,8 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
         self.tableView.registerNib(UINib(nibName: "TextBlockTableViewCell", bundle: nil), forCellReuseIdentifier: "TextBlockTableViewCell")
         self.tableView.registerNib(UINib(nibName: "ImageBlockTableViewCell", bundle: nil), forCellReuseIdentifier: "ImageBlockTableViewCell")
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "saveButtonPushed:")
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: "backButtonPushed:")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(BlockEditorTableViewController.saveButtonPushed(_:)))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: #selector(BlockEditorTableViewController.backButtonPushed(_:)))
 
         self.view.addSubview(tophImage)
         tophImage.center = view.center
@@ -82,7 +82,7 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
         app.window!.addSubview(guidanceBgView)
         
         let guidanceView = BlockGuidanceView.instanceFromNib() as! BlockGuidanceView
-        guidanceView.closeButton.addTarget(self, action: "guidanceCloseButtonPushed:", forControlEvents: UIControlEvents.TouchUpInside)
+        guidanceView.closeButton.addTarget(self, action: #selector(BlockEditorTableViewController.guidanceCloseButtonPushed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         guidanceBgView.addSubview(guidanceView)
         guidanceView.center = guidanceBgView.center
         frame = guidanceView.frame
@@ -320,18 +320,18 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
         var buttons = [UIBarButtonItem]()
         if editMode {
             let flexible = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-            let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonPushed:")
+            let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(BlockEditorTableViewController.doneButtonPushed(_:)))
             
             buttons = [flexible, doneButton]
         } else {
-            let cameraButton = UIBarButtonItem(image: UIImage(named: "btn_camera"), left: true, target: self, action: "cameraButtonPushed:")
-            let textAddButton = UIBarButtonItem(image: UIImage(named: "btn_textadd"), left: false, target: self, action: "textAddButtonPushed:")
+            let cameraButton = UIBarButtonItem(image: UIImage(named: "btn_camera"), left: true, target: self, action: #selector(BlockEditorTableViewController.cameraButtonPushed(_:)))
+            let textAddButton = UIBarButtonItem(image: UIImage(named: "btn_textadd"), left: false, target: self, action: #selector(BlockEditorTableViewController.textAddButtonPushed(_:)))
             
             let flexible = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
             
-            let previewButton = UIBarButtonItem(image: UIImage(named: "btn_preview"), style: UIBarButtonItemStyle.Plain, target: self, action: "previewButtonPushed:")
+            let previewButton = UIBarButtonItem(image: UIImage(named: "btn_preview"), style: UIBarButtonItemStyle.Plain, target: self, action: #selector(BlockEditorTableViewController.previewButtonPushed(_:)))
 
-            let editButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Edit, target: self, action: "editButtonPushed:")
+            let editButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Edit, target: self, action: #selector(BlockEditorTableViewController.editButtonPushed(_:)))
             
             buttons = [cameraButton, textAddButton, flexible, previewButton, editButton]
 

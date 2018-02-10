@@ -26,11 +26,11 @@ class BaseTableViewController: UITableViewController {
         
         self.tableView.separatorColor = Color.separatorLine
         
-        if self.tableView.respondsToSelector("separatorInset") {
+        if self.tableView.respondsToSelector(Selector("separatorInset")) {
             self.tableView.separatorInset = UIEdgeInsetsZero;
         }
         
-        if self.tableView.respondsToSelector("layoutMargins") {
+        if self.tableView.respondsToSelector(Selector("layoutMargins")) {
             self.tableView.layoutMargins = UIEdgeInsetsZero;
         }
         
@@ -58,15 +58,15 @@ class BaseTableViewController: UITableViewController {
     }
 
     func adjustCellLayoutMargins(cell: UITableViewCell) {
-        if cell.respondsToSelector("separatorInset") {
+        if cell.respondsToSelector(Selector("separatorInset")) {
             cell.separatorInset = UIEdgeInsetsZero;
         }
         
-        if cell.respondsToSelector("preservesSuperviewLayoutMargins") {
+        if cell.respondsToSelector(Selector("preservesSuperviewLayoutMargins")) {
             cell.preservesSuperviewLayoutMargins = false;
         }
         
-        if cell.respondsToSelector("layoutMargins") {
+        if cell.respondsToSelector(Selector("layoutMargins")) {
             cell.layoutMargins = UIEdgeInsetsZero;
         }
     }

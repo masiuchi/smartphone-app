@@ -37,7 +37,7 @@ class AssetDetailViewController: BaseViewController {
             self.CreatedAtLabel.text = NSLocalizedString("Created at：?", comment: "Created at：?")
         }
 
-        let gesture = UITapGestureRecognizer(target:self, action: "imageViewTapped:")
+        let gesture = UITapGestureRecognizer(target:self, action: #selector(AssetDetailViewController.imageViewTapped(_:)))
         self.imageView.userInteractionEnabled = true
         self.imageView.addGestureRecognizer(gesture)
     }

@@ -29,7 +29,7 @@ class BlogImageQualityTableViewController: BaseTableViewController {
         self.title = NSLocalizedString("Image Quality", comment: "Image Quality")
         self.tableView.backgroundColor = Color.tableBg
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonPushed:")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(BlogImageQualityTableViewController.doneButtonPushed(_:)))
     }
     
     override func didReceiveMemoryWarning() {

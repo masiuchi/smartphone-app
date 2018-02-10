@@ -50,7 +50,7 @@ class BlogTableViewController: BaseTableViewController {
             {(failure: Bool)-> Void in
                 let user = (UIApplication.sharedApplication().delegate as! AppDelegate).currentUser!
                 if self.blog.canCreateEntry(user: user) || self.blog.canCreatePage(user: user) {
-                    self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_newentry"), left: false, target: self, action: "composeButtonPushed:")
+                    self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_newentry"), left: false, target: self, action: #selector(BlogTableViewController.composeButtonPushed(_:)))
                 } else {
                     self.navigationItem.rightBarButtonItem = nil
                 }
@@ -289,8 +289,8 @@ class BlogTableViewController: BaseTableViewController {
             let blogInfoView: BlogInfoView = BlogInfoView.instanceFromNib() as! BlogInfoView
             blogInfoView.blog = self.blog
             
-            blogInfoView.BlogURLButton.addTarget(self, action: "blogURLButtonPushed:", forControlEvents: UIControlEvents.TouchUpInside)
-            blogInfoView.BlogPrefsButton.addTarget(self, action: "blogPrefsButtonPushed:", forControlEvents: UIControlEvents.TouchUpInside)
+            blogInfoView.BlogURLButton.addTarget(self, action: #selector(BlogTableViewController.blogURLButtonPushed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+            blogInfoView.BlogPrefsButton.addTarget(self, action: #selector(BlogTableViewController.blogPrefsButtonPushed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
             
             return blogInfoView
         case Section.Asset.rawValue:

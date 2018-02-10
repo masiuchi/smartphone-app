@@ -19,10 +19,10 @@ class EntryMarkdownEditorViewController: EntryHTMLEditorViewController {
         let toolBar = UIToolbar(frame: CGRectMake(0.0, 0.0, self.view.frame.size.width, 44.0))
         let modeImage = UIImageView(image: UIImage(named: "ico_markdown"))
         let modeButton = UIBarButtonItem(customView: modeImage)
-        let cameraButton = UIBarButtonItem(image: UIImage(named: "btn_camera"), left: true, target: self, action: "cameraButtonPushed:")
+        let cameraButton = UIBarButtonItem(image: UIImage(named: "btn_camera"), left: true, target: self, action: #selector(EntryHTMLEditorViewController.cameraButtonPushed(_:)))
         let flexibleButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        let previewButton = UIBarButtonItem(image: UIImage(named: "btn_preview"), style: UIBarButtonItemStyle.Plain, target: self, action: "previewButtonPushed:")
-        let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonPushed:")
+        let previewButton = UIBarButtonItem(image: UIImage(named: "btn_preview"), style: UIBarButtonItemStyle.Plain, target: self, action: #selector(EntryHTMLEditorViewController.previewButtonPushed(_:)))
+        let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(EntryHTMLEditorViewController.doneButtonPushed(_:)))
         
         if object is BlockTextItem || object.isCustomField {
             toolBar.items = [modeButton, flexibleButton, previewButton, doneButton]

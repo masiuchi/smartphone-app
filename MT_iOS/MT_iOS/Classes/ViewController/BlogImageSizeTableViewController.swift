@@ -34,7 +34,7 @@ class BlogImageSizeTableViewController: BaseTableViewController, UITextFieldDele
             view.delaysContentTouches = false
         }
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonPushed:")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(BlogImageSizeTableViewController.doneButtonPushed(_:)))
         
         self.tableView.registerNib(UINib(nibName: "ImageSizeTableViewCell", bundle: nil), forCellReuseIdentifier: "ImageSizeTableViewCell")
         self.tableView.registerNib(UINib(nibName: "ImageCustomSizeTableViewCell", bundle: nil), forCellReuseIdentifier: "ImageCustomSizeTableViewCell")
@@ -84,8 +84,8 @@ class BlogImageSizeTableViewController: BaseTableViewController, UITextFieldDele
             cell.sizeField.returnKeyType = UIReturnKeyType.Done
             cell.sizeField.autocorrectionType = UITextAutocorrectionType.No
             cell.sizeField.delegate = self
-            cell.sizeField.addTarget(self, action: "textFieldChanged:", forControlEvents: UIControlEvents.EditingChanged)
-            cell.sizeField.addTarget(self, action: "textFieldTouchDown:", forControlEvents: UIControlEvents.TouchDown)
+            cell.sizeField.addTarget(self, action: #selector(BlogImageSizeTableViewController.textFieldChanged(_:)), forControlEvents: UIControlEvents.EditingChanged)
+            cell.sizeField.addTarget(self, action: #selector(BlogImageSizeTableViewController.textFieldTouchDown(_:)), forControlEvents: UIControlEvents.TouchDown)
             
             cell.checkIcon.hidden = (selected != indexPath.row)
             

@@ -37,7 +37,7 @@ class ImageViewController: UIViewController, UIScrollViewDelegate {
         self.title = asset.dispName()
         self.imageView.sd_setImageWithURL(NSURL(string: asset.url))
         
-        let doubleTapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action:"doubleTap:")
+        let doubleTapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action:#selector(ImageViewController.doubleTap(_:)))
         doubleTapGesture.numberOfTapsRequired = 2
         imageView.userInteractionEnabled = true
         imageView.addGestureRecognizer(doubleTapGesture)

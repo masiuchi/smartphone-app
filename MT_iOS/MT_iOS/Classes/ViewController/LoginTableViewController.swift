@@ -155,7 +155,7 @@ class LoginTableViewController: BaseTableViewController, UITextFieldDelegate {
                 c.textField.text = auth.username
                 c.textField.tag = FieldType.Username.rawValue
                 c.textField.delegate = self
-                c.textField.addTarget(self, action: "textFieldChanged:", forControlEvents: UIControlEvents.EditingChanged)
+                c.textField.addTarget(self, action: #selector(LoginTableViewController.textFieldChanged(_:)), forControlEvents: UIControlEvents.EditingChanged)
                 c.bgImageView.image = UIImage(named: "signin_table_1")
                 cell = c
             case AuthInfoItem.Password.rawValue:
@@ -168,7 +168,7 @@ class LoginTableViewController: BaseTableViewController, UITextFieldDelegate {
                 c.textField.text = auth.password
                 c.textField.tag = FieldType.Password.rawValue
                 c.textField.delegate = self
-                c.textField.addTarget(self, action: "textFieldChanged:", forControlEvents: UIControlEvents.EditingChanged)
+                c.textField.addTarget(self, action: #selector(LoginTableViewController.textFieldChanged(_:)), forControlEvents: UIControlEvents.EditingChanged)
                 c.bgImageView.image = UIImage(named: "signin_table_2")
                 cell = c
             case AuthInfoItem.Endpoint.rawValue:
@@ -181,7 +181,7 @@ class LoginTableViewController: BaseTableViewController, UITextFieldDelegate {
                 c.textField.text = auth.endpoint
                 c.textField.tag = FieldType.Endpoint.rawValue
                 c.textField.delegate = self
-                c.textField.addTarget(self, action: "textFieldChanged:", forControlEvents: UIControlEvents.EditingChanged)
+                c.textField.addTarget(self, action: #selector(LoginTableViewController.textFieldChanged(_:)), forControlEvents: UIControlEvents.EditingChanged)
                 c.bgImageView.image = UIImage(named: "signin_table_3")
                 cell = c
             default:
@@ -200,7 +200,7 @@ class LoginTableViewController: BaseTableViewController, UITextFieldDelegate {
                 } else {
                     c.button.setBackgroundImage(UIImage(named: "btn_basic_close"), forState: UIControlState.Normal)
                 }
-                c.button.addTarget(self, action: "basicAuthButtonPushed:", forControlEvents: UIControlEvents.TouchUpInside)
+                c.button.addTarget(self, action: #selector(LoginTableViewController.basicAuthButtonPushed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
                 cell = c
             case BasicAuthItem.Username.rawValue:
                 let c = tableView.dequeueReusableCellWithIdentifier("TextFieldTableViewCell", forIndexPath: indexPath) as! TextFieldTableViewCell
@@ -212,7 +212,7 @@ class LoginTableViewController: BaseTableViewController, UITextFieldDelegate {
                 c.textField.text = auth.basicAuthUsername
                 c.textField.tag = FieldType.BasicAuthUsername.rawValue
                 c.textField.delegate = self
-                c.textField.addTarget(self, action: "textFieldChanged:", forControlEvents: UIControlEvents.EditingChanged)
+                c.textField.addTarget(self, action: #selector(LoginTableViewController.textFieldChanged(_:)), forControlEvents: UIControlEvents.EditingChanged)
                 c.bgImageView.image = UIImage(named: "signin_table_1")
                 cell = c
             case BasicAuthItem.Password.rawValue:
@@ -225,7 +225,7 @@ class LoginTableViewController: BaseTableViewController, UITextFieldDelegate {
                 c.textField.text = auth.basicAuthPassword
                 c.textField.tag = FieldType.BasicAuthPassword.rawValue
                 c.textField.delegate = self
-                c.textField.addTarget(self, action: "textFieldChanged:", forControlEvents: UIControlEvents.EditingChanged)
+                c.textField.addTarget(self, action: #selector(LoginTableViewController.textFieldChanged(_:)), forControlEvents: UIControlEvents.EditingChanged)
                 c.bgImageView.image = UIImage(named: "signin_table_3")
                 cell = c
             default:
@@ -242,7 +242,7 @@ class LoginTableViewController: BaseTableViewController, UITextFieldDelegate {
             c.button.setBackgroundImage(UIImage(named: "btn_signin_highlight"), forState: UIControlState.Highlighted)
             c.button.setBackgroundImage(UIImage(named: "btn_signin_disable"), forState: UIControlState.Disabled)
             c.button.enabled = self.validate()
-            c.button.addTarget(self, action: "signInButtonPushed:", forControlEvents: UIControlEvents.TouchUpInside)
+            c.button.addTarget(self, action: #selector(LoginTableViewController.signInButtonPushed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
             cell = c
 
         default:

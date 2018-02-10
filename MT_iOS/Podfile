@@ -1,13 +1,31 @@
 platform :ios, "8.0"
 use_frameworks!
 
-pod 'Alamofire', '~> 3.0'
-pod 'SwiftyJSON'
-pod 'SVProgressHUD'
-pod 'TMReachability', :git => 'https://github.com/albertbori/Reachability', :commit => 'e34782b386307e386348b481c02c176d58ba45e6'
-pod 'SDWebImage'
-pod 'LUKeychainAccess'
-pod 'NSDate-Escort'
-pod 'ZSSRichTextEditor'
-pod 'MMMarkdown'
-pod 'QBImagePickerController'
+def shared_pods
+  pod 'Alamofire', '~> 3.0'
+  pod 'SwiftyJSON'
+  pod 'SVProgressHUD'
+  pod 'TMReachability', :git => 'https://github.com/albertbori/Reachability', :commit => 'e34782b386307e386348b481c02c176d58ba45e6'
+  pod 'SDWebImage'
+  pod 'LUKeychainAccess'
+  pod 'NSDate-Escort'
+  pod 'ZSSRichTextEditor'
+  pod 'MMMarkdown'
+  pod 'QBImagePickerController'
+end
+
+target 'MT_iOS' do
+  shared_pods
+end
+
+target 'MT_iOSTests' do
+  shared_pods
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+          config.build_settings['SWIFT_VERSION'] = '2.3'
+      end
+   end
+end

@@ -21,7 +21,7 @@ class BaseEntryListTableViewController: BaseTableViewController, UISearchBarDele
         super.viewDidLoad()
         
         self.refreshControl = MTRefreshControl()
-        self.refreshControl!.addTarget(self, action: "refresh:", forControlEvents: UIControlEvents.ValueChanged)
+        self.refreshControl!.addTarget(self, action: #selector(BaseEntryListTableViewController.refresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
         
         searchBar = UISearchBar()
         searchBar.frame = CGRectMake(0.0, 0.0, self.tableView.frame.size.width, 44.0)
