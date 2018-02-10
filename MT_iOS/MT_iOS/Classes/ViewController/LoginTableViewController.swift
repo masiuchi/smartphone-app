@@ -54,13 +54,6 @@ class LoginTableViewController: BaseTableViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        gradientLayer.frame = self.view.bounds
-        let startColor = Color.loginBgStart.cgColor
-        let endColor = Color.loginBgEnd.cgColor
-        gradientLayer.colors = [startColor, endColor]
-        gradientLayer.locations = [0.0, 1.0]
-        self.view.layer.insertSublayer(gradientLayer, at: 0)
-        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -96,6 +89,21 @@ class LoginTableViewController: BaseTableViewController, UITextFieldDelegate {
         super.viewWillAppear(animated)
         
         self.navigationController?.isNavigationBarHidden = true
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.insertBackGroundLayer()
+    }
+
+    private func insertBackGroundLayer() {
+        gradientLayer.frame = self.view.bounds
+        let startColor = Color.loginBgStart.cgColor
+        let endColor = Color.loginBgEnd.cgColor
+        gradientLayer.colors = [startColor, endColor]
+        gradientLayer.locations = [0.0, 1.0]
+        self.view.layer.insertSublayer(gradientLayer, at: 0)
     }
     
     override func didReceiveMemoryWarning() {
