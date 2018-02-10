@@ -53,6 +53,8 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
                 item.asset = (block as! BlockImageItem).asset
                 item.imageFilename = (block as! BlockImageItem).imageFilename
                 item.label = block.label
+                item.uploadPath = (block as! BlockImageItem).uploadPath
+                item.uploadFilename = (block as! BlockImageItem).uploadFilename
                 items.append(item)
             } else {
                 let item = BlockTextItem()
