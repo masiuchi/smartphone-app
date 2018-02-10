@@ -1,0 +1,4 @@
+language: objective-c
+xcode_project: MT_iOS/MT_iOS.xcodeproj
+xcode_scheme: MT_iOS/MT_iOSTests
+
