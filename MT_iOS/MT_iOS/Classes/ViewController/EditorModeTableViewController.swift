@@ -9,12 +9,12 @@
 import UIKit
 
 protocol EditorModeDelegate {
-    func editorModeDone(controller: EditorModeTableViewController, selected: Entry.EditMode)
+    func editorModeDone(_ controller: EditorModeTableViewController, selected: Entry.EditMode)
 }
 
 class EditorModeTableViewController: BaseTableViewController {
-    var selected = Entry.EditMode.RichText
-    var oldSelected = Entry.EditMode.RichText
+    var selected = Entry.EditMode.richText
+    var oldSelected = Entry.EditMode.richText
     var delegate: EditorModeDelegate?
     
     override func viewDidLoad() {
@@ -30,10 +30,10 @@ class EditorModeTableViewController: BaseTableViewController {
         
         selected = oldSelected
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(EditorModeTableViewController.saveButtonPushed(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: #selector(EditorModeTableViewController.saveButtonPushed(_:)))
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: #selector(EditorModeTableViewController.backButtonPushed(_:)))
         
-        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
     }
 
     override func didReceiveMemoryWarning() {
@@ -43,29 +43,29 @@ class EditorModeTableViewController: BaseTableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         return 3
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) 
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) 
 
         self.adjustCellLayoutMargins(cell)
 
         // Configure the cell...
         cell.textLabel?.text = Entry.EditMode(rawValue: indexPath.row)?.label()
         if selected == Entry.EditMode(rawValue: indexPath.row) {
-            cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+            cell.accessoryType = UITableViewCellAccessoryType.checkmark
         } else {
-            cell.accessoryType = UITableViewCellAccessoryType.None
+            cell.accessoryType = UITableViewCellAccessoryType.none
         }
         
         return cell
@@ -106,7 +106,7 @@ class EditorModeTableViewController: BaseTableViewController {
     }
     */
 
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selected = Entry.EditMode(rawValue: indexPath.row)!
         
         self.tableView.reloadData()
@@ -122,14 +122,14 @@ class EditorModeTableViewController: BaseTableViewController {
     }
     */
     
-    @IBAction func saveButtonPushed(sender: UIBarButtonItem) {
+    @IBAction func saveButtonPushed(_ sender: UIBarButtonItem) {
         delegate?.editorModeDone(self, selected: selected)
-        self.navigationController?.popViewControllerAnimated(true)
+        _ = self.navigationController?.popViewController(animated: true)
     }
     
-    @IBAction func backButtonPushed(sender: UIBarButtonItem) {
+    @IBAction func backButtonPushed(_ sender: UIBarButtonItem) {
         if selected == oldSelected {
-            self.navigationController?.popViewControllerAnimated(true)
+            _ = self.navigationController?.popViewController(animated: true)
             return
         }
         

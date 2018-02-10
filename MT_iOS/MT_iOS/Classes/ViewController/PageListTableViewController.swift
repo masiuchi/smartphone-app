@@ -12,38 +12,38 @@ import SwiftyJSON
 class PageList: ItemList {
     var blog: Blog!
     
-    override func toModel(json: JSON)->BaseObject {
+    override func toModel(_ json: JSON)->BaseObject {
         return Page(json: json)
     }
     
-    override func fetch(offset: Int, success: ((items:[JSON]!, total:Int!) -> Void)!, failure: (JSON! -> Void)!) {
+    override func fetch(_ offset: Int, success: ((_ items:[JSON]?, _ total:Int?) -> Void)!, failure: ((JSON?) -> Void)!) {
         if working {return}
         
         self.working = true
         
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         let api = DataAPI.sharedInstance
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        let app = UIApplication.shared.delegate as! AppDelegate
         let authInfo = app.authInfo
         
-        let success: (([JSON]!, Int!)-> Void) = {
-            (result: [JSON]!, total: Int!)-> Void in
-            LOG("\(result)")
+        let success: (([JSON]?, Int?)-> Void) = {
+            (result: [JSON]?, total: Int?)-> Void in
+            LOG("\(result!)")
             if self.refresh {
                 self.items = []
             }
-            self.totalCount = total
-            self.parseItems(result)
-            success(items: result, total: total)
+            self.totalCount = total!
+            self.parseItems(result!)
+            success(result, total)
             self.postProcess()
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
         }
-        let failure: (JSON!-> Void) = {
-            (error: JSON!)-> Void in
-            LOG("failure:\(error.description)")
-            failure(error)
+        let failure: ((JSON?)-> Void) = {
+            (error: JSON?)-> Void in
+            LOG("failure:\(error!.description)")
+            failure(error!)
             self.postProcess()
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
         }
         
         api.authenticationV2(authInfo.username, password: authInfo.password, remember: true,
@@ -84,7 +84,7 @@ class PageListTableViewController: BaseEntryListTableViewController {
         
         actionMessage = NSLocalizedString("Fetch pages", comment: "Fetch pages")
         
-        let user = (UIApplication.sharedApplication().delegate as! AppDelegate).currentUser!
+        let user = (UIApplication.shared.delegate as! AppDelegate).currentUser!
         if self.blog.canCreatePage(user: user) {
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_newentry"), left: false, target: self, action: #selector(BaseEntryListTableViewController.composeButtonPushed(_:)))
         } else {
@@ -168,10 +168,10 @@ class PageListTableViewController: BaseEntryListTableViewController {
     */
     
     // MARK: - Table view delegte
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = self.list[indexPath.row] as! Page
         
-        let user = (UIApplication.sharedApplication().delegate as! AppDelegate).currentUser!
+        let user = (UIApplication.shared.delegate as! AppDelegate).currentUser!
         if blog.canUpdatePage(user: user) {
             let vc = PageDetailTableViewController()
             vc.object = item
@@ -181,20 +181,20 @@ class PageListTableViewController: BaseEntryListTableViewController {
             let alertController = UIAlertController(
                 title: NSLocalizedString("Permission denied", comment: "Permission denied"),
                 message: NSLocalizedString("You do not have permission.", comment: "You do not have permission."),
-                preferredStyle: .Alert)
+                preferredStyle: .alert)
             
-            let okAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .Destructive) {
+            let okAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .destructive) {
                 action in
             }
             
             alertController.addAction(okAction)
-            presentViewController(alertController, animated: true, completion: nil)
+            present(alertController, animated: true, completion: nil)
         }
     }
 
     //MARK: -
-    override func composeButtonPushed(sender: UIBarButtonItem) {
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+    override func composeButtonPushed(_ sender: UIBarButtonItem) {
+        let app = UIApplication.shared.delegate as! AppDelegate
         app.createPage(self.blog, controller: self)
     }
 }

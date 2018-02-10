@@ -21,7 +21,7 @@ class EntryDraftTableViewController: BaseDraftTableViewController {
         
         self.title = NSLocalizedString("Entries of unsent", comment: "Entries of unsent")
         
-        let user = (UIApplication.sharedApplication().delegate as! AppDelegate).currentUser!
+        let user = (UIApplication.shared.delegate as! AppDelegate).currentUser!
         if self.blog.canCreateEntry(user: user) {
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_newentry"), left: false, target: self, action: #selector(EntryDraftTableViewController.composeButtonPushed(_:)))
         } else {
@@ -91,14 +91,14 @@ class EntryDraftTableViewController: BaseDraftTableViewController {
     }
     */
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let filename = self.files[indexPath.row]
         let dir = self.dataDir()
         let path = dir.stringByAppendingPathComponent(filename)
         let item = EntryItemList.loadFromFile(path, filename: filename)
         item.blog = blog
         
-        _ = UIApplication.sharedApplication().delegate as! AppDelegate
+        _ = UIApplication.shared.delegate as! AppDelegate
         let vc = EntryDetailTableViewController()
         vc.list = item
         vc.object = item.object
@@ -107,8 +107,8 @@ class EntryDraftTableViewController: BaseDraftTableViewController {
     }
     
     //MARK: -
-    func composeButtonPushed(sender: UIBarButtonItem) {
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+    func composeButtonPushed(_ sender: UIBarButtonItem) {
+        let app = UIApplication.shared.delegate as! AppDelegate
         app.createEntry(self.blog, controller: self)
     }
 

@@ -17,14 +17,14 @@ class EntryCheckboxItem: BaseEntryItem {
         type = "checkbox"
     }
     
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
-        aCoder.encodeBool(self.checked, forKey: "checked")
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
+        aCoder.encode(self.checked, forKey: "checked")
     }
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
-        self.checked = aDecoder.decodeBoolForKey("checked")
+        self.checked = aDecoder.decodeBool(forKey: "checked")
     }
     
     override func value()-> String {

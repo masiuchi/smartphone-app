@@ -13,11 +13,11 @@ import SVProgressHUD
 class CategoryList: ItemList {
     var blog: Blog!
     
-    override func toModel(json: JSON)->BaseObject {
+    override func toModel(_ json: JSON)->BaseObject {
         return Category(json: json)
     }
     
-    private func levelLoop(object: Category, parent: Category) {
+    fileprivate func levelLoop(_ object: Category, parent: Category) {
         object.level += 1
         object.path = parent.label + "/" + object.path
         let parent = self.objectWithID(parent.parent)
@@ -39,35 +39,35 @@ class CategoryList: ItemList {
         }
     }
     
-    override func fetch(offset: Int, success: ((items:[JSON]!, total:Int!) -> Void)!, failure: (JSON! -> Void)!) {
+    override func fetch(_ offset: Int, success: ((_ items:[JSON]?, _ total:Int?) -> Void)!, failure: ((JSON?) -> Void)!) {
         if working {return}
         
         self.working = true
         
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         let api = DataAPI.sharedInstance
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        let app = UIApplication.shared.delegate as! AppDelegate
         let authInfo = app.authInfo
         
-        let success: (([JSON]!, Int!)-> Void) = {
-            (result: [JSON]!, total: Int!)-> Void in
-            LOG("\(result)")
+        let success: (([JSON]?, Int?)-> Void) = {
+            (result: [JSON]?, total: Int?)-> Void in
+            LOG("\(result!)")
             if self.refresh {
                 self.items = []
             }
-            self.totalCount = total
-            self.parseItems(result)
+            self.totalCount = total!
+            self.parseItems(result!)
             self.makeLevel()
-            success(items: result, total: total)
+            success(result, total)
             self.postProcess()
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
         }
-        let failure: (JSON!-> Void) = {
-            (error: JSON!)-> Void in
-            LOG("failure:\(error.description)")
-            failure(error)
+        let failure: ((JSON?)-> Void) = {
+            (error: JSON?)-> Void in
+            LOG("failure:\(error!.description)")
+            failure(error!)
             self.postProcess()
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
         }
         
         api.authenticationV2(authInfo.username, password: authInfo.password, remember: true,
@@ -99,9 +99,9 @@ class BaseCategoryListTableViewController: BaseTableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         self.refreshControl = MTRefreshControl()
-        self.refreshControl!.addTarget(self, action: #selector(BaseCategoryListTableViewController.refresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
+        self.refreshControl!.addTarget(self, action: #selector(BaseCategoryListTableViewController.refresh(_:)), for: UIControlEvents.valueChanged)
         
-        self.tableView.registerNib(UINib(nibName: "CategoryTableViewCell", bundle: nil), forCellReuseIdentifier: "CategoryTableViewCell")
+        self.tableView.register(UINib(nibName: "CategoryTableViewCell", bundle: nil), forCellReuseIdentifier: "CategoryTableViewCell")
         
         var items: [Category]
         if object is EntryCategoryItem {
@@ -113,7 +113,7 @@ class BaseCategoryListTableViewController: BaseTableViewController {
             selected[item.id] = true
         }
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(BaseCategoryListTableViewController.saveButtonPushed(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: #selector(BaseCategoryListTableViewController.saveButtonPushed(_:)))
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: #selector(BaseCategoryListTableViewController.backButtonPushed(_:)))
     }
 
@@ -124,20 +124,20 @@ class BaseCategoryListTableViewController: BaseTableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
         return 1
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         return list.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("CategoryTableViewCell", forIndexPath: indexPath) as! CategoryTableViewCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryTableViewCell", for: indexPath) as! CategoryTableViewCell
         
         self.adjustCellLayoutMargins(cell)
         
@@ -146,21 +146,21 @@ class BaseCategoryListTableViewController: BaseTableViewController {
         cell.object = item
         
         if selected[item.id] != nil && selected[item.id] == true {
-            cell.accessoryType = UITableViewCellAccessoryType.Checkmark
-            cell.selected = true
+            cell.accessoryType = UITableViewCellAccessoryType.checkmark
+            cell.isSelected = true
         } else {
-            cell.accessoryType = UITableViewCellAccessoryType.None
-            cell.selected = false
+            cell.accessoryType = UITableViewCellAccessoryType.none
+            cell.isSelected = false
         }
         
         return cell
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 62.0
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     }
     
     /*
@@ -219,47 +219,47 @@ class BaseCategoryListTableViewController: BaseTableViewController {
     */
     
     // MARK: - Refresh
-    @IBAction func refresh(sender:UIRefreshControl) {
+    @IBAction func refresh(_ sender:UIRefreshControl) {
         self.fetch()
     }
     
     // MARK: - fetch
     func fetch() {
-        SVProgressHUD.showWithStatus(actionMessage + "...")
-        let success: (([JSON]!, Int!)-> Void) = {
-            (result: [JSON]!, total: Int!)-> Void in
+        SVProgressHUD.show(withStatus: actionMessage + "...")
+        let success: (([JSON]?, Int?)-> Void) = {
+            (result: [JSON]?, total: Int?)-> Void in
             SVProgressHUD.dismiss()
             self.tableView.reloadData()
             self.refreshControl!.endRefreshing()
         }
-        let failure: (JSON!-> Void) = {
-            (error: JSON!)-> Void in
-            SVProgressHUD.showErrorWithStatus(String(format: NSLocalizedString("%@ failured.", comment: "%@ failured."), arguments: [self.actionMessage]))
+        let failure: ((JSON?)-> Void) = {
+            (error: JSON?)-> Void in
+            SVProgressHUD.showError(withStatus: String(format: NSLocalizedString("%@ failured.", comment: "%@ failured."), arguments: [self.actionMessage]))
             self.refreshControl!.endRefreshing()
         }
         list.refresh(success, failure: failure)
     }
     
     func more() {
-        let success: (([JSON]!, Int!)-> Void) = {
-            (result: [JSON]!, total: Int!)-> Void in
+        let success: (([JSON]?, Int?)-> Void) = {
+            (result: [JSON]?, total: Int?)-> Void in
             self.tableView.reloadData()
             self.refreshControl!.endRefreshing()
         }
-        let failure: (JSON!-> Void) = {
-            (error: JSON!)-> Void in
+        let failure: ((JSON?)-> Void) = {
+            (error: JSON?)-> Void in
             self.refreshControl!.endRefreshing()
         }
         list.more(success, failure: failure)
     }
     
-    @IBAction func saveButtonPushed(sender: UIBarButtonItem) {
+    @IBAction func saveButtonPushed(_ sender: UIBarButtonItem) {
         //Implement subclass
     }
     
-    @IBAction func backButtonPushed(sender: UIBarButtonItem) {
+    @IBAction func backButtonPushed(_ sender: UIBarButtonItem) {
         if !object.isDirty {
-            self.navigationController?.popViewControllerAnimated(true)
+            _ = self.navigationController?.popViewController(animated: true)
             return
         }
         

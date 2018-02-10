@@ -20,12 +20,12 @@ class BaseDraftTableViewController: BaseTableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-        self.tableView.registerNib(UINib(nibName: "EntryTableViewCell", bundle: nil), forCellReuseIdentifier: "EntryTableViewCell")
+        self.tableView.register(UINib(nibName: "EntryTableViewCell", bundle: nil), forCellReuseIdentifier: "EntryTableViewCell")
     }
     
     func dataDir()-> String {
-        let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let app = UIApplication.shared.delegate as! AppDelegate
         var dir = blog.dataDirPath()
         if let user = app.currentUser {
             dir = blog.dataDirPath(user)
@@ -33,9 +33,9 @@ class BaseDraftTableViewController: BaseTableViewController {
         var path = paths[0].stringByAppendingPathComponent(dir)
         path = path.stringByAppendingPathComponent(self is EntryDraftTableViewController ? "draft_entry" : "draft_page")
         
-        let manager = NSFileManager.defaultManager()
+        let manager = FileManager.default
         do {
-            try manager.createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil)
+            try manager.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
         } catch _ {
         }
 
@@ -43,19 +43,19 @@ class BaseDraftTableViewController: BaseTableViewController {
     }
     
     func fetch() {
-        let manager = NSFileManager.defaultManager()
+        let manager = FileManager.default
         let dir = self.dataDir()
-        let paths = try! manager.contentsOfDirectoryAtPath(dir)
+        let paths = try! manager.contentsOfDirectory(atPath: dir)
         files = [String]()
         for path in paths {
             if !path.hasPrefix(".") {
                 files.append(path )
             }
         }
-        files = Array(files.reverse())
+        files = Array(files.reversed())
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         self.fetch()
@@ -69,20 +69,20 @@ class BaseDraftTableViewController: BaseTableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         return files.count
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("EntryTableViewCell", forIndexPath: indexPath) as! EntryTableViewCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "EntryTableViewCell", for: indexPath) as! EntryTableViewCell
         
         self.adjustCellLayoutMargins(cell)
         
@@ -132,7 +132,7 @@ class BaseDraftTableViewController: BaseTableViewController {
     */
 
     // MARK: - Table view delegate
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 130.0
     }
     

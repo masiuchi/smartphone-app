@@ -9,7 +9,7 @@
 import UIKit
 
 class EntryDateItem: BaseEntryItem {
-    var date: NSDate?
+    var date: Date?
     
     override init() {
         super.init()
@@ -17,14 +17,14 @@ class EntryDateItem: BaseEntryItem {
         type = "date"
     }
     
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
-        aCoder.encodeObject(self.date, forKey: "date")
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
+        aCoder.encode(self.date, forKey: "date")
     }
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
-        self.date = aDecoder.decodeObjectForKey("date") as? NSDate
+        self.date = aDecoder.decodeObject(forKey: "date") as? Date
     }
 
     override func value()-> String {
@@ -34,7 +34,7 @@ class EntryDateItem: BaseEntryItem {
                 return Utils.dateTimeTextFromDate(date)
             } else {
                 let dateTime = Utils.ISO8601StringFromDate(date)
-                let comps = dateTime.componentsSeparatedByString("T")
+                let comps = dateTime.components(separatedBy: "T")
                 return comps[0]
             }
         }
@@ -52,9 +52,9 @@ class EntryDateItem: BaseEntryItem {
 
     override func makeParams()-> [String : AnyObject] {
         if let _ = self.date {
-            return [self.id:self.value()]
+            return [self.id:self.value() as AnyObject]
         }
-        return [self.id:""]
+        return [self.id:"" as AnyObject]
     }
     
     override func clear() {

@@ -11,7 +11,7 @@ import MMMarkdown
 
 class EntryBlocksItem: EntryTextAreaItem {
     var blocks = [BaseEntryItem]()
-    var editMode = Entry.EditMode.RichText
+    var editMode = Entry.EditMode.richText
    
     override init() {
         super.init()
@@ -19,14 +19,14 @@ class EntryBlocksItem: EntryTextAreaItem {
         type = "blocks"
     }
     
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
-        aCoder.encodeObject(self.blocks, forKey: "blocks")
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
+        aCoder.encode(self.blocks, forKey: "blocks")
     }
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.blocks = aDecoder.decodeObjectForKey("blocks") as! [BaseEntryItem]
+        self.blocks = aDecoder.decodeObject(forKey: "blocks") as! [BaseEntryItem]
     }
     
     override func value() -> String {
@@ -36,10 +36,10 @@ class EntryBlocksItem: EntryTextAreaItem {
                 value += block.value() + "\n\n"
             } else {
                 let sourceText = block.value()
-                if self.editMode == Entry.EditMode.Markdown {
+                if self.editMode == Entry.EditMode.markdown {
                     if isPreview {
                         do {
-                            let markdown = try MMMarkdown.HTMLStringWithMarkdown(sourceText, extensions: MMMarkdownExtensions.GitHubFlavored)
+                            let markdown = try MMMarkdown.htmlString(withMarkdown: sourceText, extensions: MMMarkdownExtensions.gitHubFlavored)
                             value += markdown + "\n\n"
                         } catch _ {
                             value += sourceText + "\n\n"
@@ -89,6 +89,6 @@ class EntryBlocksItem: EntryTextAreaItem {
     }
     
     override func clear() {
-        blocks.removeAll(keepCapacity: false)
+        blocks.removeAll(keepingCapacity: false)
     }
 }

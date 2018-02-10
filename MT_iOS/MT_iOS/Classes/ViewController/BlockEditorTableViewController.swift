@@ -8,6 +8,19 @@
 
 import UIKit
 import MMMarkdown
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
 
 class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate {
     var blog: Blog!
@@ -21,7 +34,7 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
     var tophImage = UIImageView(image: UIImage(named: "guide_toph_sleep"))
     var guidanceBgView = UIView()
     
-    private var oldHTML: String = ""
+    fileprivate var oldHTML: String = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,10 +64,10 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
         }
         addedImageFiles = [String]()
         
-        self.tableView.registerNib(UINib(nibName: "TextBlockTableViewCell", bundle: nil), forCellReuseIdentifier: "TextBlockTableViewCell")
-        self.tableView.registerNib(UINib(nibName: "ImageBlockTableViewCell", bundle: nil), forCellReuseIdentifier: "ImageBlockTableViewCell")
+        self.tableView.register(UINib(nibName: "TextBlockTableViewCell", bundle: nil), forCellReuseIdentifier: "TextBlockTableViewCell")
+        self.tableView.register(UINib(nibName: "ImageBlockTableViewCell", bundle: nil), forCellReuseIdentifier: "ImageBlockTableViewCell")
 
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(BlockEditorTableViewController.saveButtonPushed(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: #selector(BlockEditorTableViewController.saveButtonPushed(_:)))
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: #selector(BlockEditorTableViewController.backButtonPushed(_:)))
 
         self.view.addSubview(tophImage)
@@ -64,7 +77,7 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
         tophImage.frame = frame
         
         noItemLabel.textColor = Color.placeholderText
-        noItemLabel.font = UIFont.systemFontOfSize(18.0)
+        noItemLabel.font = UIFont.systemFont(ofSize: 18.0)
         noItemLabel.text = String(format: NSLocalizedString("No %@", comment: "No %@"), arguments: [blocks.label])
         noItemLabel.sizeToFit()
         self.view.addSubview(noItemLabel)
@@ -73,24 +86,24 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
         frame.origin.y = tophImage.frame.origin.y + tophImage.frame.size.height + 13.0
         noItemLabel.frame = frame
         
-        tophImage.hidden = true
-        noItemLabel.hidden = true
+        tophImage.isHidden = true
+        noItemLabel.isHidden = true
         
         guidanceBgView.backgroundColor = colorize(0x000000, alpha: 0.3)
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        let app = UIApplication.shared.delegate as! AppDelegate
         guidanceBgView.frame = app.window!.frame
         app.window!.addSubview(guidanceBgView)
         
         let guidanceView = BlockGuidanceView.instanceFromNib() as! BlockGuidanceView
-        guidanceView.closeButton.addTarget(self, action: #selector(BlockEditorTableViewController.guidanceCloseButtonPushed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+        guidanceView.closeButton.addTarget(self, action: #selector(BlockEditorTableViewController.guidanceCloseButtonPushed(_:)), for: UIControlEvents.touchUpInside)
         guidanceBgView.addSubview(guidanceView)
         guidanceView.center = guidanceBgView.center
         frame = guidanceView.frame
         frame.origin.y = 70.0
         guidanceView.frame = frame
         
-        let defaults = NSUserDefaults.standardUserDefaults()
-        let showed = defaults.boolForKey("blocksGuidanceShowed")
+        let defaults = UserDefaults.standard
+        let showed = defaults.bool(forKey: "blocksGuidanceShowed")
         if showed {
             guidanceBgView.removeFromSuperview()
         }
@@ -100,7 +113,7 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
         oldHTML = self.makeItemsHTML()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setToolbarHidden(false, animated: false)
         self.makeToolbarItems(false)
@@ -108,11 +121,11 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
         self.tableView.reloadData()
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setToolbarHidden(true, animated: false)
     }
@@ -124,7 +137,7 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
         if items == nil {
@@ -133,42 +146,42 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         if items == nil {
             return 0
         }
         
-        tophImage.hidden = !(items.count == 0)
-        noItemLabel.hidden = !(items.count == 0)
+        tophImage.isHidden = !(items.count == 0)
+        noItemLabel.isHidden = !(items.count == 0)
 
         return items.count
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell = UITableViewCell()
         
         // Configure the cell...
         let item = items[indexPath.row]
         
         if item.type == "textarea" {
-            let c = tableView.dequeueReusableCellWithIdentifier("TextBlockTableViewCell", forIndexPath: indexPath) as! TextBlockTableViewCell
+            let c = tableView.dequeueReusableCell(withIdentifier: "TextBlockTableViewCell", for: indexPath) as! TextBlockTableViewCell
             let text = item.dispValue()
             if text.isEmpty {
                 c.placeholderLabel?.text = (item as! EntryTextAreaItem).placeholder()
-                c.placeholderLabel.hidden = false
-                c.blockTextLabel.hidden = true
+                c.placeholderLabel.isHidden = false
+                c.blockTextLabel.isHidden = true
             } else {
                 c.blockTextLabel?.text = Utils.removeHTMLTags(text)
-                c.placeholderLabel.hidden = true
-                c.blockTextLabel.hidden = false
+                c.placeholderLabel.isHidden = true
+                c.blockTextLabel.isHidden = false
             }
             cell = c
         } else {
-            let c = tableView.dequeueReusableCellWithIdentifier("ImageBlockTableViewCell", forIndexPath: indexPath) as! ImageBlockTableViewCell
+            let c = tableView.dequeueReusableCell(withIdentifier: "ImageBlockTableViewCell", for: indexPath) as! ImageBlockTableViewCell
             if (item as! EntryImageItem).asset != nil {
-                c.blockImageView.sd_setImageWithURL(NSURL(string: item.dispValue()))
+                c.blockImageView.sd_setImage(with: URL(string: item.dispValue()))
             } else {
                 LOG(item.dispValue())
                 c.blockImageView.image = UIImage(contentsOfFile: item.dispValue())
@@ -181,7 +194,7 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
         return cell
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 110.0
     }
 
@@ -194,11 +207,11 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
     */
 
     // Override to support editing the table view.
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
             // Delete the row from the data source
-            items.removeAtIndex(indexPath.row)
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+            items.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
 
@@ -219,26 +232,26 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
 
     
     // Override to support conditional rearranging of the table view.
-    override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
         // Return NO if you do not want the item to be re-orderable.
         return true
     }
     
-    override func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         let item = items[sourceIndexPath.row];
-        items.removeAtIndex(sourceIndexPath.row);
-        items.insert(item, atIndex: destinationIndexPath.row)
+        items.remove(at: sourceIndexPath.row);
+        items.insert(item, at: destinationIndexPath.row)
     }
     
-    private func showHTMLEditor(object: BlockTextItem) {
+    fileprivate func showHTMLEditor(_ object: BlockTextItem) {
         object.format = self.entry.editMode
-        if self.entry.editMode == Entry.EditMode.PlainText {
+        if self.entry.editMode == Entry.EditMode.plainText {
             let vc = EntryHTMLEditorViewController()
             vc.object = object
             vc.blog = blog
             vc.entry = entry
             self.navigationController?.pushViewController(vc, animated: true)
-        } else if self.entry.editMode == Entry.EditMode.Markdown {
+        } else if self.entry.editMode == Entry.EditMode.markdown {
             let vc = EntryMarkdownEditorViewController()
             vc.object = object
             vc.blog = blog
@@ -251,7 +264,7 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
         }
     }
     
-    private func showAssetSelector(object: EntryImageItem) {
+    fileprivate func showAssetSelector(_ object: EntryImageItem) {
         if object.id.isEmpty {
             self.showOfflineImageSelector(object)
         } else {
@@ -259,7 +272,7 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
         }
     }
     
-    private func showImageSelector(object: EntryImageItem) {
+    fileprivate func showImageSelector(_ object: EntryImageItem) {
         let storyboard: UIStoryboard = UIStoryboard(name: "ImageSelector", bundle: nil)
         let nav = storyboard.instantiateInitialViewController() as! UINavigationController
         let vc = nav.topViewController as! ImageSelectorTableViewController
@@ -268,10 +281,10 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
         vc.showAlign = true
         vc.object = object
         vc.entry = self.entry
-        self.presentViewController(nav, animated: true, completion: nil)
+        self.present(nav, animated: true, completion: nil)
     }
     
-    private func showOfflineImageSelector(object: EntryImageItem) {
+    fileprivate func showOfflineImageSelector(_ object: EntryImageItem) {
         let storyboard: UIStoryboard = UIStoryboard(name: "OfflineImageSelector", bundle: nil)
         let nav = storyboard.instantiateInitialViewController() as! UINavigationController
         let vc = nav.topViewController as! OfflineImageSelectorTableViewController
@@ -280,11 +293,11 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
         vc.showAlign = true
         vc.object = object
         vc.entry = self.entry
-        self.presentViewController(nav, animated: true, completion: nil)
+        self.present(nav, animated: true, completion: nil)
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         
         if let items = self.items {
             let item = items[indexPath.row]
@@ -307,31 +320,31 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
     }
     */
     
-    @IBAction func saveButtonPushed(sender: UIBarButtonItem) {
+    @IBAction func saveButtonPushed(_ sender: UIBarButtonItem) {
         blocks.blocks = self.items
         blocks.isDirty = true
         for filename in addedImageFiles {
             entryAddedImageFiles.items.append(filename)
         }
-        self.navigationController?.popViewControllerAnimated(true)
+        _ = self.navigationController?.popViewController(animated: true)
     }
 
-    private func makeToolbarItems(editMode: Bool) {
+    fileprivate func makeToolbarItems(_ editMode: Bool) {
         var buttons = [UIBarButtonItem]()
         if editMode {
-            let flexible = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-            let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(BlockEditorTableViewController.doneButtonPushed(_:)))
+            let flexible = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
+            let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: #selector(BlockEditorTableViewController.doneButtonPushed(_:)))
             
             buttons = [flexible, doneButton]
         } else {
             let cameraButton = UIBarButtonItem(image: UIImage(named: "btn_camera"), left: true, target: self, action: #selector(BlockEditorTableViewController.cameraButtonPushed(_:)))
             let textAddButton = UIBarButtonItem(image: UIImage(named: "btn_textadd"), left: false, target: self, action: #selector(BlockEditorTableViewController.textAddButtonPushed(_:)))
             
-            let flexible = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+            let flexible = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
             
-            let previewButton = UIBarButtonItem(image: UIImage(named: "btn_preview"), style: UIBarButtonItemStyle.Plain, target: self, action: #selector(BlockEditorTableViewController.previewButtonPushed(_:)))
+            let previewButton = UIBarButtonItem(image: UIImage(named: "btn_preview"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(BlockEditorTableViewController.previewButtonPushed(_:)))
 
-            let editButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Edit, target: self, action: #selector(BlockEditorTableViewController.editButtonPushed(_:)))
+            let editButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.edit, target: self, action: #selector(BlockEditorTableViewController.editButtonPushed(_:)))
             
             buttons = [cameraButton, textAddButton, flexible, previewButton, editButton]
 
@@ -340,19 +353,19 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
         self.setToolbarItems(buttons, animated: true)
     }
 
-    @IBAction func editButtonPushed(sender: UIBarButtonItem) {
+    @IBAction func editButtonPushed(_ sender: UIBarButtonItem) {
         self.tableView.setEditing(true, animated: true)
-        self.navigationItem.rightBarButtonItem?.enabled = false
+        self.navigationItem.rightBarButtonItem?.isEnabled = false
         self.makeToolbarItems(true)
     }
 
-    @IBAction func doneButtonPushed(sender: UIBarButtonItem) {
+    @IBAction func doneButtonPushed(_ sender: UIBarButtonItem) {
         self.tableView.setEditing(false, animated: true)
-        self.navigationItem.rightBarButtonItem?.enabled = true
+        self.navigationItem.rightBarButtonItem?.isEnabled = true
         self.makeToolbarItems(false)
     }
     
-    @IBAction func cameraButtonPushed(sender: UIBarButtonItem) {
+    @IBAction func cameraButtonPushed(_ sender: UIBarButtonItem) {
         let item = BlockImageItem()
         item.label = NSLocalizedString("Image", comment: "Image")
         self.tableView.reloadData()
@@ -360,27 +373,27 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
         self.showAssetSelector(item)
     }
     
-    func AddAssetDone(controller: AddAssetTableViewController, asset: Asset) {
-        self.dismissViewControllerAnimated(false, completion: {
+    func AddAssetDone(_ controller: AddAssetTableViewController, asset: Asset) {
+        self.dismiss(animated: false, completion: {
             let vc = controller as! ImageSelectorTableViewController
             let item = vc.object
-            item.asset = asset
+            item?.asset = asset
             (item as! BlockImageItem).align = controller.imageAlign
-            if self.items.indexOf(item) < 0 {
-                self.items.append(item)
+            if self.items.index(of: item!) < 0 {
+                self.items.append(item!)
             }
             self.tableView.reloadData()
         })
     }
     
-    func AddAssetsDone(controller: AddAssetTableViewController) {
+    func AddAssetsDone(_ controller: AddAssetTableViewController) {
     }
     
-    func AddOfflineImageDone(controller: AddAssetTableViewController, item: EntryImageItem) {
-        self.dismissViewControllerAnimated(false, completion: {
+    func AddOfflineImageDone(_ controller: AddAssetTableViewController, item: EntryImageItem) {
+        self.dismiss(animated: false, completion: {
             item.asset = nil
             (item as! BlockImageItem).align = controller.imageAlign
-            if self.items.indexOf(item) < 0 {
+            if self.items.index(of: item) < 0 {
                 self.items.append(item)
             }
             self.addedImageFiles.append((item as! BlockImageItem).imageFilename)
@@ -388,22 +401,22 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
         })
     }
     
-    func AddOfflineImageStorageError(controller: AddAssetTableViewController, item: EntryImageItem) {
-        self.dismissViewControllerAnimated(false, completion: {
+    func AddOfflineImageStorageError(_ controller: AddAssetTableViewController, item: EntryImageItem) {
+        self.dismiss(animated: false, completion: {
             let alertController = UIAlertController(
                 title: NSLocalizedString("Error", comment: "Error"),
                 message: NSLocalizedString("The selected image could not be saved to the storage.", comment: "The selected image could not be saved to the storage."),
-                preferredStyle: .Alert)
-            let okAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .Default) {
+                preferredStyle: .alert)
+            let okAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default) {
                 action in
             }
             
             alertController.addAction(okAction)
-            self.presentViewController(alertController, animated: true, completion: nil)
+            self.present(alertController, animated: true, completion: nil)
         })
     }
     
-    @IBAction func textAddButtonPushed(sender: UIBarButtonItem) {
+    @IBAction func textAddButtonPushed(_ sender: UIBarButtonItem) {
         let item = BlockTextItem()
         item.label = NSLocalizedString("Text", comment: "Text")
         items.append(item)
@@ -412,12 +425,12 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
         self.showHTMLEditor(item)
     }
     
-    @IBAction func previewButtonPushed(sender: UIBarButtonItem) {
+    @IBAction func previewButtonPushed(_ sender: UIBarButtonItem) {
         let vc = PreviewViewController()
         let nav = UINavigationController(rootViewController: vc)
         let html = self.makeHTML()
         vc.html = html
-        self.presentViewController(nav, animated: true, completion: nil)
+        self.present(nav, animated: true, completion: nil)
     }
 
     func makeItemsHTML()-> String {
@@ -426,10 +439,10 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
             if item is BlockImageItem {
                 html += item.value() + "\n\n"
             } else {
-                if self.entry.editMode == Entry.EditMode.Markdown {
+                if self.entry.editMode == Entry.EditMode.markdown {
                     let sourceText = item.value()
                     do {
-                        let markdown = try MMMarkdown.HTMLStringWithMarkdown(sourceText, extensions: MMMarkdownExtensions.GitHubFlavored)
+                        let markdown = try MMMarkdown.htmlString(withMarkdown: sourceText, extensions: MMMarkdownExtensions.gitHubFlavored)
                         html += markdown + "\n\n"
                     } catch _ {
                         html += sourceText + "\n\n"
@@ -454,25 +467,25 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
     
     func cleanup() {
         for path in self.addedImageFiles {
-            let fileManager = NSFileManager.defaultManager()
+            let fileManager = FileManager.default
             do {
-                try fileManager.removeItemAtPath(path)
+                try fileManager.removeItem(atPath: path)
             } catch {
             }
         }
     }
 
-    @IBAction func backButtonPushed(sender: UIBarButtonItem) {
+    @IBAction func backButtonPushed(_ sender: UIBarButtonItem) {
         if self.makeItemsHTML() == oldHTML {
-            self.navigationController?.popViewControllerAnimated(true)
+            _ = self.navigationController?.popViewController(animated: true)
             return
         }
                 
         Utils.confrimSave(self, block:{self.cleanup()})
     }
     
-    func guidanceCloseButtonPushed(sender: UIButton) {
-        UIView.animateWithDuration(0.3,
+    func guidanceCloseButtonPushed(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.3,
             animations:
             {_ in
                 self.guidanceBgView.alpha = 0.0
@@ -481,8 +494,8 @@ class BlockEditorTableViewController: BaseTableViewController, AddAssetDelegate 
             {_ in
                 self.guidanceBgView.removeFromSuperview()
                 
-                let defaults = NSUserDefaults.standardUserDefaults()
-                defaults.setBool(true, forKey: "blocksGuidanceShowed")
+                let defaults = UserDefaults.standard
+                defaults.set(true, forKey: "blocksGuidanceShowed")
                 defaults.synchronize()
             }
         )

@@ -12,11 +12,11 @@ import SVProgressHUD
 class ResetPasswordTableViewController: BaseTableViewController, UITextFieldDelegate {
 
     enum Item: Int {
-        case Username = 0,
-        Email,
-        Endpoint,
-        Spacer1,
-        Button,
+        case username = 0,
+        email,
+        endpoint,
+        spacer1,
+        button,
         _Num
     }
 
@@ -33,13 +33,13 @@ class ResetPasswordTableViewController: BaseTableViewController, UITextFieldDele
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
-        self.navigationController?.navigationBarHidden = false
+        self.navigationController?.isNavigationBarHidden = false
         self.title = NSLocalizedString("Forgot password", comment: "Forgot password")
         
-        self.tableView.registerNib(UINib(nibName: "TextFieldTableViewCell", bundle: nil), forCellReuseIdentifier: "TextFieldTableViewCell")
-        self.tableView.registerNib(UINib(nibName: "ButtonTableViewCell", bundle: nil), forCellReuseIdentifier: "ButtonTableViewCell")
+        self.tableView.register(UINib(nibName: "TextFieldTableViewCell", bundle: nil), forCellReuseIdentifier: "TextFieldTableViewCell")
+        self.tableView.register(UINib(nibName: "ButtonTableViewCell", bundle: nil), forCellReuseIdentifier: "ButtonTableViewCell")
 
-        self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        self.tableView.separatorStyle = UITableViewCellSeparatorStyle.none
         self.tableView.backgroundColor = Color.tableBg
         
     }
@@ -51,109 +51,109 @@ class ResetPasswordTableViewController: BaseTableViewController, UITextFieldDele
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         return Item._Num.rawValue
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell = UITableViewCell()
 
         // Configure the cell...
         switch indexPath.row {
-        case Item.Username.rawValue:
-            let c = tableView.dequeueReusableCellWithIdentifier("TextFieldTableViewCell", forIndexPath: indexPath) as! TextFieldTableViewCell
+        case Item.username.rawValue:
+            let c = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as! TextFieldTableViewCell
             c.textField.placeholder = NSLocalizedString("username", comment: "username")
-            c.textField.keyboardType = UIKeyboardType.Default
-            c.textField.returnKeyType = UIReturnKeyType.Done
-            c.textField.secureTextEntry = false
-            c.textField.autocorrectionType = UITextAutocorrectionType.No
+            c.textField.keyboardType = UIKeyboardType.default
+            c.textField.returnKeyType = UIReturnKeyType.done
+            c.textField.isSecureTextEntry = false
+            c.textField.autocorrectionType = UITextAutocorrectionType.no
             c.textField.text = username
             c.textField.tag = indexPath.row
             c.textField.delegate = self
-            c.textField.addTarget(self, action: #selector(ResetPasswordTableViewController.textFieldChanged(_:)), forControlEvents: UIControlEvents.EditingChanged)
+            c.textField.addTarget(self, action: #selector(ResetPasswordTableViewController.textFieldChanged(_:)), for: UIControlEvents.editingChanged)
             c.bgImageView.image = UIImage(named: "signin_table_1")
             cell = c
             
-        case Item.Email.rawValue:
-            let c = tableView.dequeueReusableCellWithIdentifier("TextFieldTableViewCell", forIndexPath: indexPath) as! TextFieldTableViewCell
+        case Item.email.rawValue:
+            let c = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as! TextFieldTableViewCell
             c.textField.placeholder = NSLocalizedString("email", comment: "email")
-            c.textField.keyboardType = UIKeyboardType.EmailAddress
-            c.textField.returnKeyType = UIReturnKeyType.Done
-            c.textField.secureTextEntry = false
-            c.textField.autocorrectionType = UITextAutocorrectionType.No
+            c.textField.keyboardType = UIKeyboardType.emailAddress
+            c.textField.returnKeyType = UIReturnKeyType.done
+            c.textField.isSecureTextEntry = false
+            c.textField.autocorrectionType = UITextAutocorrectionType.no
             c.textField.text = email
             c.textField.tag = indexPath.row
             c.textField.delegate = self
-            c.textField.addTarget(self, action: #selector(ResetPasswordTableViewController.textFieldChanged(_:)), forControlEvents: UIControlEvents.EditingChanged)
+            c.textField.addTarget(self, action: #selector(ResetPasswordTableViewController.textFieldChanged(_:)), for: UIControlEvents.editingChanged)
             c.bgImageView.image = UIImage(named: "signin_table_2")
             cell = c
 
-        case Item.Endpoint.rawValue:
-            let c = tableView.dequeueReusableCellWithIdentifier("TextFieldTableViewCell", forIndexPath: indexPath) as! TextFieldTableViewCell
+        case Item.endpoint.rawValue:
+            let c = tableView.dequeueReusableCell(withIdentifier: "TextFieldTableViewCell", for: indexPath) as! TextFieldTableViewCell
             c.textField.placeholder = NSLocalizedString("endpoint", comment: "endpoint")
             c.textField.keyboardType = UIKeyboardType.URL
-            c.textField.returnKeyType = UIReturnKeyType.Done
-            c.textField.secureTextEntry = false
-            c.textField.autocorrectionType = UITextAutocorrectionType.No
+            c.textField.returnKeyType = UIReturnKeyType.done
+            c.textField.isSecureTextEntry = false
+            c.textField.autocorrectionType = UITextAutocorrectionType.no
             c.textField.text = endpoint
             c.textField.tag = indexPath.row
             c.textField.delegate = self
-            c.textField.addTarget(self, action: #selector(ResetPasswordTableViewController.textFieldChanged(_:)), forControlEvents: UIControlEvents.EditingChanged)
+            c.textField.addTarget(self, action: #selector(ResetPasswordTableViewController.textFieldChanged(_:)), for: UIControlEvents.editingChanged)
             c.bgImageView.image = UIImage(named: "signin_table_3")
             cell = c
             
-        case Item.Button.rawValue:
-            let c = tableView.dequeueReusableCellWithIdentifier("ButtonTableViewCell", forIndexPath: indexPath) as! ButtonTableViewCell
-            c.button.setTitle(NSLocalizedString("Reset", comment: "Reset"), forState: UIControlState.Normal)
-            c.button.titleLabel?.font = UIFont.systemFontOfSize(17.0)
-            c.button.setTitleColor(Color.buttonText, forState: UIControlState.Normal)
-            c.button.setTitleColor(Color.buttonDisableText, forState: UIControlState.Disabled)
-            c.button.setBackgroundImage(UIImage(named: "btn_signin"), forState: UIControlState.Normal)
-            c.button.setBackgroundImage(UIImage(named: "btn_signin_highlight"), forState: UIControlState.Highlighted)
-            c.button.setBackgroundImage(UIImage(named: "btn_signin_disable"), forState: UIControlState.Disabled)
-            c.button.enabled = self.validate()
-            c.button.addTarget(self, action: #selector(ResetPasswordTableViewController.resetButtonPushed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+        case Item.button.rawValue:
+            let c = tableView.dequeueReusableCell(withIdentifier: "ButtonTableViewCell", for: indexPath) as! ButtonTableViewCell
+            c.button.setTitle(NSLocalizedString("Reset", comment: "Reset"), for: UIControlState())
+            c.button.titleLabel?.font = UIFont.systemFont(ofSize: 17.0)
+            c.button.setTitleColor(Color.buttonText, for: UIControlState())
+            c.button.setTitleColor(Color.buttonDisableText, for: UIControlState.disabled)
+            c.button.setBackgroundImage(UIImage(named: "btn_signin"), for: UIControlState())
+            c.button.setBackgroundImage(UIImage(named: "btn_signin_highlight"), for: UIControlState.highlighted)
+            c.button.setBackgroundImage(UIImage(named: "btn_signin_disable"), for: UIControlState.disabled)
+            c.button.isEnabled = self.validate()
+            c.button.addTarget(self, action: #selector(ResetPasswordTableViewController.resetButtonPushed(_:)), for: UIControlEvents.touchUpInside)
             cell = c
             
         default:
             break
         }
         
-        cell.selectionStyle = UITableViewCellSelectionStyle.None
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
         cell.backgroundColor = Color.clear
 
         return cell
     }
 
     //MARK: - Table view delegate
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 64.0
     }
     
-    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView: GroupedHeaderView = GroupedHeaderView.instanceFromNib() as! GroupedHeaderView
         headerView.label.text = NSLocalizedString("Reset password", comment: "Reset password")
         return headerView
     }
     
     //MARK: - Table view delegate
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
-        case Item.Username.rawValue:
+        case Item.username.rawValue:
             return 48.0
-        case Item.Email.rawValue:
+        case Item.email.rawValue:
             return 48.0
-        case Item.Endpoint.rawValue:
+        case Item.endpoint.rawValue:
             return 48.0
-        case Item.Button.rawValue:
+        case Item.button.rawValue:
             return 40.0
         default:
             return 12.0
@@ -205,7 +205,7 @@ class ResetPasswordTableViewController: BaseTableViewController, UITextFieldDele
     }
     */
 
-    private func validate()-> Bool {
+    fileprivate func validate()-> Bool {
         if username.isEmpty || email.isEmpty || endpoint.isEmpty {
             return false
         }
@@ -213,52 +213,52 @@ class ResetPasswordTableViewController: BaseTableViewController, UITextFieldDele
         return true
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
     
-    @IBAction func textFieldChanged(field: UITextField) {
+    @IBAction func textFieldChanged(_ field: UITextField) {
         switch field.tag {
-        case Item.Username.rawValue:
+        case Item.username.rawValue:
             username = field.text!
-        case Item.Email.rawValue:
+        case Item.email.rawValue:
             email = field.text!
-        case Item.Endpoint.rawValue:
+        case Item.endpoint.rawValue:
             endpoint = field.text!
         default:
             break
         }
         
-        let cell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow:Item.Button.rawValue , inSection: 0)) as! ButtonTableViewCell
-        cell.button.enabled = self.validate()
+        let cell = tableView.cellForRow(at: IndexPath(row:Item.button.rawValue , section: 0)) as! ButtonTableViewCell
+        cell.button.isEnabled = self.validate()
     }
 
-    private func resetPassword(username: String, email: String, endpoint: String) {
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        SVProgressHUD.showWithStatus(NSLocalizedString("Reset password...", comment: "Reset password..."))
+    fileprivate func resetPassword(_ username: String, email: String, endpoint: String) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        SVProgressHUD.show(withStatus: NSLocalizedString("Reset password...", comment: "Reset password..."))
         let api = DataAPI.sharedInstance
         api.APIBaseURL = endpoint
         
-        let failure: (JSON!-> Void) = {
-            (error: JSON!)-> Void in
-            LOG("failure:\(error.description)")
-            SVProgressHUD.showErrorWithStatus(error["message"].stringValue)
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+        let failure: ((JSON?)-> Void) = {
+            (error: JSON?)-> Void in
+            LOG("failure:\(error!.description)")
+            SVProgressHUD.showError(withStatus: error!["message"].stringValue)
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
         }
         
         api.recoverPassword(username, email: email,
             success: {_ in
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 SVProgressHUD.dismiss()
 
-                self.navigationController?.popViewControllerAnimated(true)
+                _ = self.navigationController?.popViewController(animated: true)
             },
             failure: failure
         )
     }
     
-    @IBAction func resetButtonPushed(sender: AnyObject) {
+    @IBAction func resetButtonPushed(_ sender: AnyObject) {
         self.resetPassword(username, email: email, endpoint: endpoint)
     }
     

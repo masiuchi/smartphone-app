@@ -26,12 +26,12 @@ class BaseTableViewController: UITableViewController {
         
         self.tableView.separatorColor = Color.separatorLine
         
-        if self.tableView.respondsToSelector(Selector("separatorInset")) {
-            self.tableView.separatorInset = UIEdgeInsetsZero;
+        if self.tableView.responds(to: #selector(getter: UITableViewCell.separatorInset)) {
+            self.tableView.separatorInset = UIEdgeInsets.zero;
         }
         
-        if self.tableView.respondsToSelector(Selector("layoutMargins")) {
-            self.tableView.layoutMargins = UIEdgeInsetsZero;
+        if self.tableView.responds(to: #selector(getter: UIView.layoutMargins)) {
+            self.tableView.layoutMargins = UIEdgeInsets.zero;
         }
         
         let barButton:UIBarButtonItem = UIBarButtonItem(); barButton.title = "";
@@ -45,29 +45,29 @@ class BaseTableViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
         return 0
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         return 0
     }
 
-    func adjustCellLayoutMargins(cell: UITableViewCell) {
-        if cell.respondsToSelector(Selector("separatorInset")) {
-            cell.separatorInset = UIEdgeInsetsZero;
+    func adjustCellLayoutMargins(_ cell: UITableViewCell) {
+        if cell.responds(to: #selector(getter: UITableViewCell.separatorInset)) {
+            cell.separatorInset = UIEdgeInsets.zero;
         }
         
-        if cell.respondsToSelector(Selector("preservesSuperviewLayoutMargins")) {
+        if cell.responds(to: #selector(getter: UIView.preservesSuperviewLayoutMargins)) {
             cell.preservesSuperviewLayoutMargins = false;
         }
         
-        if cell.respondsToSelector(Selector("layoutMargins")) {
-            cell.layoutMargins = UIEdgeInsetsZero;
+        if cell.responds(to: #selector(getter: UIView.layoutMargins)) {
+            cell.layoutMargins = UIEdgeInsets.zero;
         }
     }
     

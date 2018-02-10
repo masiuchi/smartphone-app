@@ -22,58 +22,58 @@ class CommonWebViewController: BaseViewController, WKUIDelegate, WKNavigationDel
         // Do any additional setup after loading the view.
         self.webView = WKWebView(frame: self.view.bounds)
         self.view.addSubview(self.webView)
-        self.webView.UIDelegate = self
+        self.webView.uiDelegate = self
         self.webView.navigationDelegate = self
         self.webView.translatesAutoresizingMaskIntoConstraints = false
         self.webView.backgroundColor = Color.bg
         
         let leading: NSLayoutConstraint = NSLayoutConstraint(
             item: self.webView,
-            attribute: .Leading,
-            relatedBy: .Equal,
+            attribute: .leading,
+            relatedBy: .equal,
             toItem: self.view,
-            attribute: .Leading,
+            attribute: .leading,
             multiplier: 1.0,
             constant: 0.0)
         
         let trailing: NSLayoutConstraint = NSLayoutConstraint(
             item: self.webView,
-            attribute: .Trailing,
-            relatedBy: .Equal,
+            attribute: .trailing,
+            relatedBy: .equal,
             toItem: self.view,
-            attribute: .Trailing,
+            attribute: .trailing,
             multiplier: 1.0,
             constant: 0.0)
         
         let top: NSLayoutConstraint = NSLayoutConstraint(
             item: self.webView,
-            attribute: .Top,
-            relatedBy: .Equal,
+            attribute: .top,
+            relatedBy: .equal,
             toItem: self.topLayoutGuide,
-            attribute: .Bottom,
+            attribute: .bottom,
             multiplier: 1.0,
             constant: 0.0)
         
         let bottom: NSLayoutConstraint = NSLayoutConstraint(
             item: self.webView,
-            attribute: .Bottom,
-            relatedBy: .Equal,
+            attribute: .bottom,
+            relatedBy: .equal,
             toItem: self.bottomLayoutGuide,
-            attribute: .Top,
+            attribute: .top,
             multiplier: 1.0,
             constant: 0.0)
         
         self.view.addConstraints([leading, trailing, top, bottom])
         
         if filePath.isEmpty {
-            let url = NSURL(string: urlString)
-            let request = NSMutableURLRequest(URL: url!)
+            let url = URL(string: urlString)
+            let request = NSMutableURLRequest(url: url!)
             
-            self.webView.loadRequest(request)
+            self.webView.load(request as URLRequest)
         } else {
             do {
                 let html = try String(contentsOfFile: filePath,
-                    encoding: NSUTF8StringEncoding)
+                    encoding: String.Encoding.utf8)
                 self.webView.loadHTMLString(html, baseURL: nil)
             }
             catch let error as NSError {
@@ -82,12 +82,12 @@ class CommonWebViewController: BaseViewController, WKUIDelegate, WKNavigationDel
         }
         
         
-        self.indicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        self.indicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
         self.webView.addSubview(self.indicator)
         self.indicator.center = self.webView.center
         var rect = self.indicator.frame
         if (self.navigationController != nil) {
-            rect.origin.y -= self.navigationController!.navigationBar.frame.size.height + UIApplication.sharedApplication().statusBarFrame.size.height
+            rect.origin.y -= self.navigationController!.navigationBar.frame.size.height + UIApplication.shared.statusBarFrame.size.height
         }
         self.indicator.frame = rect
         self.indicator.startAnimating()
@@ -100,17 +100,17 @@ class CommonWebViewController: BaseViewController, WKUIDelegate, WKNavigationDel
         // Dispose of any resources that can be recreated.
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if !Utils.hasConnectivity() {
-            SVProgressHUD.showErrorWithStatus(NSLocalizedString("You can not connect to the network.", comment: "You can not connect to the network."))
+            SVProgressHUD.showError(withStatus: NSLocalizedString("You can not connect to the network.", comment: "You can not connect to the network."))
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+        UIApplication.shared.isNetworkActivityIndicatorVisible = false
     }
     
     /*
@@ -124,30 +124,30 @@ class CommonWebViewController: BaseViewController, WKUIDelegate, WKNavigationDel
     */
     
     //MARK:-
-    func webView(webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
     }
     
-    func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         self.indicator.removeFromSuperview()
         let title = webView.title
         self.title = title
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+        UIApplication.shared.isNetworkActivityIndicatorVisible = false
     }
     
-    private func didFail(error: NSError) {
+    fileprivate func didFail(_ error: NSError) {
         self.indicator.removeFromSuperview()
         if error.code != -999 {
             self.title = NSLocalizedString("Error", comment: "Error")
         }
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+        UIApplication.shared.isNetworkActivityIndicatorVisible = false
     }
     
-    func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
-        self.didFail(error)
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        self.didFail(error as NSError)
     }
     
-    func webView(webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: NSError) {
-        self.didFail(error)
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        self.didFail(error as NSError)
     }
 }

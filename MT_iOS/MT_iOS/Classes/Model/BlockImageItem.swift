@@ -11,42 +11,42 @@ import UIKit
 class BlockImageItem: EntryImageItem {
     var width = 0
     var height = 0
-    var align = Blog.ImageAlign.None
+    var align = Blog.ImageAlign.none
 
     override init() {
         super.init()
     }
     
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
-        aCoder.encodeInteger(self.width, forKey: "width")
-        aCoder.encodeInteger(self.height, forKey: "height")
-        aCoder.encodeInteger(self.align.rawValue, forKey: "align")
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
+        aCoder.encode(self.width, forKey: "width")
+        aCoder.encode(self.height, forKey: "height")
+        aCoder.encode(self.align.rawValue, forKey: "align")
     }
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.width = aDecoder.decodeIntegerForKey("width")
-        self.height = aDecoder.decodeIntegerForKey("height")
-        self.align = Blog.ImageAlign(rawValue: aDecoder.decodeIntegerForKey("align"))!
+        self.width = aDecoder.decodeInteger(forKey: "width")
+        self.height = aDecoder.decodeInteger(forKey: "height")
+        self.align = Blog.ImageAlign(rawValue: aDecoder.decodeInteger(forKey: "align"))!
     }
 
-    func imageHTML(align: Blog.ImageAlign)-> String {
-        var wrapStyle = "class=\"mt-image-\(align.value().lowercaseString)\" "
+    func imageHTML(_ align: Blog.ImageAlign)-> String {
+        var wrapStyle = "class=\"mt-image-\(align.value().lowercased())\" "
         switch align {
-        case .Left:
+        case .left:
             wrapStyle += "style=\"float: left; margin: 0 20px 20px 0;\""
-        case .Right:
+        case .right:
             wrapStyle += "style=\"float: right; margin: 0 0 20px 20px;\""
-        case .Center:
+        case .center:
             wrapStyle += "style=\"text-align: center; display: block; margin: 0 auto 20px;\""
         default:
             wrapStyle += "style=\"\""
         }
         
-        if let data = NSData(contentsOfFile: imageFilename) {
-            var base64 = data.base64EncodedStringWithOptions(NSDataBase64EncodingOptions.Encoding76CharacterLineLength)
-            base64 = base64.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.alphanumericCharacterSet())!
+        if let data = try? Data(contentsOf: URL(fileURLWithPath: imageFilename)) {
+            var base64 = data.base64EncodedString(options: NSData.Base64EncodingOptions.lineLength76Characters)
+            base64 = base64.addingPercentEncoding(withAllowedCharacters: CharacterSet.alphanumerics)!
             
             let src = "data:image/jpeg;base64," + base64
             

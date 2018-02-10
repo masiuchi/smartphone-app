@@ -46,30 +46,30 @@ class ImageSelectorTableViewController: AddAssetTableViewController, AssetSelect
     }
     */
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
-        let user = (UIApplication.sharedApplication().delegate as! AppDelegate).currentUser!
+        let user = (UIApplication.shared.delegate as! AppDelegate).currentUser!
         switch indexPath.section {
-        case Section.Buttons.rawValue:
+        case Section.buttons.rawValue:
             if let cameraButton = cell.viewWithTag(1) as? UIButton {
-                cameraButton.enabled =  self.blog.canUpload(user: user)
+                cameraButton.isEnabled =  self.blog.canUpload(user: user)
             }
             
             if let libraryButton = cell.viewWithTag(2) as? UIButton {
-                libraryButton.enabled =  self.blog.canUpload(user: user)
+                libraryButton.isEnabled =  self.blog.canUpload(user: user)
             }
             
             if let assetListButton = cell.viewWithTag(3) as? UIButton {
                 if self.entry is Entry {
-                    assetListButton.enabled =  self.blog.canListAssetForEntry(user: user)
+                    assetListButton.isEnabled =  self.blog.canListAssetForEntry(user: user)
                 } else {
-                    assetListButton.enabled =  self.blog.canListAssetForPage(user: user)
+                    assetListButton.isEnabled =  self.blog.canListAssetForPage(user: user)
                 }
             }
             
             return cell
-        case Section.Items.rawValue:
+        case Section.items.rawValue:
             return cell
         default:
             break
@@ -125,15 +125,15 @@ class ImageSelectorTableViewController: AddAssetTableViewController, AssetSelect
     }
     */
     
-    @IBAction override func assetListButtonPushed(sender: UIButton) {
+    @IBAction override func assetListButtonPushed(_ sender: UIButton) {
         let vc = AssetSelectorTableViewController()
         let nav = UINavigationController(rootViewController: vc)
         vc.blog = self.blog
         vc.delegate = self
-        self.presentViewController(nav, animated: true, completion: nil)
+        self.present(nav, animated: true, completion: nil)
     }
 
-    func AssetSelectorDone(controller: AssetSelectorTableViewController, asset: Asset) {
+    func AssetSelectorDone(_ controller: AssetSelectorTableViewController, asset: Asset) {
         self.delegate?.AddAssetDone(self, asset: asset)
     }
 }

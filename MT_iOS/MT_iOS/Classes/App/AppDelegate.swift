@@ -18,20 +18,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var authInfo = AuthInfo()
     var currentUser: User?
     
-    private func initAppearance() {
-        UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent
+    fileprivate func initAppearance() {
+        UIApplication.shared.statusBarStyle = UIStatusBarStyle.lightContent
 
-        UINavigationBar.self.appearance().translucent = false
+        UINavigationBar.self.appearance().isTranslucent = false
         UINavigationBar.self.appearance().barTintColor = Color.navBar
         UINavigationBar.self.appearance().tintColor = Color.navBarTint
         UINavigationBar.self.appearance().titleTextAttributes = [NSForegroundColorAttributeName: Color.navBarTitle];
         
-        SVProgressHUD.setBackgroundColor(UIColor.blackColor())
-        SVProgressHUD.setForegroundColor(UIColor.whiteColor())
-        SVProgressHUD.setDefaultMaskType(SVProgressHUDMaskType.Black)
+        SVProgressHUD.setBackgroundColor(UIColor.black)
+        SVProgressHUD.setForegroundColor(UIColor.white)
+        SVProgressHUD.setDefaultMaskType(SVProgressHUDMaskType.black)
     }
 
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         self.initAppearance()
         
@@ -52,58 +52,58 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 )
             } else {
                 self.goLoginView()
-                SVProgressHUD.showErrorWithStatus(NSLocalizedString("You can not connect to the network.", comment: "You can not connect to the network."))
+                SVProgressHUD.showError(withStatus: NSLocalizedString("You can not connect to the network.", comment: "You can not connect to the network."))
             }
         }
         
         return true
     }
 
-    func applicationWillResignActive(application: UIApplication) {
+    func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
     }
 
-    func applicationDidEnterBackground(application: UIApplication) {
+    func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     }
 
-    func applicationWillEnterForeground(application: UIApplication) {
+    func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     }
 
-    func applicationDidBecomeActive(application: UIApplication) {
+    func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     }
 
-    func applicationWillTerminate(application: UIApplication) {
+    func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
     //MARK: -
-    private func goLoginView() {
+    fileprivate func goLoginView() {
         let storyboard: UIStoryboard = UIStoryboard(name: "Login", bundle: nil)
         let vc = storyboard.instantiateInitialViewController()
         self.window?.rootViewController = vc
         self.window?.makeKeyAndVisible()
     }
     
-    private func goBlogList() {
+    fileprivate func goBlogList() {
         let storyboard: UIStoryboard = UIStoryboard(name: "BlogList", bundle: nil)
         let vc = storyboard.instantiateInitialViewController()
         self.window?.rootViewController = vc
         self.window?.makeKeyAndVisible()
     }
     
-    func getUser(auth: AuthInfo, showHud: Bool){
-        let failure: (JSON!-> Void) = {
-            (error: JSON!)-> Void in
-            LOG("failure:\(error.description)")
+    func getUser(_ auth: AuthInfo, showHud: Bool){
+        let failure: ((JSON?)-> Void) = {
+            (error: JSON?)-> Void in
+            LOG("failure:\(error!.description)")
             if showHud {
-                SVProgressHUD.showErrorWithStatus(error["message"].stringValue)
+                SVProgressHUD.showError(withStatus: error!["message"].stringValue)
             }
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
             
             Utils.performAfterDelay(
                 {
@@ -117,15 +117,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         api.authenticationV2(auth.username, password: auth.password, remember: true,
             success:{_ in
                 api.getUser("me",
-                    success: {(user: JSON!)-> Void in
-                        LOG("\(user)")
+                    success: {(user: JSON?)-> Void in
+                        LOG("\(user!)")
                         
-                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
                         if showHud {
                             SVProgressHUD.dismiss()
                         }
                         
-                        self.currentUser = User(json: user)
+                        self.currentUser = User(json: user!)
                         
                         self.goBlogList()
                     },
@@ -136,10 +136,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         )
     }
     
-    func signIn(auth: AuthInfo, showHud: Bool) {
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+    func signIn(_ auth: AuthInfo, showHud: Bool) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         if showHud {
-            SVProgressHUD.showWithStatus(NSLocalizedString("Sign In...", comment: "Sign In..."))
+            SVProgressHUD.show(withStatus: NSLocalizedString("Sign In...", comment: "Sign In..."))
         }
         let api = DataAPI.sharedInstance
         api.APIBaseURL = auth.endpoint
@@ -160,11 +160,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         )
     }
     
-    private func postLogout() {
+    fileprivate func postLogout() {
         let api = DataAPI.sharedInstance
         api.resetAuth()
         
-        let app: AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let app: AppDelegate = UIApplication.shared.delegate as! AppDelegate
         
         let authInfo = app.authInfo
         authInfo.logout()
@@ -180,42 +180,42 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
         
-        SVProgressHUD.showWithStatus(NSLocalizedString("Logout...", comment: "Logout..."))
+        SVProgressHUD.show(withStatus: NSLocalizedString("Logout...", comment: "Logout..."))
         api.revokeAuthentication(
             {_ in
                 SVProgressHUD.dismiss()
                 self.postLogout()
             },
-            failure: {(error: JSON!)-> Void in
+            failure: {(error: JSON?)-> Void in
                 SVProgressHUD.dismiss()
                 self.postLogout()
             }
         )
     }
     
-    func createEntry(blog: Blog, controller: UIViewController) {
+    func createEntry(_ blog: Blog, controller: UIViewController) {
         let vc = EntryDetailTableViewController()
         vc.object = Entry(json: ["id":"", "status":"Draft"])
-        vc.object.date = NSDate()
+        vc.object.date = Date()
         vc.blog = blog
         vc.object.editMode = blog.editorMode
         let nav = UINavigationController(rootViewController: vc)
-        controller.presentViewController(nav, animated: true, completion:
+        controller.present(nav, animated: true, completion:
             {_ in
                 vc.title = NSLocalizedString("Create entry", comment: "Create entry")
             }
         )
     }
 
-    func createPage(blog: Blog, controller: UIViewController) {
+    func createPage(_ blog: Blog, controller: UIViewController) {
         let vc = PageDetailTableViewController()
         vc.object = Page(json: ["id":"", "status":"Draft"])
-        vc.object.date = NSDate()
+        vc.object.date = Date()
         vc.blog = blog
         vc.object.editMode = blog.editorMode
         let nav = UINavigationController(rootViewController: vc)
         vc.title = NSLocalizedString("Create page", comment: "Create page")
-        controller.presentViewController(nav, animated: true, completion:
+        controller.present(nav, animated: true, completion:
             {_ in
                 vc.title = NSLocalizedString("Create page", comment: "Create page")
             }
@@ -242,14 +242,14 @@ extension String {
     var stringByDeletingLastPathComponent: String {
 
         get {
-            return (self as NSString).stringByDeletingLastPathComponent
+            return (self as NSString).deletingLastPathComponent
         }
     }
     
     var stringByDeletingPathExtension: String {
             
         get {
-            return (self as NSString).stringByDeletingPathExtension
+            return (self as NSString).deletingPathExtension
         }
     }
     
@@ -260,16 +260,16 @@ extension String {
         }
     }
         
-    func stringByAppendingPathComponent(path: String) -> String {
+    func stringByAppendingPathComponent(_ path: String) -> String {
             
         let nsSt = self as NSString
-        return nsSt.stringByAppendingPathComponent(path)
+        return nsSt.appendingPathComponent(path)
     }
         
-    func stringByAppendingPathExtension(ext: String) -> String? {
+    func stringByAppendingPathExtension(_ ext: String) -> String? {
             
         let nsSt = self as NSString
-        return nsSt.stringByAppendingPathExtension(ext)
+        return nsSt.appendingPathExtension(ext)
     }
 }
 

@@ -96,7 +96,7 @@ class CategoryListTableViewController: BaseCategoryListTableViewController, Prim
     }
     */
 
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedItem = self.list[indexPath.row] as! Category
         
         object.isDirty = true
@@ -106,10 +106,10 @@ class CategoryListTableViewController: BaseCategoryListTableViewController, Prim
         } else {
             selected[selectedItem.id] = true
         }
-        self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.None)
+        self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.none)
     }
     
-    @IBAction override func saveButtonPushed(sender: UIBarButtonItem) {
+    @IBAction override func saveButtonPushed(_ sender: UIBarButtonItem) {
         var selectedObjects = [Category]()
         for (id, value) in selected {
             if value {
@@ -119,7 +119,7 @@ class CategoryListTableViewController: BaseCategoryListTableViewController, Prim
             }
         }
         
-        selectedObjects.sortInPlace {
+        selectedObjects.sort {
             (cat1 : Category, cat2 : Category) -> Bool in
             return cat1.level < cat2.level
         }
@@ -130,22 +130,22 @@ class CategoryListTableViewController: BaseCategoryListTableViewController, Prim
             vc.items = selectedObjects
             vc.selected = primaryCategoryID
             vc.delegate = self
-            self.presentViewController(nav, animated: true, completion: nil)
+            self.present(nav, animated: true, completion: nil)
         } else {
             (object as! EntryCategoryItem).selected = selectedObjects
-            self.navigationController?.popViewControllerAnimated(true)
+            _ = self.navigationController?.popViewController(animated: true)
         }
     }
 
-    func primaryCategorySelectorDone(controller: PrimaryCategorySelectorTableViewController, selected: String) {
-        self.dismissViewControllerAnimated(false, completion:
+    func primaryCategorySelectorDone(_ controller: PrimaryCategorySelectorTableViewController, selected: String) {
+        self.dismiss(animated: false, completion:
             {
                 var selectedObjects = [Category]()
                 for (id, value) in self.selected {
                     if value {
                         let item = self.list.objectWithID(id)! as! Category
                         if id == selected {
-                            selectedObjects.insert(item, atIndex: 0)
+                            selectedObjects.insert(item, at: 0)
                         } else {
                             selectedObjects.append(item)
                         }
@@ -153,7 +153,7 @@ class CategoryListTableViewController: BaseCategoryListTableViewController, Prim
                 }
                 
                 (self.object as! EntryCategoryItem).selected = selectedObjects
-                self.navigationController?.popViewControllerAnimated(true)
+                _ = self.navigationController?.popViewController(animated: true)
             }
         )
     }

@@ -15,21 +15,21 @@ class Entry: BaseEntry {
     override init(json: JSON) {
         super.init(json: json)
 
-        categories.removeAll(keepCapacity: false)
+        categories.removeAll(keepingCapacity: false)
         for item in json["categories"].arrayValue {
             let category = Category(json: item)
             categories.append(category)
         }
     }
     
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
-        aCoder.encodeObject(self.categories, forKey: "categories")
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
+        aCoder.encode(self.categories, forKey: "categories")
     }
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.categories = aDecoder.decodeObjectForKey("categories") as! [Category]
+        self.categories = aDecoder.decodeObject(forKey: "categories") as! [Category]
     }
 
 }

@@ -17,14 +17,14 @@ class EntryCategoryItem: BaseEntryItem {
         type = "category"
     }
     
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
-        aCoder.encodeObject(self.selected, forKey: "selected")
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
+        aCoder.encode(self.selected, forKey: "selected")
     }
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
-        self.selected = aDecoder.decodeObjectForKey("selected") as! [Category]
+        self.selected = aDecoder.decodeObject(forKey: "selected") as! [Category]
     }
 
     override func value()-> String {
@@ -32,7 +32,7 @@ class EntryCategoryItem: BaseEntryItem {
         for item in selected {
             array.append(item.label)
         }
-        return array.joinWithSeparator(",")
+        return array.joined(separator: ",")
     }
     
     override func dispValue()-> String {
@@ -44,10 +44,10 @@ class EntryCategoryItem: BaseEntryItem {
         for item in selected {
             categories.append(["id":item.id])
         }
-        return ["categories":categories]
+        return ["categories":categories as AnyObject]
     }
     
     override func clear() {
-        selected.removeAll(keepCapacity: false)
+        selected.removeAll(keepingCapacity: false)
     }
 }

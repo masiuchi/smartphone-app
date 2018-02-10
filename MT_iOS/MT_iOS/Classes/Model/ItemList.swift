@@ -17,12 +17,12 @@ class ItemList: NSObject {
     var totalCount: Int = 0
     var searchText = ""
     
-    func toModel(json: JSON)->BaseObject {
+    func toModel(_ json: JSON)->BaseObject {
         //Implemants subclass
         return BaseObject(json: json)
     }
     
-    func isExists(model: BaseObject)->Bool {
+    func isExists(_ model: BaseObject)->Bool {
         for item in self.items {
             if (item as BaseObject).id == model.id {
                 return true
@@ -31,11 +31,11 @@ class ItemList: NSObject {
         return false
     }
     
-    func deleteObject(model: BaseObject)->Bool {
+    func deleteObject(_ model: BaseObject)->Bool {
         let index = existsIndex(model)
         
         if index > NOTFOUND {
-            self.items.removeAtIndex(index)
+            self.items.remove(at: index)
             return true
         }
         
@@ -43,7 +43,7 @@ class ItemList: NSObject {
     }
 
     
-    func existsIndex(model: BaseObject)->Int {
+    func existsIndex(_ model: BaseObject)->Int {
         var i = 0
         for item in self.items {
             if (item as BaseObject).id == model.id {
@@ -54,7 +54,7 @@ class ItemList: NSObject {
         return NOTFOUND
     }
     
-    func objectWithID(id: String)-> BaseObject? {
+    func objectWithID(_ id: String)-> BaseObject? {
         for item in self.items {
             if (item as BaseObject).id == id {
                 return item
@@ -77,7 +77,7 @@ class ItemList: NSObject {
         }
         set(item) {
             assert(0 > index || items.count >= index, "index out of range")
-            items.insert(item, atIndex: index)
+            items.insert(item, at: index)
         }
     }
     
@@ -92,7 +92,7 @@ class ItemList: NSObject {
         return self.totalCount <= self.items.count
     }
     
-    func parseItems(jsonItems: [JSON]!) {
+    func parseItems(_ jsonItems: [JSON]!) {
         for jsonItem in jsonItems {
             let item: BaseObject = self.toModel(jsonItem)
             if !item.id.isEmpty {
@@ -111,16 +111,16 @@ class ItemList: NSObject {
         working = false
     }
     
-    func fetch(offset: Int, success: ((items:[JSON]!, total:Int!) -> Void)!, failure: (JSON! -> Void)!) {
+    func fetch(_ offset: Int, success: ((_ items:[JSON]?, _ total:Int?) -> Void)!, failure: ((JSON?) -> Void)!) {
         //Implemants subclass
     }
     
-    func refresh(success: ((items:[JSON]!, total:Int!) -> Void)!, failure: (JSON! -> Void)!) {
+    func refresh(_ success: ((_ items:[JSON]?, _ total:Int?) -> Void)!, failure: ((JSON?) -> Void)!) {
         refresh = true
         self.fetch(0, success: success, failure: failure)
     }
     
-    func more(success: ((items:[JSON]!, total:Int!) -> Void)!, failure: (JSON! -> Void)!) {
+    func more(_ success: ((_ items:[JSON]?, _ total:Int?) -> Void)!, failure: ((JSON?) -> Void)!) {
         refresh = false
         self.fetch(self.items.count, success: success, failure: failure)
     }

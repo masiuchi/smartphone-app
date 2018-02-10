@@ -11,81 +11,81 @@ import SwiftyJSON
 
 class BaseEntry: BaseObject {
     enum Status: Int {
-        case Publish = 0,
-        Draft,
-        Future,
-        Unpublish
+        case publish = 0,
+        draft,
+        future,
+        unpublish
         
         func text()-> String {
             switch(self) {
-            case .Publish:
+            case .publish:
                 return "Publish"
-            case .Draft:
+            case .draft:
                 return "Draft"
-            case .Future:
+            case .future:
                 return "Future"
-            case .Unpublish:
+            case .unpublish:
                 return "Unpublish"
             }
         }
 
         func label()-> String {
             switch(self) {
-            case .Publish:
+            case .publish:
                 return NSLocalizedString("Publish", comment: "Publish")
-            case .Draft:
+            case .draft:
                 return NSLocalizedString("Draft", comment: "Draft")
-            case .Future:
+            case .future:
                 return NSLocalizedString("Future", comment: "Future")
-            case .Unpublish:
+            case .unpublish:
                 return NSLocalizedString("Unpublish", comment: "Unpublish")
             }
         }
     }
 
     enum EditMode: Int {
-        case PlainText = 0,
-        RichText,
-        Markdown
+        case plainText = 0,
+        richText,
+        markdown
         
         func text()-> String {
             switch(self) {
-            case .PlainText:
+            case .plainText:
                 return "PlainText"
-            case .RichText:
+            case .richText:
                 return "RichText"
-            case .Markdown:
+            case .markdown:
                 return "Markdown"
             }
         }
         
         func label()-> String {
             switch(self) {
-            case .PlainText:
+            case .plainText:
                 return NSLocalizedString("PlainText", comment: "PlainText")
-            case .RichText:
+            case .richText:
                 return NSLocalizedString("RichText", comment: "RichText")
-            case .Markdown:
+            case .markdown:
                 return NSLocalizedString("Markdown", comment: "Markdown")
             }
         }
 
         func format()-> String {
             switch(self) {
-            case .PlainText:
+            case .plainText:
                 return "0"
-            case .RichText:
+            case .richText:
                 return "richtext"
-            case .Markdown:
+            case .markdown:
                 return "markdown"
             }
         }
     }
     
     var title = ""
-    var date: NSDate?
-    var modifiedDate: NSDate?
-    var unpublishedDate: NSDate?
+    var date: Date?
+    var modifiedDate: Date?
+    var unpublishedDate: Date?
     var status = ""
     var blogID = ""
     var body = ""
@@ -99,7 +99,7 @@ class BaseEntry: BaseObject {
     var basename = ""
     var format = ""
     
-    var editMode: EditMode = .RichText
+    var editMode: EditMode = .richText
 
     override init(json: JSON) {
         super.init(json: json)
@@ -125,13 +125,13 @@ class BaseEntry: BaseObject {
         keywords = json["keywords"].stringValue
         basename = json["basename"].stringValue
         
-        tags.removeAll(keepCapacity: false)
+        tags.removeAll(keepingCapacity: false)
         for item in json["tags"].arrayValue {
             let tag = Tag(json: item)
             tags.append(tag)
         }
         
-        customFields.removeAll(keepCapacity: false)
+        customFields.removeAll(keepingCapacity: false)
         for item in json["customFields"].arrayValue {
             let customField = CustomField(json: item)
             customFields.append(customField)
@@ -144,44 +144,44 @@ class BaseEntry: BaseObject {
         format = json["format"].stringValue
     }
     
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
-        aCoder.encodeObject(self.title, forKey: "title")
-        aCoder.encodeObject(self.date, forKey: "date")
-        aCoder.encodeObject(self.modifiedDate, forKey: "modifiedDate")
-        aCoder.encodeObject(self.unpublishedDate, forKey: "unpublishedDate")
-        aCoder.encodeObject(self.status, forKey: "status")
-        aCoder.encodeObject(self.blogID, forKey: "blogID")
-        aCoder.encodeObject(self.excerpt, forKey: "excerpt")
-        aCoder.encodeObject(self.keywords, forKey: "keywords")
-        aCoder.encodeObject(self.tags, forKey: "tags")
-        aCoder.encodeObject(self.author, forKey: "author")
-        aCoder.encodeObject(self.customFields, forKey: "customFields")
-        aCoder.encodeObject(self.permalink, forKey: "permalink")
-        aCoder.encodeObject(self.basename, forKey: "basename")
-        aCoder.encodeObject(self.format, forKey: "format")
-        aCoder.encodeInteger(self.editMode.rawValue, forKey: "editMode")
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
+        aCoder.encode(self.title, forKey: "title")
+        aCoder.encode(self.date, forKey: "date")
+        aCoder.encode(self.modifiedDate, forKey: "modifiedDate")
+        aCoder.encode(self.unpublishedDate, forKey: "unpublishedDate")
+        aCoder.encode(self.status, forKey: "status")
+        aCoder.encode(self.blogID, forKey: "blogID")
+        aCoder.encode(self.excerpt, forKey: "excerpt")
+        aCoder.encode(self.keywords, forKey: "keywords")
+        aCoder.encode(self.tags, forKey: "tags")
+        aCoder.encode(self.author, forKey: "author")
+        aCoder.encode(self.customFields, forKey: "customFields")
+        aCoder.encode(self.permalink, forKey: "permalink")
+        aCoder.encode(self.basename, forKey: "basename")
+        aCoder.encode(self.format, forKey: "format")
+        aCoder.encode(self.editMode.rawValue, forKey: "editMode")
     }
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
-        self.title = aDecoder.decodeObjectForKey("title") as! String
-        self.date = aDecoder.decodeObjectForKey("date") as? NSDate
-        self.modifiedDate = aDecoder.decodeObjectForKey("modifiedDate") as? NSDate
-        self.unpublishedDate = aDecoder.decodeObjectForKey("unpublishedDate") as? NSDate
-        self.status = aDecoder.decodeObjectForKey("status") as! String
-        self.blogID = aDecoder.decodeObjectForKey("blogID") as! String
-        self.excerpt = aDecoder.decodeObjectForKey("excerpt") as! String
-        self.keywords = aDecoder.decodeObjectForKey("keywords") as! String
-        self.tags = aDecoder.decodeObjectForKey("tags") as! [Tag]
-        self.author = aDecoder.decodeObjectForKey("author") as! Author
-        self.customFields = aDecoder.decodeObjectForKey("customFields") as! [CustomField]
-        self.permalink = aDecoder.decodeObjectForKey("permalink") as! String
-        self.basename = aDecoder.decodeObjectForKey("basename") as! String
-        if let object: AnyObject = aDecoder.decodeObjectForKey("format") {
+        self.title = aDecoder.decodeObject(forKey: "title") as! String
+        self.date = aDecoder.decodeObject(forKey: "date") as? Date
+        self.modifiedDate = aDecoder.decodeObject(forKey: "modifiedDate") as? Date
+        self.unpublishedDate = aDecoder.decodeObject(forKey: "unpublishedDate") as? Date
+        self.status = aDecoder.decodeObject(forKey: "status") as! String
+        self.blogID = aDecoder.decodeObject(forKey: "blogID") as! String
+        self.excerpt = aDecoder.decodeObject(forKey: "excerpt") as! String
+        self.keywords = aDecoder.decodeObject(forKey: "keywords") as! String
+        self.tags = aDecoder.decodeObject(forKey: "tags") as! [Tag]
+        self.author = aDecoder.decodeObject(forKey: "author") as! Author
+        self.customFields = aDecoder.decodeObject(forKey: "customFields") as! [CustomField]
+        self.permalink = aDecoder.decodeObject(forKey: "permalink") as! String
+        self.basename = aDecoder.decodeObject(forKey: "basename") as! String
+        if let object: AnyObject = aDecoder.decodeObject(forKey: "format") as AnyObject? {
             self.format = object as! String
         }
-        self.editMode = BaseEntry.EditMode(rawValue: aDecoder.decodeIntegerForKey("editMode"))!
+        self.editMode = BaseEntry.EditMode(rawValue: aDecoder.decodeInteger(forKey: "editMode"))!
     }
     
     func tagsString()-> String {
@@ -190,18 +190,18 @@ class BaseEntry: BaseObject {
             array.append(tag.name)
         }
         
-        return array.joinWithSeparator(",")
+        return array.joined(separator: ",")
     }
     
-    func setTagsFromString(string: String) {
-        tags.removeAll(keepCapacity: false)
+    func setTagsFromString(_ string: String) {
+        tags.removeAll(keepingCapacity: false)
         let list = string.characters.split { $0 == "," }.map { String($0) }
         for item in list {
             tags.append(Tag(json: JSON(item)))
         }
     }
     
-    func customFieldWithBasename(basename: String)-> CustomField? {
+    func customFieldWithBasename(_ basename: String)-> CustomField? {
         for field in customFields {
             if field.basename == basename {
                 return field

@@ -27,8 +27,8 @@ class EntryDetailTableViewController: BaseEntryDetailTableViewController {
 
     // MARK: - Table view data source
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        return super.tableView(tableView, cellForRowAtIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return super.tableView(tableView, cellForRowAt: indexPath)
     }
 
     /*

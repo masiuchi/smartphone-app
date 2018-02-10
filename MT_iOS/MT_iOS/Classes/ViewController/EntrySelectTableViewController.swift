@@ -25,10 +25,10 @@ class EntrySelectTableViewController: BaseTableViewController {
         
         selected = object.selected
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(EntrySelectTableViewController.saveButtonPushed(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: #selector(EntrySelectTableViewController.saveButtonPushed(_:)))
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: #selector(EntrySelectTableViewController.backButtonPushed(_:)))
 
-        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
     }
 
     override func didReceiveMemoryWarning() {
@@ -38,20 +38,20 @@ class EntrySelectTableViewController: BaseTableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         return object.list.count
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) 
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) 
 
         self.adjustCellLayoutMargins(cell)
         
@@ -60,9 +60,9 @@ class EntrySelectTableViewController: BaseTableViewController {
         cell.textLabel?.text = text
         
         if selected == text {
-            cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+            cell.accessoryType = UITableViewCellAccessoryType.checkmark
         } else {
-            cell.accessoryType = UITableViewCellAccessoryType.None
+            cell.accessoryType = UITableViewCellAccessoryType.none
         }
 
         return cell
@@ -103,7 +103,7 @@ class EntrySelectTableViewController: BaseTableViewController {
     }
     */
 
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selected =  object.list[indexPath.row]
         
         self.tableView.reloadData()
@@ -119,15 +119,15 @@ class EntrySelectTableViewController: BaseTableViewController {
     }
     */
 
-    @IBAction func saveButtonPushed(sender: UIBarButtonItem) {
+    @IBAction func saveButtonPushed(_ sender: UIBarButtonItem) {
         object.selected = selected
         object.isDirty = true
-        self.navigationController?.popViewControllerAnimated(true)
+        _ = self.navigationController?.popViewController(animated: true)
     }
     
-    @IBAction func backButtonPushed(sender: UIBarButtonItem) {
+    @IBAction func backButtonPushed(_ sender: UIBarButtonItem) {
         if selected == object.selected {
-            self.navigationController?.popViewControllerAnimated(true)
+            _ = self.navigationController?.popViewController(animated: true)
             return
         }
         

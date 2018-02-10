@@ -10,7 +10,7 @@ import UIKit
 import SwiftyJSON
 
 class UploadItemPreview: UploadItemPost {
-    override func upload(progress progress: ((Int64!, Int64!, Int64!) -> Void)? = nil, success: (JSON! -> Void)!, failure: (JSON! -> Void)!) {
+    override func upload(progress: ((Double) -> Void)? = nil, success: ((JSON?) -> Void)!, failure: ((JSON?) -> Void)!) {
         let json = itemList.makeParams(true)
         
         let isEntry = itemList.object is Entry
@@ -22,7 +22,7 @@ class UploadItemPreview: UploadItemPost {
         }
         
         let api = DataAPI.sharedInstance
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        let app = UIApplication.shared.delegate as! AppDelegate
         let authInfo = app.authInfo
         
         api.authenticationV2(authInfo.username, password: authInfo.password, remember: true,
@@ -33,7 +33,7 @@ class UploadItemPreview: UploadItemPost {
                     api.previewPage(siteID: blogID, pageID: id, entry: json, success: success, failure: failure)
                 }
             },
-            failure: failure
+            failure: failure 
         )
     }
 }

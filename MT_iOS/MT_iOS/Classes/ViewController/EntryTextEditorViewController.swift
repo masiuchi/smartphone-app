@@ -19,10 +19,10 @@ class EntryTextEditorViewController: BaseViewController, UITextViewDelegate {
 
         // Do any additional setup after loading the view.
         self.textView = UITextView(frame: self.view.bounds)
-        self.textView.autocapitalizationType = UITextAutocapitalizationType.None
-        self.textView.autocorrectionType = UITextAutocorrectionType.No
-        self.textView.font = UIFont.systemFontOfSize(13.0)
-        self.textView.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleHeight]
+        self.textView.autocapitalizationType = UITextAutocapitalizationType.none
+        self.textView.autocorrectionType = UITextAutocorrectionType.no
+        self.textView.font = UIFont.systemFont(ofSize: 13.0)
+        self.textView.autoresizingMask = [UIViewAutoresizing.flexibleWidth, UIViewAutoresizing.flexibleHeight]
         self.textView.autoresizesSubviews = true
         self.textView.delegate = self
         
@@ -32,21 +32,21 @@ class EntryTextEditorViewController: BaseViewController, UITextViewDelegate {
         self.textView.text = object.text
         self.textView.selectedRange = NSRange()
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(EntryTextEditorViewController.saveButtonPushed(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: #selector(EntryTextEditorViewController.saveButtonPushed(_:)))
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back_arw"), left: true, target: self, action: #selector(EntryTextEditorViewController.backButtonPushed(_:)))
 
         self.textView.becomeFirstResponder()
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(EntryTextEditorViewController.keyboardWillShow(_:)), name: UIKeyboardWillShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(EntryTextEditorViewController.keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(EntryTextEditorViewController.keyboardWillShow(_:)), name: UIKeyboardWillChangeFrameNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(EntryTextEditorViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(EntryTextEditorViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(EntryTextEditorViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
     }
     
-    override func viewDidDisappear(animated: Bool) {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+    override func viewDidDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func didReceiveMemoryWarning() {
@@ -65,43 +65,43 @@ class EntryTextEditorViewController: BaseViewController, UITextViewDelegate {
     }
     */
     
-    func keyboardWillShow(notification: NSNotification) {
+    func keyboardWillShow(_ notification: Notification) {
         var info = notification.userInfo!
-        let keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
-        let duration: NSTimeInterval = (info[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
+        let keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+        let duration: TimeInterval = (info[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
         
         var insets = self.textView.contentInset
         insets.bottom = keyboardFrame.size.height
-        UIView.animateWithDuration(duration, animations:
+        UIView.animate(withDuration: duration, animations:
             {_ in
                 self.textView.contentInset = insets;
             }
         )
     }
     
-    func keyboardWillHide(notification: NSNotification) {
+    func keyboardWillHide(_ notification: Notification) {
         var info = notification.userInfo!
 //        var keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
-        let duration: NSTimeInterval = (info[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
+        let duration: TimeInterval = (info[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
         
         var insets = self.textView.contentInset
         insets.bottom = 0
-        UIView.animateWithDuration(duration, animations:
+        UIView.animate(withDuration: duration, animations:
             {_ in
                 self.textView.contentInset = insets;
             }
         )
     }
     
-    @IBAction func saveButtonPushed(sender: UIBarButtonItem) {
+    @IBAction func saveButtonPushed(_ sender: UIBarButtonItem) {
         object.text = textView.text
         object.isDirty = true
-        self.navigationController?.popViewControllerAnimated(true)
+        _ = self.navigationController?.popViewController(animated: true)
     }
 
-    @IBAction func backButtonPushed(sender: UIBarButtonItem) {
+    @IBAction func backButtonPushed(_ sender: UIBarButtonItem) {
         if self.textView.text == object.text {
-            self.navigationController?.popViewControllerAnimated(true)
+            _ = self.navigationController?.popViewController(animated: true)
             return
         }
         

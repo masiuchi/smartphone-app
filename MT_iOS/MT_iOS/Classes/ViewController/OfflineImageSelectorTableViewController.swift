@@ -87,18 +87,18 @@ class OfflineImageSelectorTableViewController: ImageSelectorTableViewController 
     }
     */
     
-    override func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        picker.dismissViewControllerAnimated(true, completion:
+    override func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        picker.dismiss(animated: true, completion:
             {_ in
                 if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
                     var width = self.imageSize.size()
-                    if self.imageSize == Blog.ImageSize.Custom {
+                    if self.imageSize == Blog.ImageSize.custom {
                         width = CGFloat(self.imageCustomWidth)
                     }
                     self.object.clear()
                     let path = self.object.jpegFilename(self.blog)
                     let jpeg = Utils.convertJpegData(image, width: width, quality: self.imageQuality.quality() / 100.0)
-                    if jpeg.writeToFile(path, atomically: true) {
+                    if (try? jpeg.write(to: URL(fileURLWithPath: path), options: [.atomic])) != nil {
                         self.object.imageFilename = path
                     } else {
                         self.object.imageFilename = ""
@@ -107,10 +107,10 @@ class OfflineImageSelectorTableViewController: ImageSelectorTableViewController 
                     }
                     self.object.uploadPath = self.uploadDir
                     
-                    var date = NSDate()
-                    if let url = info[UIImagePickerControllerReferenceURL] as? NSURL {
-                        let fetchResult = PHAsset.fetchAssetsWithALAssetURLs([url], options: nil)
-                        if let asset = fetchResult.firstObject as? PHAsset {
+                    var date = Date()
+                    if let url = info[UIImagePickerControllerReferenceURL] as? URL {
+                        let fetchResult = PHAsset.fetchAssets(withALAssetURLs: [url], options: nil)
+                        if let asset = fetchResult.firstObject as PHAsset! {
                             date = asset.creationDate!
                         }
                     }

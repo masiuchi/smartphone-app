@@ -9,7 +9,7 @@
 import UIKit
 
 class MTRefreshControl: UIRefreshControl {
-    var tophImage = UIImageView(frame: CGRectMake(0.0, 0.0, 64.0, 40.0))
+    var tophImage = UIImageView(frame: CGRect(x: 0.0, y: 0.0, width: 64.0, height: 40.0))
     
     /*
     // Only override drawRect: if you perform custom drawing.
@@ -35,7 +35,7 @@ class MTRefreshControl: UIRefreshControl {
         
         tophImage.center = center
         
-        self.tintColor = UIColor.clearColor()
+        self.tintColor = UIColor.clear
         self.backgroundColor = Color.white
 
         tophImage.startAnimating()

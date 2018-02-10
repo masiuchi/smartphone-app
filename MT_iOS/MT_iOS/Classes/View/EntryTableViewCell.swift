@@ -13,7 +13,7 @@ class EntryTableViewCell: UITableViewCell {
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var statusIcon: UIImageView!
     
-    private var _object: BaseEntry?
+    fileprivate var _object: BaseEntry?
     var object: BaseEntry? {
         set {
             self._object = newValue
@@ -22,7 +22,7 @@ class EntryTableViewCell: UITableViewCell {
                 self.titleLabel.text = item.title
                 self.titleLabel.sizeToFit()
                 
-                _ = NSDateFormatter()
+                _ = DateFormatter()
                 
                 if let date = item.date {
                     self.timeLabel.text = Utils.fullDateTimeFromDate(date)
@@ -30,23 +30,23 @@ class EntryTableViewCell: UITableViewCell {
                     self.timeLabel.text = ""
                 }
                 
-                self.statusIcon.hidden = false
-                if item.status == Entry.Status.Publish.text() {
+                self.statusIcon.isHidden = false
+                if item.status == Entry.Status.publish.text() {
                     self.statusIcon.image = UIImage(named: "ico_on")
-                } else if item.status == Entry.Status.Draft.text() {
+                } else if item.status == Entry.Status.draft.text() {
                     self.statusIcon.image = UIImage(named: "ico_draft")
-                } else if item.status == Entry.Status.Future.text() {
+                } else if item.status == Entry.Status.future.text() {
                     self.statusIcon.image = UIImage(named: "ico_timer")
-                } else if item.status == Entry.Status.Unpublish.text() {
+                } else if item.status == Entry.Status.unpublish.text() {
                     self.statusIcon.image = UIImage(named: "ico_unpublush")
                 } else {
-                    self.statusIcon.hidden = true
+                    self.statusIcon.isHidden = true
                 }
             } else {
                 self.titleLabel.text = ""
                 self.timeLabel.text = ""
                 
-                self.statusIcon.hidden = true
+                self.statusIcon.isHidden = true
             }
         }
         get {
@@ -59,7 +59,7 @@ class EntryTableViewCell: UITableViewCell {
         // Initialization code
     }
 
-    override func setSelected(selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state

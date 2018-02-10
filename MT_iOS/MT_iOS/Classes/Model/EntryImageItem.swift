@@ -19,22 +19,22 @@ class EntryImageItem: EntryAssetItem {
         type = "image"
     }
     
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
-        aCoder.encodeObject(self.imageFilename, forKey: "imageFilename")
-        aCoder.encodeObject(self.uploadPath, forKey: "uploadPath")
-        aCoder.encodeObject(self.uploadFilename, forKey: "uploadFilename")
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
+        aCoder.encode(self.imageFilename, forKey: "imageFilename")
+        aCoder.encode(self.uploadPath, forKey: "uploadPath")
+        aCoder.encode(self.uploadFilename, forKey: "uploadFilename")
     }
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        if let text = aDecoder.decodeObjectForKey("imageFilename") as? String {
+        if let text = aDecoder.decodeObject(forKey: "imageFilename") as? String {
             self.imageFilename = text
         }
-        if let text = aDecoder.decodeObjectForKey("uploadPath") as? String {
+        if let text = aDecoder.decodeObject(forKey: "uploadPath") as? String {
             self.uploadPath = text
         }
-        if let text = aDecoder.decodeObjectForKey("uploadFilename") as? String {
+        if let text = aDecoder.decodeObject(forKey: "uploadFilename") as? String {
             self.uploadFilename = text
         }
     }
@@ -55,20 +55,20 @@ class EntryImageItem: EntryAssetItem {
         return imageFilename
     }
     
-    func jpegFilename(blog: Blog)->String {
-        let uuid: String = NSUUID().UUIDString
+    func jpegFilename(_ blog: Blog)->String {
+        let uuid: String = UUID().uuidString
         let filename = uuid + ".jpeg"
         
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        let app = UIApplication.shared.delegate as! AppDelegate
         let user = app.currentUser
         var dir = blog.dataDirPath(user)
-        dir = dir.stringByReplacingOccurrencesOfString(":", withString: "", options: [], range: nil)
-        let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+        dir = dir.replacingOccurrences(of: ":", with: "", options: [], range: nil)
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
         var path = paths[0].stringByAppendingPathComponent(dir)
         
-        let fileManager = NSFileManager.defaultManager()
+        let fileManager = FileManager.default
         do {
-            try fileManager.createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil)
+            try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
         } catch {
         }
         
@@ -80,9 +80,9 @@ class EntryImageItem: EntryAssetItem {
     func removeJpegFile() {
         if !self.imageFilename.isEmpty {
             let path = self.imageFilename
-            let fileManager = NSFileManager.defaultManager()
+            let fileManager = FileManager.default
             do {
-                try fileManager.removeItemAtPath(path)
+                try fileManager.removeItem(atPath: path)
             } catch {
             }
             self.imageFilename = ""

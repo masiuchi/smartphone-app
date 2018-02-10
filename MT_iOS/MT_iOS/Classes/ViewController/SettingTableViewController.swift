@@ -12,15 +12,15 @@ import SwiftyJSON
 
 class SettingTableViewController: BaseTableViewController {
     enum Section: Int {
-        case Item = 0,
-        Logout,
+        case item = 0,
+        logout,
         _Num
     }
     
     enum Item: Int {
-        case Help = 0,
-        License,
-        ReportBug,
+        case help = 0,
+        license,
+        reportBug,
         _Num
     }
 
@@ -47,46 +47,46 @@ class SettingTableViewController: BaseTableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
         return Section._Num.rawValue
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         switch section {
-        case Section.Item.rawValue:
+        case Section.item.rawValue:
             return Item._Num.rawValue
-        case Section.Logout.rawValue:
+        case Section.logout.rawValue:
             return 1
         default:
             return 0
         }
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell = UITableViewCell()
 
         switch indexPath.section {
-        case Section.Item.rawValue:
-            cell = tableView.dequeueReusableCellWithIdentifier("ItemCell", forIndexPath: indexPath) 
+        case Section.item.rawValue:
+            cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell", for: indexPath) 
 
             self.adjustCellLayoutMargins(cell)
 
             switch indexPath.row {
-            case Item.Help.rawValue:
+            case Item.help.rawValue:
                 cell.textLabel?.text = NSLocalizedString("Help", comment: "Help")
-            case Item.License.rawValue:
+            case Item.license.rawValue:
                 cell.textLabel?.text = NSLocalizedString("License", comment: "License")
-            case Item.ReportBug.rawValue:
+            case Item.reportBug.rawValue:
                 cell.textLabel?.text = NSLocalizedString("Report bug", comment: "Report bug")
             default:
                 break
             }
-        case Section.Logout.rawValue:
-            cell = tableView.dequeueReusableCellWithIdentifier("LogoutCell", forIndexPath: indexPath) 
+        case Section.logout.rawValue:
+            cell = tableView.dequeueReusableCell(withIdentifier: "LogoutCell", for: indexPath) 
             cell.textLabel?.text = NSLocalizedString("Logout", comment: "Logout")
         default:
             break
@@ -97,32 +97,32 @@ class SettingTableViewController: BaseTableViewController {
         return cell
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.section {
-        case Section.Item.rawValue:
+        case Section.item.rawValue:
             return 58.0
-        case Section.Logout.rawValue:
+        case Section.logout.rawValue:
             return 58.0
         default:
             return 0.0
         }
     }
     
-    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if section == Section.Logout.rawValue {
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if section == Section.logout.rawValue {
             return 50.0
         }
         
         return 0.0
     }
     
-    override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        if section == Section.Logout.rawValue {
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        if section == Section.logout.rawValue {
             let label = UILabel()
-            label.font = UIFont.systemFontOfSize(14.0)
+            label.font = UIFont.systemFont(ofSize: 14.0)
             label.textColor = Color.placeholderText
-            label.textAlignment = NSTextAlignment.Center
-            if let version = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as? String {
+            label.textAlignment = NSTextAlignment.center
+            if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
                 label.text = NSLocalizedString("Movable Type for iOS ver. ", comment: "Movable Type for iOS ver. ") +  version
             }
             return label
@@ -167,25 +167,25 @@ class SettingTableViewController: BaseTableViewController {
     */
     
     // MARK: - Table view delegte
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let lang = Utils.preferredLanguage()
-        let isJP = (lang as NSString).substringToIndex(2) == "ja" ? true : false
+        let isJP = (lang as NSString).substring(to: 2) == "ja" ? true : false
         switch indexPath.section {
-        case Section.Item.rawValue:
+        case Section.item.rawValue:
             switch indexPath.row {
-            case Item.Help.rawValue:
+            case Item.help.rawValue:
                 let vc = CommonWebViewController()
                 vc.urlString = HELP_URL
                 if !isJP {
                     vc.urlString += "en"
                 }
                 self.navigationController?.pushViewController(vc, animated: true)
-            case Item.License.rawValue:
+            case Item.license.rawValue:
                 let vc = CommonWebViewController()
-                let path = NSBundle.mainBundle().pathForResource("license", ofType: "html")
+                let path = Bundle.main.path(forResource: "license", ofType: "html")
                 vc.filePath = path!
                 self.navigationController?.pushViewController(vc, animated: true)
-            case Item.ReportBug.rawValue:
+            case Item.reportBug.rawValue:
                 let vc = CommonWebViewController()
                 vc.urlString = REPORT_BUG_URL
                 if !isJP {
@@ -195,8 +195,8 @@ class SettingTableViewController: BaseTableViewController {
             default:
                 break
             }
-        case Section.Logout.rawValue:
-            let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        case Section.logout.rawValue:
+            let app = UIApplication.shared.delegate as! AppDelegate
             app.logout()
         default:
             break
@@ -214,8 +214,8 @@ class SettingTableViewController: BaseTableViewController {
     */
 
     //MARK: -
-    func closeButtonPushed(sender: UIBarButtonItem) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+    func closeButtonPushed(_ sender: UIBarButtonItem) {
+        self.dismiss(animated: true, completion: nil)
     }
     
 

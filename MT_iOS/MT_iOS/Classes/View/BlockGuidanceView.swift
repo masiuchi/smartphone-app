@@ -29,6 +29,6 @@ class BlockGuidanceView: UIView {
         self.infoLabel.text = NSLocalizedString("Tap camera icon or text icon in the bottom left corner for make a content block.", comment: "Tap camera icon or text icon in the bottom left corner for make a content block.")
     }
     
-    @IBAction func closeButtonPushed(sender: AnyObject) {
+    @IBAction func closeButtonPushed(_ sender: AnyObject) {
     }
 }

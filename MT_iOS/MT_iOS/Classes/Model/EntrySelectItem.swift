@@ -18,16 +18,16 @@ class EntrySelectItem: BaseEntryItem {
         type = "select"
     }
     
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
-        aCoder.encodeObject(self.list, forKey: "list")
-        aCoder.encodeObject(self.selected, forKey: "selected")
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
+        aCoder.encode(self.list, forKey: "list")
+        aCoder.encode(self.selected, forKey: "selected")
     }
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
-        self.list = aDecoder.decodeObjectForKey("list") as! [String]
-        self.selected = aDecoder.decodeObjectForKey("selected") as! String
+        self.list = aDecoder.decodeObject(forKey: "list") as! [String]
+        self.selected = aDecoder.decodeObject(forKey: "selected") as! String
     }
 
     override func value()-> String {

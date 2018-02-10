@@ -9,7 +9,7 @@
 import UIKit
 
 protocol PrimaryCategorySelectorDelegate {
-    func primaryCategorySelectorDone(controller: PrimaryCategorySelectorTableViewController, selected: String)
+    func primaryCategorySelectorDone(_ controller: PrimaryCategorySelectorTableViewController, selected: String)
 }
 
 class PrimaryCategorySelectorTableViewController: BaseTableViewController {
@@ -27,13 +27,13 @@ class PrimaryCategorySelectorTableViewController: BaseTableViewController {
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         self.title = NSLocalizedString("Select a primary category", comment: "Select a primary category")
         
-        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         if selected.isEmpty {
             selected = items[0].id
         }
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "btn_close"), left: true, target: self, action: #selector(PrimaryCategorySelectorTableViewController.closeButtonPushed(_:)))
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(PrimaryCategorySelectorTableViewController.saveButtonPushed(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: #selector(PrimaryCategorySelectorTableViewController.saveButtonPushed(_:)))
     }
 
     override func didReceiveMemoryWarning() {
@@ -43,20 +43,20 @@ class PrimaryCategorySelectorTableViewController: BaseTableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         return items.count
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) 
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) 
 
         self.adjustCellLayoutMargins(cell)
         
@@ -64,10 +64,10 @@ class PrimaryCategorySelectorTableViewController: BaseTableViewController {
         let item = items[indexPath.row]
         
         var path = item.path
-        path = path.stringByReplacingOccurrencesOfString("/", withString: " > ", options: [], range: nil)
+        path = path.replacingOccurrences(of: "/", with: " > ", options: [], range: nil)
         
         cell.textLabel?.text = path
-        cell.selectionStyle = UITableViewCellSelectionStyle.None
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
         
         if item.id == selected {
             cell.accessoryView = UIImageView(image: UIImage(named: "btn_primary"))
@@ -78,7 +78,7 @@ class PrimaryCategorySelectorTableViewController: BaseTableViewController {
         return cell
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 62.0
     }
 
@@ -117,7 +117,7 @@ class PrimaryCategorySelectorTableViewController: BaseTableViewController {
     }
     */
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = items[indexPath.row]
         
         selected = item.id
@@ -134,17 +134,17 @@ class PrimaryCategorySelectorTableViewController: BaseTableViewController {
     }
     */
     
-    @IBAction func closeButtonPushed(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+    @IBAction func closeButtonPushed(_ sender: AnyObject) {
+        self.dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func saveButtonPushed(sender: AnyObject) {
+    @IBAction func saveButtonPushed(_ sender: AnyObject) {
         self.delegate?.primaryCategorySelectorDone(self, selected: selected)
     }
     
     
-    @IBAction func backButtonPushed(sender: UIBarButtonItem) {
-        self.navigationController?.popViewControllerAnimated(true)
+    @IBAction func backButtonPushed(_ sender: UIBarButtonItem) {
+        _ = self.navigationController?.popViewController(animated: true)
     }
 
 }

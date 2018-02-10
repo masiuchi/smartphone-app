@@ -9,7 +9,7 @@
 import UIKit
 
 protocol BlogImageQualityDelegate {
-    func blogImageQualityDone(controller: BlogImageQualityTableViewController, selected: Int)
+    func blogImageQualityDone(_ controller: BlogImageQualityTableViewController, selected: Int)
 }
 
 class BlogImageQualityTableViewController: BaseTableViewController {
@@ -29,7 +29,7 @@ class BlogImageQualityTableViewController: BaseTableViewController {
         self.title = NSLocalizedString("Image Quality", comment: "Image Quality")
         self.tableView.backgroundColor = Color.tableBg
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(BlogImageQualityTableViewController.doneButtonPushed(_:)))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: #selector(BlogImageQualityTableViewController.doneButtonPushed(_:)))
     }
     
     override func didReceiveMemoryWarning() {
@@ -39,20 +39,20 @@ class BlogImageQualityTableViewController: BaseTableViewController {
     
     // MARK: - Table view data source
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
         return 1
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
         return Blog.ImageQuality._Num.rawValue
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("ItemCell", forIndexPath: indexPath) 
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell", for: indexPath) 
         
         self.adjustCellLayoutMargins(cell)
         
@@ -60,23 +60,23 @@ class BlogImageQualityTableViewController: BaseTableViewController {
         cell.textLabel?.text = Blog.ImageQuality(rawValue: indexPath.row)?.label()
         
         if selected == indexPath.row {
-            cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+            cell.accessoryType = UITableViewCellAccessoryType.checkmark
         } else {
-            cell.accessoryType = UITableViewCellAccessoryType.None
+            cell.accessoryType = UITableViewCellAccessoryType.none
         }
         
         return cell
     }
     
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 21.0
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 58.0
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selected = indexPath.row
         
         self.tableView.reloadData()
@@ -127,8 +127,8 @@ class BlogImageQualityTableViewController: BaseTableViewController {
     }
     */
     
-    @IBAction func doneButtonPushed(sender: AnyObject) {
-        self.navigationController?.popViewControllerAnimated(true)
+    @IBAction func doneButtonPushed(_ sender: AnyObject) {
+        _ = self.navigationController?.popViewController(animated: true)
         delegate?.blogImageQualityDone(self, selected: selected)
     }
 }

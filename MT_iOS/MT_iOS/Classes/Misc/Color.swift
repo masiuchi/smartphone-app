@@ -8,7 +8,7 @@
 
 import Foundation
 
-func colorize(hex: Int, alpha: Double = 1.0) -> UIColor {
+func colorize(_ hex: Int, alpha: Double = 1.0) -> UIColor {
     let red     = Double((hex & 0xFF0000) >> 16) / 255.0
     let green   = Double((hex & 0xFF00  ) >> 8 ) / 255.0
     let blue    = Double((hex & 0xFF    )      ) / 255.0

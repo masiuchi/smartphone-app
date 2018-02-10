@@ -1,5 +1,5 @@
 PODS:
-  - Alamofire (3.1.5)
+  - Alamofire (4.2.0)
   - LUKeychainAccess (1.2.5)
   - MMMarkdown (0.5.1)
   - NSDate-Escort (1.7.0)
@@ -8,19 +8,19 @@ PODS:
     - SDWebImage/Core (= 3.7.5)
   - SDWebImage/Core (3.7.5)
   - SVProgressHUD (1.1.3)
-  - SwiftyJSON (2.3.2)
+  - SwiftyJSON (3.1.4)
   - TMReachability (3.2)
   - ZSSRichTextEditor (0.5.2.1)
 
 DEPENDENCIES:
-  - Alamofire (~> 3.0)
+  - Alamofire (~> 4.0)
   - LUKeychainAccess
   - MMMarkdown
   - NSDate-Escort
   - QBImagePickerController
   - SDWebImage
   - SVProgressHUD
-  - SwiftyJSON
+  - SwiftyJSON (~> 3.0)
   - TMReachability (from `https://github.com/albertbori/Reachability`, commit `e34782b386307e386348b481c02c176d58ba45e6`)
   - ZSSRichTextEditor
 
@@ -35,17 +35,17 @@ CHECKOUT OPTIONS:
     :git: https://github.com/albertbori/Reachability
 
 SPEC CHECKSUMS:
-  Alamofire: 5f730ba29fd113b7ddd71c1e65d0c630acf5d7b0
+  Alamofire: aa2e09d871c9160ac53c90e83c68064a94e3dfbe
   LUKeychainAccess: d22fc00b33ad92c7532962b86daa94c14b85ecbe
   MMMarkdown: 06f7989e0350d10a7de50516af6c812402ce554b
   NSDate-Escort: 3469fefab423c094108c2e864416b61b6ac0edbc
   QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
   SDWebImage: 69c6303e3348fba97e03f65d65d4fbc26740f461
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
-  SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
+  SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
   TMReachability: 48c99d728a8b0ad4493800592484b8cbb65c896c
   ZSSRichTextEditor: 56ed060d6d7a98fb6be9fceb8074ced22160349b
 
-PODFILE CHECKSUM: c5590b73cdb3fdcc5037bea6d58545693b56c79e
+PODFILE CHECKSUM: fe2552e40ad3549b2fe0e852e9803afe8f5c9fb2
 
 COCOAPODS: 1.1.1

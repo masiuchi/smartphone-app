@@ -16,13 +16,13 @@ class EntryMarkdownEditorViewController: EntryHTMLEditorViewController {
 
         // Do any additional setup after loading the view.
         
-        let toolBar = UIToolbar(frame: CGRectMake(0.0, 0.0, self.view.frame.size.width, 44.0))
+        let toolBar = UIToolbar(frame: CGRect(x: 0.0, y: 0.0, width: self.view.frame.size.width, height: 44.0))
         let modeImage = UIImageView(image: UIImage(named: "ico_markdown"))
         let modeButton = UIBarButtonItem(customView: modeImage)
         let cameraButton = UIBarButtonItem(image: UIImage(named: "btn_camera"), left: true, target: self, action: #selector(EntryHTMLEditorViewController.cameraButtonPushed(_:)))
-        let flexibleButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        let previewButton = UIBarButtonItem(image: UIImage(named: "btn_preview"), style: UIBarButtonItemStyle.Plain, target: self, action: #selector(EntryHTMLEditorViewController.previewButtonPushed(_:)))
-        let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: #selector(EntryHTMLEditorViewController.doneButtonPushed(_:)))
+        let flexibleButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
+        let previewButton = UIBarButtonItem(image: UIImage(named: "btn_preview"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(EntryHTMLEditorViewController.previewButtonPushed(_:)))
+        let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: #selector(EntryHTMLEditorViewController.doneButtonPushed(_:)))
         
         if object is BlockTextItem || object.isCustomField {
             toolBar.items = [modeButton, flexibleButton, previewButton, doneButton]
@@ -49,7 +49,7 @@ class EntryMarkdownEditorViewController: EntryHTMLEditorViewController {
     }
     */
 
-    @IBAction override func previewButtonPushed(sender: UIBarButtonItem) {
+    @IBAction override func previewButtonPushed(_ sender: UIBarButtonItem) {
         let vc = PreviewViewController()
         let nav = UINavigationController(rootViewController: vc)
         
@@ -57,15 +57,15 @@ class EntryMarkdownEditorViewController: EntryHTMLEditorViewController {
         
         let sourceText = self.sourceView.text
         do {
-            let markdown = try MMMarkdown.HTMLStringWithMarkdown(sourceText, extensions: MMMarkdownExtensions.GitHubFlavored)
+            let markdown = try MMMarkdown.htmlString(withMarkdown: sourceText!, extensions: MMMarkdownExtensions.gitHubFlavored)
             html += markdown
         } catch _ {
-            html += sourceText
+            html += sourceText!
         }
 
         html += "</body></html>"
         
         vc.html = html
-        self.presentViewController(nav, animated: true, completion: nil)
+        self.present(nav, animated: true, completion: nil)
     }
 }

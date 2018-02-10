@@ -22,18 +22,18 @@ class User: BaseObject {
         isSuperuser = (json["isSuperuser"].stringValue == "true")
     }
     
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
-        aCoder.encodeObject(self.displayName, forKey: "displayName")
-        aCoder.encodeObject(self.userpicUrl, forKey: "userpicUrl")
-        aCoder.encodeBool(self.isSuperuser, forKey: "isSuperuser")
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
+        aCoder.encode(self.displayName, forKey: "displayName")
+        aCoder.encode(self.userpicUrl, forKey: "userpicUrl")
+        aCoder.encode(self.isSuperuser, forKey: "isSuperuser")
     }
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
-        self.displayName = aDecoder.decodeObjectForKey("displayName") as! String
-        self.userpicUrl = aDecoder.decodeObjectForKey("userpicUrl") as! String
-        self.isSuperuser = aDecoder.decodeBoolForKey("isSuperuser")
+        self.displayName = aDecoder.decodeObject(forKey: "displayName") as! String
+        self.userpicUrl = aDecoder.decodeObject(forKey: "userpicUrl") as! String
+        self.isSuperuser = aDecoder.decodeBool(forKey: "isSuperuser")
     }
 
 }

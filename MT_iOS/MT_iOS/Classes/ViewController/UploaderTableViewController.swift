@@ -11,7 +11,7 @@ import SwiftyJSON
 import SVProgressHUD
 
 protocol UploaderTableViewControllerDelegate {
-    func UploaderFinish(controller: UploaderTableViewController)
+    func UploaderFinish(_ controller: UploaderTableViewController)
 }
 
 class UploaderTableViewController: BaseTableViewController {
@@ -19,31 +19,31 @@ class UploaderTableViewController: BaseTableViewController {
     var delegate: UploaderTableViewControllerDelegate?
 
     var progress: ((UploadItem, Float)-> Void)!
-    var success: (Int-> Void)!
+    var success: ((Int)-> Void)!
     var failure: ((Int, JSON) -> Void)!
     
     enum Mode {
-        case Images,
-        Preview,
-        PostEntry,
-        PostPage
+        case images,
+        preview,
+        postEntry,
+        postPage
         func title()->String {
             switch(self) {
-            case .Images:
+            case .images:
                 return NSLocalizedString("Upload images...", comment: "Upload images...")
-            case .Preview:
+            case .preview:
                 return NSLocalizedString("Make preview...", comment: "Make preview...")
-            case .PostEntry:
+            case .postEntry:
                 return NSLocalizedString("Sending entry...", comment: "Sending entry...")
-            case .PostPage:
+            case .postPage:
                 return NSLocalizedString("Sending page...", comment: "Sending page...")
             }
         }
     }
     
-    var mode = Mode.Images
+    var mode = Mode.images
     
-    private(set) var result: JSON?
+    fileprivate(set) var result: JSON?
     
     let IMAGE_SIZE: CGFloat = 50.0
     
@@ -57,7 +57,7 @@ class UploaderTableViewController: BaseTableViewController {
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         self.title = self.mode.title()
         
-        self.tableView.registerNib(UINib(nibName: "UploaderTableViewCell", bundle: nil), forCellReuseIdentifier: "UploaderTableViewCell")
+        self.tableView.register(UINib(nibName: "UploaderTableViewCell", bundle: nil), forCellReuseIdentifier: "UploaderTableViewCell")
         
         self.progress = {
             (item: UploadItem, progress: Float) in
@@ -87,18 +87,18 @@ class UploaderTableViewController: BaseTableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return uploader.count()
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("UploaderTableViewCell", forIndexPath: indexPath) as! UploaderTableViewCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "UploaderTableViewCell", for: indexPath) as! UploaderTableViewCell
 
         // Configure the cell...
         let item = self.uploader.items[indexPath.row]
@@ -114,7 +114,7 @@ class UploaderTableViewController: BaseTableViewController {
         return cell
     }
 
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return IMAGE_SIZE
     }
     
@@ -167,30 +167,30 @@ class UploaderTableViewController: BaseTableViewController {
         let alertController = UIAlertController(
             title: NSLocalizedString("Upload", comment: "Upload"),
             message: NSLocalizedString("There is the rest of the items. Are you sure you want to upload again?", comment: "There is the rest of the items. Are you sure you want to upload again?"),
-            preferredStyle: .Alert)
+            preferredStyle: .alert)
         
-        let yesAction = UIAlertAction(title: NSLocalizedString("YES", comment: "YES"), style: .Default) {
+        let yesAction = UIAlertAction(title: NSLocalizedString("YES", comment: "YES"), style: .default) {
             action in
             
             self.uploader.restart(progress: self.progress, success: self.success, failure: self.failure)
         }
-        let noAction = UIAlertAction(title: NSLocalizedString("NO", comment: "NO"), style: .Default) {
+        let noAction = UIAlertAction(title: NSLocalizedString("NO", comment: "NO"), style: .default) {
             action in
             self.delegate?.UploaderFinish(self)
         }
         
         alertController.addAction(noAction)
         alertController.addAction(yesAction)
-        self.presentViewController(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: nil)
     }
     
-    func uploadError(error: JSON) {
+    func uploadError(_ error: JSON) {
         let alertController = UIAlertController(
             title: NSLocalizedString("Upload error", comment: "Upload error"),
             message: error["message"].stringValue,
-            preferredStyle: .Alert)
+            preferredStyle: .alert)
         
-        let okAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .Default) {
+        let okAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default) {
             action in
             if self.uploader.queueCount() > 0 {
                 self.uploadRestart()
@@ -198,6 +198,6 @@ class UploaderTableViewController: BaseTableViewController {
         }
         
         alertController.addAction(okAction)
-        self.presentViewController(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: nil)
     }
 }

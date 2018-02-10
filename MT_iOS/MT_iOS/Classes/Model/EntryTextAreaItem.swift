@@ -19,16 +19,16 @@ class EntryTextAreaItem: BaseEntryItem {
         type = "textarea"
     }
     
-    override func encodeWithCoder(aCoder: NSCoder) {
-        super.encodeWithCoder(aCoder)
-        aCoder.encodeObject(self.text, forKey: "text")
-        aCoder.encodeObject(self.assets, forKey: "assets")
+    override func encode(with aCoder: NSCoder) {
+        super.encode(with: aCoder)
+        aCoder.encode(self.text, forKey: "text")
+        aCoder.encode(self.assets, forKey: "assets")
     }
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
-        self.text = aDecoder.decodeObjectForKey("text") as! String
-        if let object = aDecoder.decodeObjectForKey("assets") as? [Asset] {
+        self.text = aDecoder.decodeObject(forKey: "text") as! String
+        if let object = aDecoder.decodeObject(forKey: "assets") as? [Asset] {
             self.assets = object
         }
     }
@@ -38,7 +38,7 @@ class EntryTextAreaItem: BaseEntryItem {
         let sourceText = text
         if isPreview {
             do {
-                let markdown = try MMMarkdown.HTMLStringWithMarkdown(sourceText, extensions: MMMarkdownExtensions.GitHubFlavored)
+                let markdown = try MMMarkdown.htmlString(withMarkdown: sourceText, extensions: MMMarkdownExtensions.gitHubFlavored)
                 value = markdown
             } catch _ {
                 value = sourceText

@@ -10,8 +10,8 @@ import UIKit
 
 extension UIView {
     class func instanceFromNib() -> UIView {
-        let className =  NSStringFromClass(self).componentsSeparatedByString(".").last!
-        let view = UINib(nibName: className, bundle: nil).instantiateWithOwner(nil, options: nil)[0] as! UIView
+        let className =  NSStringFromClass(self).components(separatedBy: ".").last!
+        let view = UINib(nibName: className, bundle: nil).instantiate(withOwner: nil, options: nil)[0] as! UIView
         
         return view
     }

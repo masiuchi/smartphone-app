@@ -17,14 +17,14 @@ class AssetTableViewCell: UITableViewCell {
         // Initialization code
     }
     
-    private var _asset: Asset?
+    fileprivate var _asset: Asset?
     var asset: Asset? {
         set {
             self._asset = newValue
             
             if let item = self._asset {
                 self.labelLabel.text = item.dispName()
-                self.thumbImageView.sd_setImageWithURL(NSURL(string: item.url))
+                self.thumbImageView.sd_setImage(with: URL(string: item.url))
             } else {
                 self.labelLabel.text = ""
                 self.thumbImageView.image = nil
@@ -35,7 +35,7 @@ class AssetTableViewCell: UITableViewCell {
         }
     }
     
-    override func setSelected(selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         
         // Configure the view for the selected state

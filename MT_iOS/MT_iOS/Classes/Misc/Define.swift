@@ -19,13 +19,13 @@ let HELP_URL = "http://www.movabletype.jp/documentation/mtios/help/"
 let LICENSE_URL = "http://www.sixapart.jp/"
 let REPORT_BUG_URL = "http://www.movabletype.jp/documentation/mtios/inquiry"
 
-func LOG(info: String = "") {
+func LOG(_ info: String = "") {
     #if DEBUG
         print("\(info)")
     #endif
 }
 
-func LOG_METHOD(info: String = "", function: String = #function, file: String = #file, line: Int = #line) {
+func LOG_METHOD(_ info: String = "", function: String = #function, file: String = #file, line: Int = #line) {
     #if DEBUG
         let fileName = file.lastPathComponent.stringByDeletingPathExtension
         let sourceInfo = "\(fileName).\(function)-line\(line)"
